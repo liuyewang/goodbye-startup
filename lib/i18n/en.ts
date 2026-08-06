@@ -177,6 +177,7 @@ export const en = {
       placeholder: "Describe your decision or ask a question...",
       send: "Send",
     },
+    thinking: "AI is thinking...",
     welcome: "Welcome to the Startup Pressure Test. In the next 180 days, we'll put your idea through the wringer of real market data. Forget the success stories — prepare for the brutal reality. Now, tell me about your startup idea.",
     paywall: {
       title: "Want to try another idea?",

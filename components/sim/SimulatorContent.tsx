@@ -44,6 +44,15 @@ function SimulatorContent() {
 
   // Initialize game with welcome message
   useEffect(() => {
+    // Reset scroll to top and lock body scroll on simulator page
+    window.scrollTo(0, 0);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
+  useEffect(() => {
     if (isLoading) return;
 
     // Check if this is a new game (no messages) and user hasn't used free simulation
@@ -109,7 +118,7 @@ function SimulatorContent() {
   // Show paywall if user has used free simulation and no active game
   if (hasUsedFreeSimulation && state.messages.length === 0 && initialized) {
     return (
-      <div className="flex flex-col h-[calc(100vh-4rem)]">
+      <div style={{ position: "fixed", top: "4rem", left: 0, right: 0, bottom: 0 }} className="flex flex-col overflow-hidden">
         <PaywallScreen />
       </div>
     );
@@ -118,8 +127,10 @@ function SimulatorContent() {
   // Show loading state
   if (isLoading || !initialized) {
     return (
-      <div className="flex flex-col h-[calc(100vh-4rem)]">
-        <StatusPanel />
+      <div style={{ position: "fixed", top: "4rem", left: 0, right: 0, bottom: 0 }} className="flex flex-col overflow-hidden">
+        <div className="flex-shrink-0">
+          <StatusPanel />
+        </div>
         <div className="flex-1 flex items-center justify-center">
           <div className="text-dark-400">{t.common.loading}</div>
         </div>
@@ -128,8 +139,10 @@ function SimulatorContent() {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)]">
-      <StatusPanel />
+    <div style={{ position: "fixed", top: "4rem", left: 0, right: 0, bottom: 0 }} className="flex flex-col overflow-hidden">
+      <div className="flex-shrink-0">
+        <StatusPanel />
+      </div>
       <ChatInterface onSendMessage={handleSendMessage} isTyping={isTyping} />
     </div>
   );

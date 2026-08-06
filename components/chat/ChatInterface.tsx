@@ -34,9 +34,11 @@ export function ChatInterface({ onSendMessage, isTyping = false }: ChatInterface
   const showTyping = isTyping || localTyping;
 
   return (
-    <div className="flex flex-col h-full bg-white">
+    <div style={{ minHeight: 0 }} className="flex-1 flex flex-col overflow-hidden bg-white">
       <MessageList messages={state.messages} isTyping={showTyping} />
-      <ChatInput onSend={handleSend} disabled={showTyping || state.isGameOver} />
+      <div className="flex-shrink-0">
+        <ChatInput onSend={handleSend} disabled={showTyping || state.isGameOver} />
+      </div>
     </div>
   );
 }

@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
     ];
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: {
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
             temperature: 0.7,
             topK: 40,
             topP: 0.95,
-            maxOutputTokens: 2048,
+            maxOutputTokens: 8192,
           },
         }),
       }
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
       const errorData = await response.text();
       console.error("Gemini API error:", response.status, errorData);
       return NextResponse.json(
-        { error: "Failed to get response from AI" },
+        { error: "Failed to get response from AI", details: errorData, status: response.status },
         { status: response.status }
       );
     }
@@ -83,10 +83,10 @@ export async function POST(request: NextRequest) {
     const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
     return NextResponse.json({ text });
-  } catch (error) {
+  } catch (error: any) {
     console.error("API error:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Internal server error", details: error?.message || String(error) },
       { status: 500 }
     );
   }

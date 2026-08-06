@@ -179,6 +179,7 @@ export const zh: Translations = {
       placeholder: "描述你的决定或提问...",
       send: "发送",
     },
+    thinking: "AI 正在思考中...",
     welcome: "欢迎来到创业压力测试。在接下来的 180 天里，我们将用真实的市场数据来检验你的想法。忘掉那些成功故事——准备好面对残酷的现实吧。现在，告诉我你的创业想法。",
     paywall: {
       title: "想试试另一个想法吗？",
