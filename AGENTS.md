@@ -260,10 +260,11 @@ npx wrangler pages deploy .vercel/output/static
 
 ### 9.5 SEO & GEO Conventions
 - Metadata: root `app/layout.tsx` sets metadataBase + default title template + OG/Twitter; each route segment adds its own `layout.tsx` with `title`/`description`/`alternates.canonical`.
-- `/simulator` is the interactive tool page: `robots: noindex, nofollow` (not indexable content).
+- `/simulator` is indexable since 2026-11-06: `robots: index, follow` + self canonical `/simulator`, listed in `app/sitemap.ts`. Its indexable copy lives in `components/sim/SimulatorGuide.tsx` (strings under i18n `sim.guide`) — if you change the flow, phases, or stat model, update that copy in the same commit, otherwise the page becomes thin content again.
 - `app/sitemap.ts` and `app/robots.ts` are Next-native (prerendered). robots.txt **explicitly allows** GPTBot/OAI-SearchBot/ChatGPT-User/ClaudeBot/PerplexityBot/Google-Extended — GEO strategy is to be cited by AI engines, do not block them.
 - JSON-LD: Organization + WebApplication in root layout; FAQPage on landing. When adding content sections with Q&A structure, keep the visible HTML answer text in sync with the JSON-LD `acceptedAnswer` (AI crawlers read the HTML, JSON-LD only enriches).
-- Favicon/OG image are static SVGs in `public/` (no `ImageResponse` — avoids next-on-pages edge compatibility issues).
+- Favicon is a static SVG in `public/`; the OG image is `public/og.png` (1200×630 PNG, generated from `public/og.svg` with `sharp`) — social and AI platforms do not render SVG in previews, so always ship a raster OG image. No `ImageResponse` (avoids next-on-pages edge compatibility issues).
+- Title budget: segment titles must stay short enough that `title + " | Goodbye Startup"` (17 chars) ≤ 60 chars; descriptions ≤ 155 chars. Check with a curl + length audit after deploy.
 - Verification after deploy: `curl` the deployed URL for `<title>`, canonical, `application/ld+json` count, `/robots.txt`, `/sitemap.xml`, and security headers.
 
 ---

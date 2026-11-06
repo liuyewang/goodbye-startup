@@ -15,11 +15,11 @@ const SITE_URL = "https://goodbye.help";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Goodbye Startup — AI-Powered Startup Simulator & Idea Validator",
+    default: "Goodbye Startup — AI Startup Simulator & Idea Validator",
     template: "%s | Goodbye Startup",
   },
   description:
-    "Test your startup idea in a realistic 180-day AI simulation. A data-driven mentor shows you market reality, CAC, churn, and runway — before you quit your job or burn your savings. 1 free run.",
+    "Test your startup idea in a 180-day AI simulation. A data-driven mentor shows market reality, CAC, churn and runway before you quit. First run free.",
   keywords: [
     "startup simulator",
     "AI startup mentor",
@@ -51,14 +51,22 @@ export const metadata: Metadata = {
     url: SITE_URL,
     siteName: "Goodbye Startup",
     locale: "en_US",
-    images: [{ url: "/og.svg", width: 1200, height: 630, alt: "Goodbye Startup" }],
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "Goodbye Startup — test your startup idea before you quit your job",
+        type: "image/png",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Goodbye Startup — AI-Powered Startup Simulator",
     description:
       "Test your startup idea in 180 days with a data-driven AI mentor.",
-    images: ["/og.svg"],
+    images: ["/og.png"],
   },
 };
 

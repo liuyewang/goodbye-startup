@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "How It Works — 180-Day Simulation Across 5 Phases",
+  title: "How the 180-Day Simulation Works",
   description:
-    "See how Goodbye Startup tests your business idea: market reality check, product launch, user behavior simulation, the day-180 financial crunch, and a final lessons report.",
+    "See how Goodbye Startup tests your idea: market reality check, launch, user behavior, the day-180 financial crunch, and a lessons report.",
   alternates: { canonical: "/how-it-works" },
 };
 

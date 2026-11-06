@@ -213,6 +213,28 @@ export const en = {
     },
     thinking: "AI is thinking...",
     welcome: "Welcome to the Startup Pressure Test. In the next 180 days, we'll put your idea through the wringer of real market data. Forget the success stories — prepare for the brutal reality. Now, tell me about your startup idea.",
+    guide: {
+      heading: "How the 180-day startup simulation works",
+      intro:
+        "This is a pressure test, not a pitch deck. You describe an idea, make one decision at a time, and watch a model of your market respond. Cash, runway, users, churn and morale move together, so a win in one area usually costs you in another.",
+      inputTitle: "What you bring on Day 1",
+      inputItems: [
+        "Your idea in plain language — no business plan required",
+        "A rough starting budget and price point",
+        "Decisions at each stage: positioning, pricing, hiring, spending",
+      ],
+      outputTitle: "What the run gives back",
+      outputItems: [
+        "A cash and runway ledger that updates after every decision",
+        "Market feedback on acquisition cost, pricing power and churn",
+        "A Day 180 verdict: viable, marginal, or time to say goodbye",
+      ],
+      realismTitle: "Why the numbers are bounded",
+      realism:
+        "Ranges come from published benchmarks for early-stage consumer and SaaS businesses, not from an optimistic narrative. The model is deliberately harsh at the edges: acquisition costs more than founders expect, churn compounds, and every hire is sticky.",
+      note:
+        "One free run per browser, no account needed. Your inputs stay on your device until you decide to upgrade.",
+    },
     paywall: {
       title: "Want to try another idea?",
       description: "You've used your free simulation. Upgrade to Pro to test unlimited startup ideas and become a better founder.",
