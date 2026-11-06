@@ -154,6 +154,40 @@ export const en = {
     ],
     guarantee: "30-day money-back guarantee. No questions asked.",
   },
+  faq: {
+    title: "Frequently Asked Questions",
+    subtitle: "Straight answers before you spend a minute or a dollar.",
+    items: [
+      {
+        q: "What is a startup simulator?",
+        a: "A startup simulator tests a business idea against realistic market data — traffic limits, conversion rates, churn, and monthly burn — compressed into a 180-day timeline. Goodbye Startup runs that simulation with an AI mentor instead of a spreadsheet.",
+      },
+      {
+        q: "How does Goodbye Startup work?",
+        a: "You describe your idea and your real starting position (capital, team, monthly burn). The AI mentor then walks you through five phases: market reality check, product launch, user behavior simulation, the day-180 financial crunch, and a final lessons report.",
+      },
+      {
+        q: "Is Goodbye Startup free?",
+        a: "Your first full 180-day simulation is free and requires no credit card. Unlimited simulations cost $9.99/month, or a one-time $49.99 lifetime pass.",
+      },
+      {
+        q: "What data does the simulation use?",
+        a: "Industry-median and deliberately pessimistic benchmarks: cold-start click-through rates of 0.5–2%, website-to-signup conversion of 1–3%, free-to-paid conversion of 0.5–2%, and monthly churn of 10–20% for early-stage products.",
+      },
+      {
+        q: "Do I need to quit my job to test my idea?",
+        a: "No. The simulator exists so you can test the idea before quitting. It shows whether your savings and runway would survive realistic customer-acquisition costs.",
+      },
+      {
+        q: "Who is Goodbye Startup for?",
+        a: "Aspiring founders — especially solo developers and first-time entrepreneurs targeting the US market — who have an idea but want hard evidence before risking their savings or a steady salary.",
+      },
+      {
+        q: "How long does one simulation take?",
+        a: "About 15–30 minutes of conversation, covering 180 simulated days across five phases and key decision points.",
+      },
+    ],
+  },
   sim: {
     title: "Startup Simulator",
     day: "Day",

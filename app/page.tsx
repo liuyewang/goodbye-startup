@@ -236,6 +236,43 @@ export default function Home() {
         </div>
       </section>
 
+      {/* FAQ */}
+      <section className="section-padding bg-dark-50">
+        {/* FAQPage structured data (GEO/SEO) */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: t.faq.items.map((item) => ({
+                "@type": "Question",
+                name: item.q,
+                acceptedAnswer: { "@type": "Answer", text: item.a },
+              })),
+            }),
+          }}
+        />
+        <div className="container-custom">
+          <div className="max-w-2xl mx-auto text-center mb-16">
+            <h2 className="heading-lg mb-4 text-balance">{t.faq.title}</h2>
+            <p className="subtitle text-balance">{t.faq.subtitle}</p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+            {t.faq.items.map((item, index) => (
+              <div key={index} className="card-hover p-6 lg:p-8">
+                <h3 className="text-lg font-semibold text-dark-900 mb-2">
+                  {item.q}
+                </h3>
+                <p className="text-dark-500 leading-relaxed text-sm">
+                  {item.a}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="section-padding relative overflow-hidden">
         <div className="absolute inset-0 gradient-bg" />

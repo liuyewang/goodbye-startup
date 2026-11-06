@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eef2ff"/>
+      <stop offset="1" stop-color="#f5f3ff"/>
+    </linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6366f1"/>
+      <stop offset="1" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="90" y="90" width="64" height="64" rx="14" fill="url(#brand)"/>
+  <text x="172" y="136" font-family="Arial, sans-serif" font-size="34" font-weight="bold" fill="#111827">Goodbye Startup</text>
+  <text x="90" y="290" font-family="Arial, sans-serif" font-size="68" font-weight="bold" fill="#111827">Test your startup idea</text>
+  <text x="90" y="370" font-family="Arial, sans-serif" font-size="68" font-weight="bold" fill="#6366f1">before you quit your job.</text>
+  <text x="90" y="450" font-family="Arial, sans-serif" font-size="30" fill="#4b5563">A realistic 180-day AI simulation — market data, CAC, churn, runway.</text>
+  <text x="90" y="540" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#6366f1">goodbye.help</text>
+</svg>

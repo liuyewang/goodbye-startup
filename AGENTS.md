@@ -258,6 +258,14 @@ npx wrangler pages deploy .vercel/output/static
 - DNS: managed by Cloudflare
 - SSL: Cloudflare auto-cert
 
+### 9.5 SEO & GEO Conventions
+- Metadata: root `app/layout.tsx` sets metadataBase + default title template + OG/Twitter; each route segment adds its own `layout.tsx` with `title`/`description`/`alternates.canonical`.
+- `/simulator` is the interactive tool page: `robots: noindex, nofollow` (not indexable content).
+- `app/sitemap.ts` and `app/robots.ts` are Next-native (prerendered). robots.txt **explicitly allows** GPTBot/OAI-SearchBot/ChatGPT-User/ClaudeBot/PerplexityBot/Google-Extended — GEO strategy is to be cited by AI engines, do not block them.
+- JSON-LD: Organization + WebApplication in root layout; FAQPage on landing. When adding content sections with Q&A structure, keep the visible HTML answer text in sync with the JSON-LD `acceptedAnswer` (AI crawlers read the HTML, JSON-LD only enriches).
+- Favicon/OG image are static SVGs in `public/` (no `ImageResponse` — avoids next-on-pages edge compatibility issues).
+- Verification after deploy: `curl` the deployed URL for `<title>`, canonical, `application/ld+json` count, `/robots.txt`, `/sitemap.xml`, and security headers.
+
 ---
 
 ## 10. Testing Rules (MVP)

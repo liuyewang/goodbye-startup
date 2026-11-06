@@ -10,29 +10,82 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
+const SITE_URL = "https://goodbye.help";
+
 export const metadata: Metadata = {
-  title: "Goodbye Startup - AI-Powered Startup Simulator",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Goodbye Startup — AI-Powered Startup Simulator & Idea Validator",
+    template: "%s | Goodbye Startup",
+  },
   description:
-    "Test your startup idea in 180 days with a data-driven AI mentor. No risk, no wasted savings — just real market reality.",
+    "Test your startup idea in a realistic 180-day AI simulation. A data-driven mentor shows you market reality, CAC, churn, and runway — before you quit your job or burn your savings. 1 free run.",
   keywords: [
     "startup simulator",
-    "AI mentor",
-    "entrepreneurship",
-    "business simulation",
+    "AI startup mentor",
     "startup idea validator",
+    "business simulation",
+    "test startup idea",
+    "is my startup idea viable",
+    "entrepreneurship practice",
+    "runway calculator",
   ],
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   openGraph: {
-    title: "Goodbye Startup - AI-Powered Startup Simulator",
+    title: "Goodbye Startup — AI-Powered Startup Simulator",
     description:
-      "Test your startup idea in 180 days with a data-driven AI mentor.",
+      "Test your startup idea in 180 days with a data-driven AI mentor. No risk, no wasted savings — just real market reality.",
     type: "website",
-    url: "https://goodbye.help",
+    url: SITE_URL,
+    siteName: "Goodbye Startup",
+    locale: "en_US",
+    images: [{ url: "/og.svg", width: 1200, height: 630, alt: "Goodbye Startup" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Goodbye Startup - AI-Powered Startup Simulator",
+    title: "Goodbye Startup — AI-Powered Startup Simulator",
     description:
       "Test your startup idea in 180 days with a data-driven AI mentor.",
+    images: ["/og.svg"],
+  },
+};
+
+// JSON-LD: Organization + WebApplication (GEO/SEO structured data)
+const orgJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Goodbye Startup",
+  url: SITE_URL,
+  logo: `${SITE_URL}/favicon.svg`,
+  description:
+    "A data-driven AI startup simulator that tests business ideas against realistic market data before founders quit their jobs.",
+};
+
+const appJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Goodbye Startup Simulator",
+  url: `${SITE_URL}/simulator`,
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  description:
+    "180-day AI-powered startup simulation with realistic traffic, conversion, churn and cash-flow models.",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
   },
 };
 
@@ -44,6 +97,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className="font-sans min-h-screen flex flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(appJsonLd) }}
+        />
         <Navbar />
         <main className="flex-1 pt-16">{children}</main>
         <Footer />
