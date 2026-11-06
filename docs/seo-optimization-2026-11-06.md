@@ -68,3 +68,34 @@ CLOUDFLARE_API_TOKEN=$(cat ~/.config/cloudflare/goodbye.help.token) \
 ```
 
 本轮共 3 次生产部署，最终线上版本已全部通过上述五个 Loop。
+
+## 6. 第二轮：内容补强（同日）
+
+第一轮 Loop 3 发现 `/how-it-works`（184 词）与 `/pricing`（167 词）内容偏薄，与其搜索意图不匹配。本轮补齐：
+
+| 页面 | 新增内容 | 补前 → 补后 | 文件 |
+|---|---|---|---|
+| `/how-it-works` | 「What is actually being computed」：单位经济模型 / 现金账本 / 决策节奏 / 基准为何偏悲观 / 它给不了什么 | 184 → **400 词** | `app/how-it-works/page.tsx` + i18n `howItWorks.detail` |
+| `/pricing` | 「Before you pay」六问：什么算一次、是否要账号、数据存哪、能否取消、没用怎么办、免费为何只有一次 | 167 → **349 词** | `app/pricing/page.tsx` + i18n `pricing.faq` |
+
+`/pricing` 原来的 "FAQ placeholder" 区块是硬编码英文（`Questions?` / `We're here to help...`），既违反 i18n 规则又没有实质信息，本轮一并替换为走 i18n 的六问答。新增文案全部中英双份，`tsc --noEmit` 通过（`Translations = typeof en`，结构不一致会直接报错）。
+
+## 7. 中文 SEO 决策：应放弃（现阶段）
+
+第一轮遗留项 #2「中文内容 Google 读不到」按第一性原理 + 对抗审查评估，结论是**现在不做**。
+
+**第一性原理**
+1. Google 索引的是 URL，不是语言。当前 6 个 URL 的 HTML 只有英文，中文是客户端切换产生，爬虫永远看不到。
+2. 要让中文可被索引，必须存在「独立 URL + 独立中文 HTML」。
+3. 独立 URL 带来重复主题风险，只有正确的 `hreflang` 互指 + `x-default` 才能让 Google 视其为语言版本而非重复内容。
+4. 因此这不是加个开关，而是一次路由层重构。
+
+**对抗审查**
+- 攻击「有流量就有收入」：AGENTS.md 明确支付页是假的（为申请 PayPal 预留），中文流量进来无法付费，等于零收入。
+- 攻击「中文市场有机会」：产品定位是美国 25–35 岁创业者，价格 $9.99/月；中文搜索词被知乎/豆瓣等本地内容占住，一个美元定价的小站胜率低。
+- 攻击执行路径：现有 i18n 靠 `localStorage` + `useI18n()` 全局读，改路由级 locale 要动所有页面与组件、导航切换器、SSR 默认语言，blast radius 覆盖整个可用站点。
+- 隐藏成本：文案永远写两份；每次改产品都要同步两套；sitemap、canonical、hreflang 三处都要双份维护。
+- 最坏情况：重构半途出现语言切换回归，真实用户直接受害，而收益仍是推测。
+
+**结论：应放弃。** 触发条件（满足任一再重开）：支付真实可用、出现中文付费用户、或明确要做中文内容站。届时按「路由级 i18n + hreflang + x-default」一次性重构，不零散加页面。
+

@@ -102,6 +102,35 @@ export const en = {
         description: "Day 180: Face the final verdict. Did you make it? Or did you run out of runway?",
       },
     ],
+    detail: {
+      heading: "What is actually being computed",
+      intro:
+        "Every decision you make updates a small financial model. The mentor is not guessing — it tracks four numbers and shows you what your last move did to them.",
+      items: [
+        {
+          title: "Unit economics",
+          body: "Customer acquisition cost, average revenue per user and churn come from published ranges for early-stage consumer and SaaS products. Change your price and the payback period recalculates immediately.",
+        },
+        {
+          title: "The cash ledger",
+          body: "Hiring, ad spend and discounts all move cash. Runway is simply cash divided by monthly burn; when it drops below three months the mentor starts flagging it.",
+        },
+        {
+          title: "The decision cadence",
+          body: "One run gives you five decision points: positioning, pricing, launch channel, growth spend, and whether to raise. Each one closes a phase and moves the clock.",
+        },
+        {
+          title: "Why the benchmarks lean pessimistic",
+          body: "Ranges sit at the median-to-weak end of published data: acquisition costs more, conversion is lower, churn is stickier. The goal is to surface failure modes before you spend real money.",
+        },
+        {
+          title: "What it cannot tell you",
+          body: "It is not due diligence. Legal, regulatory, co-founder and team dynamics are out of scope, and the Day 180 verdict is a structured second opinion, not a prediction.",
+        },
+      ],
+      closing:
+        "You can ask the mentor why a number moved at any point in the conversation — the answer is part of the exercise.",
+    },
   },
   pricing: {
     title: "Simple, Honest Pricing",
@@ -153,6 +182,35 @@ export const en = {
       },
     ],
     guarantee: "30-day money-back guarantee. No questions asked.",
+    faq: {
+      heading: "Before you pay",
+      items: [
+        {
+          q: "What counts as one simulation?",
+          a: "One full run: five phases, from your idea to the Day 180 verdict. The free run is counted per browser, so a different device gets its own free run.",
+        },
+        {
+          q: "Do I need an account?",
+          a: "No. The free run needs nothing but a browser. If you upgrade, checkout creates the billing record for you.",
+        },
+        {
+          q: "Where does my data live?",
+          a: "Simulation state stays in your browser's local storage, so clearing site data deletes it. Prompts are sent to our AI provider to generate the mentor's replies — see the privacy policy for the full picture.",
+        },
+        {
+          q: "Can I cancel?",
+          a: "Yes. Pro is month to month; cancel in the billing portal and it stays active until the end of the period you already paid for.",
+        },
+        {
+          q: "What if it turns out not to be useful?",
+          a: "30-day money-back guarantee, no questions asked. Email us with your receipt and the charge is refunded.",
+        },
+        {
+          q: "Why is the free tier limited to one run?",
+          a: "Every run costs real AI inference. One complete run is enough to judge whether this tool sharpens your thinking before you pay for more.",
+        },
+      ],
+    },
   },
   faq: {
     title: "Frequently Asked Questions",

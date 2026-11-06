@@ -58,6 +58,27 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
+      {/* What is actually being computed */}
+      <section className="pb-24">
+        <div className="container-custom max-w-4xl">
+          <h2 className="heading-md mb-4">{t.howItWorks.detail.heading}</h2>
+          <p className="text-dark-500 text-lg leading-relaxed mb-10">
+            {t.howItWorks.detail.intro}
+          </p>
+          <dl className="space-y-8">
+            {t.howItWorks.detail.items.map((item) => (
+              <div key={item.title}>
+                <dt className="text-lg font-semibold text-dark-900 mb-2">
+                  {item.title}
+                </dt>
+                <dd className="text-dark-500 leading-relaxed">{item.body}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="text-dark-500 mt-10">{t.howItWorks.detail.closing}</p>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="section-padding relative overflow-hidden">
         <div className="absolute inset-0 gradient-bg" />

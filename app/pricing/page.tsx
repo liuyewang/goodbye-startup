@@ -96,16 +96,25 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* FAQ placeholder */}
+      {/* Pre-purchase FAQs */}
       <section className="py-16 lg:py-20 bg-dark-50">
-        <div className="container-custom max-w-3xl text-center">
-          <h2 className="heading-md mb-4">Questions?</h2>
-          <p className="text-dark-500 mb-8">
-            We're here to help. Reach out anytime.
-          </p>
-          <Link href="/about" className="btn-secondary btn-md">
-            {t.common.learnMore}
-          </Link>
+        <div className="container-custom max-w-3xl">
+          <h2 className="heading-md mb-10 text-center">{t.pricing.faq.heading}</h2>
+          <dl className="space-y-8">
+            {t.pricing.faq.items.map((item) => (
+              <div key={item.q}>
+                <dt className="text-lg font-semibold text-dark-900 mb-2">
+                  {item.q}
+                </dt>
+                <dd className="text-dark-500 leading-relaxed">{item.a}</dd>
+              </div>
+            ))}
+          </dl>
+          <div className="text-center mt-12">
+            <Link href="/about" className="btn-secondary btn-md">
+              {t.common.learnMore}
+            </Link>
+          </div>
         </div>
       </section>
     </div>
