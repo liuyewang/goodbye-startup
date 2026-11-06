@@ -108,6 +108,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={inter.variable}>
+      <head>
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+      </head>
       <body className="font-sans min-h-screen flex flex-col">
         <script
           type="application/ld+json"
