@@ -254,9 +254,12 @@ npx wrangler pages deploy .vercel/output/static
 ```
 
 ### 9.4 Domain
-- Primary: `goodbye.help`
-- DNS: managed by Cloudflare
-- SSL: Cloudflare auto-cert
+- Primary (canonical): `goodbye.help` — CNAME → `goodbye-startup.pages.dev`, proxied
+- `www.goodbye.help` — 301 → apex via Zone Redirect Rule (`http_request_dynamic_redirect`); DNS CNAME stays proxied, do NOT bind www to Pages
+- `startup.goodbye.help` — 301 → `https://goodbye.help/simulator` via the same Redirect Rule (simulator entry, not a mirrored site). It is intentionally NOT bound as a Pages custom domain — Pages would shadow the redirect rule.
+- `wise.goodbye.help` — separate Lemon Squeezy payment callback (Aliyun ECS), do not touch
+- SSL mode: Full (strict). DNS managed by Cloudflare; auto-cert.
+- Git integration: Pages project is connected to `liuyewang/goodbye-startup`, production branch `main`, build dest `.vercel/output/static`, env `GEMINI_API_KEY`. Direct `wrangler pages deploy` still works and overrides.
 
 ### 9.5 SEO & GEO Conventions
 - Metadata: root `app/layout.tsx` sets metadataBase + default title template + OG/Twitter; each route segment adds its own `layout.tsx` with `title`/`description`/`alternates.canonical`.
