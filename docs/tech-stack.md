@@ -254,10 +254,13 @@ Cloudflare Pages 自动构建
 
 ### 4.3 域名配置
 
-- 主域名：`goodbye.help`
-- www 重定向到根域名
-- HTTPS：Cloudflare 自动证书
-- DNS：Cloudflare 托管
+- 主域名：`goodbye.help`（canonical host）
+- www 重定向到根域名：由 Cloudflare Single Redirects 在边缘做 301，**不是** Pages 侧行为
+- HTTPS：Cloudflare 自动证书；SSL 模式 Full (strict)，最低 TLS 1.2，已开 HSTS
+- DNS：Cloudflare 托管；CAA 已配置，DNSSEC 已在 Cloudflare 侧开启待提交 DS
+- 防踩坑：`www.goodbye.help` **不得**重新绑定为 Pages 自定义域，否则 301 会静默失效
+
+> 全部配置项、变更前后值、官方依据与回滚命令见 [`docs/cloudflare-config-review.md`](./cloudflare-config-review.md)（唯一事实来源，改配置必须同步更新该文件）。
 
 ---
 
