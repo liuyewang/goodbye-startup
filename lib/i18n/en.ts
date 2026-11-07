@@ -265,6 +265,83 @@ export const en = {
       },
     ],
   },
+  blog: {
+    title: "Blog",
+    subtitle: "Hard data about startups, validation, and why most ideas fail before they even start.",
+    posts: {
+      whyFail: {
+        title: "Why 90% of Startups Fail — And What the Other 10% Do Differently",
+        description: "It's not about effort or luck. The data shows exactly where most founders go wrong — and what the successful ones do instead.",
+        intro: "You've heard the statistic: 90% of startups fail. But what does that actually mean? And more importantly, why? If you dig into the data, the failure reasons are surprisingly consistent — and most of them are predictable before you write a single line of code.",
+        section1: {
+          title: "Reason #1: No market need (42%)",
+          body: "The #1 reason startups fail isn't competition or timing or funding. It's that nobody wanted the product. CB Insights analyzed 101 post-mortems and found that 42% of failed startups cited 'no market need' as the cause. That means almost half of founders built something nobody asked for — and spent 6-12 months doing it.",
+        },
+        section2: {
+          title: "Reason #2: Ran out of cash (29%)",
+          body: "The second biggest killer is simple math: burn rate exceeds runway. Most founders underestimate how long it takes to reach product-market fit — and how much it costs to get there. Typical underestimates:",
+          points: [
+            "Customer acquisition cost is 2-5x higher than they planned",
+            "Time to first paying customer is 3-6x longer",
+            "Churn is worse than the optimistic spreadsheet said",
+            "Hiring takes longer and costs more than expected",
+          ],
+        },
+        section3: {
+          title: "Reason #3: Wrong team (23%)",
+          body: "Founders overestimate their ability to do everything alone. By the time they realize they need help, they've already burned through half their runway. The successful 10% either start with a co-founder who fills their gaps, or they know exactly what they don't know — and hire for it early.",
+        },
+        section4: {
+          title: "Reason #4: Got outcompeted (19%)",
+          body: "Most founders think competition is about features. It's not. Competition is about distribution. You can build a better product, but if the incumbent already has 10x your users and 100x your ad budget, you're not winning on merit. The successful 10% pick markets where incumbents are lazy — not where they're strong.",
+        },
+        section5: {
+          title: "What the 10% do differently",
+          body: "They validate first, build second. They spend $50 on a landing page before spending $50,000 on development. They talk to 50 potential customers before writing a single line of code. They know their CAC before they launch their first ad. Most importantly: they test their assumptions in 15 minutes, not 6 months. That's what a startup simulator does.",
+        },
+        cta: {
+          title: "Test your idea before you build it",
+          subtitle: "Run a free 180-day simulation and find out if your idea survives real market data.",
+        },
+      },
+      howMuchMoney: {
+        title: "How Much Money Do You Actually Need to Start a Startup?",
+        description: "The $30k vs $100k debate is missing the point. Here's what the real numbers look like for solo founders in 2026.",
+        intro: "Everyone asks this question. And everyone gets the answer wrong. The truth is: the amount of money you need depends almost entirely on what kind of startup you're building — and what you're willing to do without. Here's the breakdown.",
+        section1: {
+          title: "The $10k bootstrap MVP",
+          body: "If you're a solo developer building a SaaS tool, you can launch for under $10k. This is the 'build in public on weekends' model. You keep your day job, ship a minimal product, and see if anyone pays. Most successful solo founders started here.",
+        },
+        section2: {
+          title: "What you actually spend money on",
+          body: "The biggest costs aren't what you think. Here's where the money actually goes:",
+          items: [
+            { name: "Cloud hosting (first 6 months)", cost: "$200 – $600" },
+            { name: "Domain + email + basic tools", cost: "$100 – $300" },
+            { name: "Ads to test demand", cost: "$1,000 – $5,000" },
+            { name: "Design (if you can't do it yourself)", cost: "$500 – $2,000" },
+            { name: "Your living expenses (if you quit your job)", cost: "$2,000 – $4,000 / month" },
+          ],
+        },
+        section3: {
+          title: "The real question: how much runway do you need?",
+          body: "Don't ask 'how much money do I need'. Ask 'how many months can I survive without revenue?'. The answer should be 12-18 months. Because that's how long it takes most solo founders to reach product-market fit — if they ever do. If you have $30k and burn $2k/month, you have 15 months. That's barely enough.",
+        },
+        section4: {
+          title: "The hidden costs nobody tells you about",
+          body: "The spreadsheet always forgets these: your own time (opportunity cost of not working your day job), slow seasons (revenue isn't linear), technical debt (the MVP you shipped in 2 weeks takes 3 months to fix), and churn (losing 15% of your users every month means you need constant new acquisition).",
+        },
+        section5: {
+          title: "How to calculate your real number",
+          body: "Take your monthly burn rate. Multiply by 18. That's your minimum. Then add 50% buffer for the unexpected. That's your real number. If it scares you — good. That means you're taking it seriously. Now test whether your idea can actually make that money back before you spend it. That's what a startup simulation does.",
+        },
+        cta: {
+          title: "Calculate your runway in 15 minutes",
+          subtitle: "Run a free simulation and see if your idea can survive 180 days of real market data.",
+        },
+      },
+    },
+  },
   guide: {
     benchmarks: {
       title: "Startup Cost Benchmarks You Need to Know",
