@@ -318,6 +318,28 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Myths */}
+      <section className="section-padding bg-white">
+        <div className="container-custom">
+          <div className="max-w-2xl mx-auto text-center mb-16">
+            <h2 className="heading-lg mb-4 text-balance">{t.myths.title}</h2>
+            <p className="subtitle text-balance">{t.myths.subtitle}</p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            {t.myths.items.map((item, index) => (
+              <div key={index} className="card-hover p-6 lg:p-8">
+                <div className="text-sm font-semibold text-accent-600 mb-2">
+                  Myth: {item.myth}
+                </div>
+                <p className="text-dark-500 leading-relaxed text-sm">
+                  {item.truth}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="section-padding relative overflow-hidden">
         <div className="absolute inset-0 gradient-bg" />

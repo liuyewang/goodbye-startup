@@ -265,6 +265,43 @@ export const en = {
       },
     ],
   },
+  guide: {
+    validation: {
+      title: "How to Validate a Startup Idea Before You Build Anything",
+      subtitle: "Most founders skip this step. Here's why it's the most important thing you'll do.",
+      section1: {
+        title: "Why validation beats building",
+        body: "The most expensive thing you'll ever build is a product nobody wants. Average time to build an MVP: 3-6 months. Average cost: $15,000-$50,000. Average success rate: 10%. That means 9 out of 10 founders waste months of their lives and tens of thousands of dollars on something that could have been tested for free in an afternoon.",
+      },
+      section2: {
+        title: "The 5-step validation framework",
+        body: "Before writing a single line of code, ask these questions:",
+        points: [
+          "Who exactly is the customer? Not 'everyone' — name a specific person with a specific problem.",
+          "How are they solving this problem today? If the answer is 'they aren't', that's not a win — it means the problem isn't painful enough.",
+          "How much would they pay? Don't ask them — show them pricing and see if they walk away.",
+          "How will you reach them? If your answer is 'social media', you haven't thought about distribution.",
+          "Can you explain it in one sentence? If it takes more than 30 seconds, your positioning is confused.",
+        ],
+      },
+      section3: {
+        title: "The landing page test",
+        body: "The cheapest validation is a $50 landing page that says what you'll build, how much it costs, and an email signup form. If you can't get 50 sign-ups in 2 weeks with $100 of ads, your idea isn't resonating. This costs you $150 and 2 weeks — not $50,000 and 6 months.",
+      },
+      section4: {
+        title: "The simulator advantage",
+        body: "A landing page test tells you if people are curious. It doesn't tell you if they'll pay, how long they'll stay, or what your real acquisition cost is. A startup simulator runs 180 days of market dynamics in 15 minutes — conversion rates, churn, CAC, burn — so you can see the full picture before you spend real money.",
+      },
+      section5: {
+        title: "What to do next",
+        body: "Pick your shakiest assumption. Is it that people will pay? That you can acquire customers cheaply? That churn won't kill you? Test that one thing first. Everything else is noise until that assumption is proven.",
+      },
+      cta: {
+        title: "Test your idea in 15 minutes",
+        subtitle: "Run a free 180-day simulation and see if your idea survives real market data.",
+      },
+    },
+  },
   guides: {
     title: "Guides & Resources",
     subtitle: "Everything you need to know before you test your startup idea.",
@@ -318,6 +355,44 @@ export const en = {
       {
         q: "How long does one simulation take?",
         a: "About 15–30 minutes of conversation, covering 180 simulated days across five phases and key decision points.",
+      },
+      {
+        q: "Is the AI mentor accurate?",
+        a: "It's not a crystal ball — it's a structured second opinion. The numbers come from published industry ranges, and the conclusions are deliberately pessimistic to surface failure modes before you spend real money.",
+      },
+      {
+        q: "Can I run multiple simulations to test different ideas?",
+        a: "Yes — but the free tier gives you one run. Upgrade to Pro for unlimited simulations so you can compare pricing, positioning, and go-to-market strategies side by side.",
+      },
+      {
+        q: "What happens if the simulation says my idea will fail?",
+        a: "That's the best outcome. You just saved $30,000 and 14 months of your life. The mentor will tell you exactly which part of the idea is weakest — market size, pricing, acquisition cost, or churn — so you can iterate before building anything.",
+      },
+    ],
+  },
+  myths: {
+    title: "5 myths that kill startups",
+    subtitle: "Every founder believes at least one of these. The simulator tests whether your idea survives them.",
+    items: [
+      {
+        myth: "If I build it, they will come",
+        truth: "Cold-start traffic doesn't happen by magic. Typical conversion from a landing page visit to sign-up is 1–3%. You need 10,000 visitors to get 100 sign-ups — and 1–3 paying customers from that.",
+      },
+      {
+        myth: "My friends like it, so customers will pay",
+        truth: "Friends are biased. Early-stage products see 10–20% monthly churn. If your retention isn't better than that, your product isn't solving a real problem.",
+      },
+      {
+        myth: "I can bootstrap forever",
+        truth: "Average runway for a solo founder is 14 months. Burn rate includes hosting, ads, and opportunity cost — not just your salary. Most founders run out of cash before product-market fit.",
+      },
+      {
+        myth: "A great product will win",
+        truth: "Features get copied in 3 weeks. The real moat is distribution — how you get in front of the right people. Most good products fail because nobody hears about them.",
+      },
+      {
+        myth: "I'll know it when I see it",
+        truth: "Founders say they'll quit when they know it's not working. The data says most founders keep going 6+ months after the numbers say they should stop. The simulator forces the reality check earlier.",
       },
     ],
   },

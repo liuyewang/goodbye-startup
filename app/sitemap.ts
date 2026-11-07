@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const pages = [
     "",
     "/guides",
+    "/guides/startup-idea-validation",
     "/how-it-works",
     "/pricing",
     "/simulator",
