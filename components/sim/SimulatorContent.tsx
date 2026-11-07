@@ -72,14 +72,14 @@ function SimulatorContent() {
 
       // Build message history
       const history = state.messages.map((msg) => ({
-        role: msg.role === "user" ? "user" : "model",
+        role: msg.role === "user" ? "user" : "assistant",
         content: msg.content,
       }));
 
       // Add the new user message
       history.push({ role: "user", content: message });
 
-      const response = await fetch("/api/gemini", {
+      const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
