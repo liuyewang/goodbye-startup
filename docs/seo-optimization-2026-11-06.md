@@ -99,3 +99,19 @@ CLOUDFLARE_API_TOKEN=$(cat ~/.config/cloudflare/goodbye.help.token) \
 
 **结论：应放弃。** 触发条件（满足任一再重开）：支付真实可用、出现中文付费用户、或明确要做中文内容站。届时按「路由级 i18n + hreflang + x-default」一次性重构，不零散加页面。
 
+## 8. 交叉会话复核：/guides 的自相矛盾（已修）
+
+复检线上 sitemap 时发现条目变成 7 条、多出 `/guides`（另一个会话在 `3917661 feat: SEO content depth optimization` 中新增并推到 GitHub，由 Git 集成自动部署）。该页在 `app/guides/page.tsx` 里没有任何 metadata，于是继承了根 layout 的默认 title 与 `alternates.canonical: "/"`：
+
+- sitemap 声明「请索引 `/guides`」
+- 页面自己声明「我是首页的重复版本」（canonical 指 `/`）
+
+这与前面 `/simulator` 的坑是同一个模式，属于新增路由的常见遗漏。Google 收到这种信号会把它判为重复页剔除。
+
+修复（提交 `211614a`）：新增 `app/guides/layout.tsx`，写入独立 title `Startup Guides — Read Before You Build`（56 字符）、独立 description、`alternates: { canonical: "/guides" }`；同时补一段 i18n 导语（`guides.intro`，中英双份），该页字数 184 → 220。
+
+**给其他会话的规则**：新增任何路由必须在同目录加 `layout.tsx` 并写 `title` / `description` / `alternates.canonical`，否则会静默继承根 canonical，和 sitemap 打架。
+
+修复后七页终检（Googlebot UA）：全部 200 / `index, follow` / canonical 自指 / 均在 sitemap；title 32–59；字数 993 / 220 / 737 / 443 / 495 / 271 / 243。
+
+
