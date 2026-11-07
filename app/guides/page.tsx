@@ -46,6 +46,7 @@ export default function GuidesPage() {
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="heading-xl mb-6 text-balance">{t.guides.title}</h1>
             <p className="subtitle text-balance">{t.guides.subtitle}</p>
+            <p className="mt-6 text-dark-500 leading-relaxed text-balance">{t.guides.intro}</p>
           </div>
         </div>
       </section>

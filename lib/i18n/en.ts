@@ -268,6 +268,8 @@ export const en = {
   guides: {
     title: "Guides & Resources",
     subtitle: "Everything you need to know before you test your startup idea.",
+    intro:
+      "These four pages go deeper than the landing page: what the model actually computes, how the mentor reasons, what you pay for, and why this exists. If you only read one, start with the simulation walkthrough.",
     howItWorks: {
       title: "How the 180-Day Simulation Works",
       description: "A deep dive into the five phases, the data benchmarks behind every number, and what actually gets computed when you make a decision.",
