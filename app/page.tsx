@@ -377,10 +377,10 @@ export default function Home() {
         <div className="container-custom relative">
           <div className="max-w-3xl mx-auto text-center text-white">
             <h2 className="heading-lg mb-6 text-balance">
-              Ready to test your idea?
+              Ready to test your idea in 15 minutes?
             </h2>
             <p className="text-lg text-white/80 mb-10 max-w-xl mx-auto text-balance">
-              Stop guessing. Start simulating. Find out if your startup idea has what it takes — before you quit your job.
+              Don't wait 180 days to find out if your startup fails. Simulate the whole journey in one conversation — for free.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link

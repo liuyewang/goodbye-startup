@@ -24,12 +24,12 @@ export const en = {
     badge: "AI-Powered Startup Simulator",
     title: "Say goodbye to your 9-5.",
     titleHighlight: "Start your startup journey.",
-    subtitle: "Test your startup idea in 180 days with a data-driven AI mentor. No risk, no wasted savings — just real market reality.",
-    ctaPrimary: "Start Your Simulation — It's Free",
+    subtitle: "Test your startup idea in 15 minutes. The AI compresses 180 days of market reality into one conversation — so you find out if it works before you quit your job.",
+    ctaPrimary: "Simulate 180 Days in 15 Min — Free",
     ctaSecondary: "How It Works",
     stats: {
       days: "180 Days",
-      daysDesc: "Full simulation cycle",
+      daysDesc: "compressed into 15 min",
       accuracy: "Realistic Data",
       accuracyDesc: "Based on industry benchmarks",
       free: "1 Free Run",
@@ -629,7 +629,7 @@ export const en = {
       send: "Send",
     },
     thinking: "AI is thinking...",
-    welcome: "Welcome to the Startup Pressure Test. In the next 180 days, we'll put your idea through the wringer of real market data. Forget the success stories — prepare for the brutal reality. Now, tell me about your startup idea.",
+    welcome: "Welcome to the Startup Pressure Test. In the next 15 minutes, we'll compress 180 days of market reality into one conversation. Forget the success stories — prepare for the brutal truth. Now, tell me about your startup idea.",
     guide: {
       heading: "How the 180-day startup simulation works",
       intro:

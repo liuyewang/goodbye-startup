@@ -26,12 +26,12 @@ export const zh: Translations = {
     badge: "AI 驱动的创业模拟器",
     title: "告别朝九晚五，",
     titleHighlight: "开启你的创业之旅。",
-    subtitle: "用数据驱动的 AI 导师，在 180 天内测试你的创业想法。没有风险，不烧积蓄——只有真实的市场现实。",
-    ctaPrimary: "开始你的模拟 — 完全免费",
+    subtitle: "15 分钟测试你的创业想法。AI 把 180 天的市场现实压缩成一次对话——让你在辞职之前就知道它行不行。",
+    ctaPrimary: "15 分钟模拟 180 天 — 免费",
     ctaSecondary: "了解工作原理",
     stats: {
       days: "180 天",
-      daysDesc: "完整模拟周期",
+      daysDesc: "压缩成 15 分钟",
       accuracy: "真实数据",
       accuracyDesc: "基于行业基准数据",
       free: "1 次免费",
@@ -630,7 +630,7 @@ export const zh: Translations = {
       send: "发送",
     },
     thinking: "AI 正在思考中...",
-    welcome: "欢迎来到创业压力测试。在接下来的 180 天里，我们将用真实的市场数据来检验你的想法。忘掉那些成功故事——准备好面对残酷的现实吧。现在，告诉我你的创业想法。",
+    welcome: "欢迎来到创业压力测试。在接下来的 15 分钟里，我们会把 180 天的市场现实压缩进一次对话。忘掉那些成功故事——准备好面对残酷的真相吧。现在，告诉我你的创业想法。",
     guide: {
       heading: "180 天创业模拟是怎么运作的",
       intro:
