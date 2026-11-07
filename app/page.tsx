@@ -412,7 +412,7 @@ export default function Home() {
               Ready to test your idea in 15 minutes?
             </h2>
             <p className="text-lg text-white/80 mb-10 max-w-xl mx-auto text-balance">
-              Don't wait 180 days to find out if your startup fails. Simulate the whole journey in one conversation — for free.
+              Don't wait 180 days to find out if your startup fails. Simulate the whole journey in one simulation — for free.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link

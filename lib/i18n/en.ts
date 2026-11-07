@@ -24,7 +24,7 @@ export const en = {
     badge: "AI-Powered Startup Simulator",
     title: "Say goodbye to your 9-5.",
     titleHighlight: "Start your startup journey.",
-    subtitle: "Test your startup idea in 15 minutes. The AI compresses 180 days of market reality into one conversation — so you find out if it works before you quit your job.",
+    subtitle: "Test your startup idea in 15 minutes. The AI compresses 180 days of market reality into one simulation — so you find out if it works before you quit your job.",
     ctaPrimary: "Simulate 180 Days in 15 Min — Free",
     ctaSecondary: "How It Works",
     stats: {
@@ -611,7 +611,7 @@ export const en = {
       },
       {
         q: "How long does one simulation take?",
-        a: "About 15–30 minutes of conversation, covering 180 simulated days across five phases and key decision points.",
+        a: "About 15–30 minutes of simulation, covering 180 simulated days across five phases and key decision points.",
       },
       {
         q: "Is the AI mentor accurate?",
@@ -698,7 +698,7 @@ export const en = {
       send: "Send",
     },
     thinking: "AI is thinking...",
-    welcome: "Welcome to the Startup Pressure Test. In the next 15 minutes, we'll compress 180 days of market reality into one conversation. Forget the success stories — prepare for the brutal truth. Now, tell me about your startup idea.",
+    welcome: "Welcome to the Startup Pressure Test. In the next 15 minutes, we'll compress 180 days of market reality into one simulation. Forget the success stories — prepare for the brutal truth. Now, tell me about your startup idea.",
     guide: {
       heading: "How the 180-day startup simulation works",
       intro:
