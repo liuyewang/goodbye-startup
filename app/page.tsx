@@ -340,6 +340,31 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Examples */}
+      <section className="section-padding bg-dark-50">
+        <div className="container-custom">
+          <div className="max-w-2xl mx-auto text-center mb-16">
+            <h2 className="heading-lg mb-4 text-balance">{t.examples.title}</h2>
+            <p className="subtitle text-balance">{t.examples.subtitle}</p>
+          </div>
+          <div className="grid gap-6 max-w-4xl mx-auto">
+            {t.examples.items.map((item, index) => (
+              <div key={index} className="card-hover p-6 lg:p-8">
+                <h3 className="text-lg font-semibold text-dark-900 mb-2">
+                  {item.idea}
+                </h3>
+                <div className="inline-block px-3 py-1 rounded-full bg-primary-100 text-primary-700 text-sm font-medium mb-4">
+                  {item.verdict}
+                </div>
+                <p className="text-dark-500 leading-relaxed text-sm">
+                  {item.details}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="section-padding relative overflow-hidden">
         <div className="absolute inset-0 gradient-bg" />

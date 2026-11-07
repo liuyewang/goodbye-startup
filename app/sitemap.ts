@@ -13,6 +13,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "",
     "/guides",
     "/guides/startup-idea-validation",
+    "/guides/180-day-simulation-explained",
+    "/guides/startup-cost-benchmarks",
     "/how-it-works",
     "/pricing",
     "/simulator",

@@ -266,6 +266,117 @@ export const en = {
     ],
   },
   guide: {
+    benchmarks: {
+      title: "Startup Cost Benchmarks You Need to Know",
+      subtitle: "The real numbers behind early-stage startups — not the optimistic ones.",
+      intro: "Every founder thinks their product will beat the averages. The problem is: most don't. These are the published ranges for early-stage consumer and SaaS products. If your plan assumes better than median, you're betting on luck, not math.",
+      items: [
+        {
+          metric: "Cold-start CTR (ads)",
+          range: "0.5% – 2%",
+          why: "If you're spending $500 on ads, expect 5-20 clicks per 1000 impressions. Most founders overestimate this by 5-10x.",
+        },
+        {
+          metric: "Website → signup conversion",
+          range: "1% – 3%",
+          why: "For every 100 visitors, 1-3 will sign up for your waitlist. Most founders assume 10%.",
+        },
+        {
+          metric: "Free → paid conversion",
+          range: "0.5% – 2%",
+          why: "Out of every 100 free users, 0.5-2 will pay. That means you need 500-2000 free users to get 10 paying customers.",
+        },
+        {
+          metric: "Monthly churn (early product)",
+          range: "10% – 20%",
+          why: "If 15% of your users leave every month, your average subscriber lifetime is ~6.7 months. Your LTV is much lower than you think.",
+        },
+        {
+          metric: "Customer acquisition cost (B2C)",
+          range: "$5 – $50",
+          why: "Getting one user to sign up costs $5-$50. Getting one to pay costs 10x more. If your price is $10/month and CAC is $50, you need 5 months just to break even.",
+        },
+        {
+          metric: "Average revenue per user / month",
+          range: "$5 – $30",
+          why: "Most consumer products make $5-$15 per user per month. SaaS is higher, but churn is worse. Be honest about which category you're in.",
+        },
+        {
+          metric: "Average runway (solo founder)",
+          range: "12 – 18 months",
+          why: "With $30k savings and $2k/month burn, you have 15 months. Most founders run out of cash 2-3 months before product-market fit.",
+        },
+      ],
+      howToUse: {
+        title: "How to use these benchmarks",
+        body: "Don't just read these numbers — stress-test your plan against them. If your financial model assumes better than the median, ask yourself: why will you beat the odds?",
+        tips: [
+          "If your conversion rate assumption is above 3%, you're probably wrong.",
+          "If your CAC is below $5, you're probably not counting all the time you spend on distribution.",
+          "If your churn is below 5% monthly, that's a mature product number, not an early-stage one.",
+          "Run the numbers with pessimistic ranges, not optimistic ones. That's what the simulator does.",
+        ],
+      },
+      cta: {
+        title: "Test your plan against real benchmarks",
+        subtitle: "The simulator uses these exact ranges. See if your idea survives.",
+      },
+    },
+    simulation: {
+      title: "The 180-Day Startup Simulation Explained",
+      subtitle: "What happens in each phase, what numbers you'll see, and what decisions you'll make.",
+      phases: [
+        {
+          name: "Prologue (Day 0)",
+          description: "You describe your idea in plain language. The AI mentor asks follow-up questions to pin down your target customer, price point, and starting budget. This sets the baseline assumptions for the entire simulation.",
+          outputs: [
+            "A baseline financial model (cash, burn rate, runway)",
+            "Your target customer profile",
+            "Your price point and revenue model",
+          ],
+        },
+        {
+          name: "Market Reality Check (Days 1-5)",
+          description: "The mentor pulls industry benchmarks for your category. You'll see your TAM shrink from 'everyone' to the actual number of people who might pay you. This phase is deliberately uncomfortable — it's supposed to be.",
+          outputs: [
+            "Your real TAM, SAM, and SOM",
+            "Competitive landscape analysis",
+            "Whether your price point is realistic",
+          ],
+        },
+        {
+          name: "Launch Phase (Days 60-90)",
+          description: "You make your first real decisions: what to build first, where to launch, how much to spend on ads. The mentor simulates your first 30 days of traffic with realistic conversion rates.",
+          outputs: [
+            "Cold-start traffic numbers (CTR, conversion rates)",
+            "Your first 10-100 users",
+            "Customer acquisition cost (CAC)",
+          ],
+        },
+        {
+          name: "Growth Phase (Days 91-180)",
+          description: "Now you have users. The hard part starts: retention, churn, hiring, ad spend. Every decision moves your runway number up or down. By Day 180, you'll know whether your idea can survive.",
+          outputs: [
+            "Monthly churn and LTV",
+            "Cash runway after every decision",
+            "Hiring vs. solo tradeoffs",
+          ],
+        },
+        {
+          name: "Judgment Day (Day 180)",
+          description: "The final verdict: viable, marginal, or time to say goodbye. It's not a prediction — it's a data-backed assessment of whether your idea, executed the way you executed it, would have survived 180 days in the real market.",
+          outputs: [
+            "Final financial summary",
+            "What worked and what didn't",
+            "Specific recommendations for iteration",
+          ],
+        },
+      ],
+      cta: {
+        title: "Ready to run your own simulation?",
+        subtitle: "15 minutes. 180 simulated days. Free to try.",
+      },
+    },
     validation: {
       title: "How to Validate a Startup Idea Before You Build Anything",
       subtitle: "Most founders skip this step. Here's why it's the most important thing you'll do.",
@@ -367,6 +478,27 @@ export const en = {
       {
         q: "What happens if the simulation says my idea will fail?",
         a: "That's the best outcome. You just saved $30,000 and 14 months of your life. The mentor will tell you exactly which part of the idea is weakest — market size, pricing, acquisition cost, or churn — so you can iterate before building anything.",
+      },
+    ],
+  },
+  examples: {
+    title: "What does a simulation actually look like?",
+    subtitle: "Here's what happens when you run a typical idea through the 180-day pressure test.",
+    items: [
+      {
+        idea: "Idea: A weather app for drone pilots",
+        verdict: "Marginal — time to pivot to B2B",
+        details: "TAM: ~140,000 US drone pilots. CAC: $25 per sign-up. Conversion: 1.2%. After 180 days: 240 users, 4 paying customers, $120 MRR. Burn: $2,200/mo. Runway left: 11 months. Verdict: consumer freemium won't work. Pivot to selling to inspection companies at $499/seat.",
+      },
+      {
+        idea: "Idea: A productivity tool for remote teams",
+        verdict: "Viable — but tight margin",
+        details: "TAM: ~500,000 remote team leads. CAC: $45 per sign-up. Conversion: 2.1%. After 180 days: 1,800 users, 36 paying teams, $1,440 MRR. Burn: $3,000/mo. Runway left: 9 months. Verdict: works if you can keep churn below 8% monthly. Anything higher and you're underwater.",
+      },
+      {
+        idea: "Idea: A meal-kit delivery service",
+        verdict: "Dead on arrival",
+        details: "TAM: large, but CAC: $80 per customer. Conversion: 0.8%. After 180 days: 120 users, 12 paying customers, $480 MRR. Burn: $8,000/mo (ingredients + delivery). Runway left: 4 months. Verdict: unit economics don't work. Grocery delivery is a scale game — solo founders can't win.",
       },
     ],
   },
