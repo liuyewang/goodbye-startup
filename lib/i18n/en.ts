@@ -409,41 +409,6 @@ export const en = {
           subtitle: "Run a free simulation and see if your acquisition math actually works.",
         },
       },
-        title: "How Much Money Do You Actually Need to Start a Startup?",
-        description: "The $30k vs $100k debate is missing the point. Here's what the real numbers look like for solo founders in 2026.",
-        intro: "Everyone asks this question. And everyone gets the answer wrong. The truth is: the amount of money you need depends almost entirely on what kind of startup you're building — and what you're willing to do without. Here's the breakdown.",
-        section1: {
-          title: "The $10k bootstrap MVP",
-          body: "If you're a solo developer building a SaaS tool, you can launch for under $10k. This is the 'build in public on weekends' model. You keep your day job, ship a minimal product, and see if anyone pays. Most successful solo founders started here.",
-        },
-        section2: {
-          title: "What you actually spend money on",
-          body: "The biggest costs aren't what you think. Here's where the money actually goes:",
-          items: [
-            { name: "Cloud hosting (first 6 months)", cost: "$200 – $600" },
-            { name: "Domain + email + basic tools", cost: "$100 – $300" },
-            { name: "Ads to test demand", cost: "$1,000 – $5,000" },
-            { name: "Design (if you can't do it yourself)", cost: "$500 – $2,000" },
-            { name: "Your living expenses (if you quit your job)", cost: "$2,000 – $4,000 / month" },
-          ],
-        },
-        section3: {
-          title: "The real question: how much runway do you need?",
-          body: "Don't ask 'how much money do I need'. Ask 'how many months can I survive without revenue?'. The answer should be 12-18 months. Because that's how long it takes most solo founders to reach product-market fit — if they ever do. If you have $30k and burn $2k/month, you have 15 months. That's barely enough.",
-        },
-        section4: {
-          title: "The hidden costs nobody tells you about",
-          body: "The spreadsheet always forgets these: your own time (opportunity cost of not working your day job), slow seasons (revenue isn't linear), technical debt (the MVP you shipped in 2 weeks takes 3 months to fix), and churn (losing 15% of your users every month means you need constant new acquisition).",
-        },
-        section5: {
-          title: "How to calculate your real number",
-          body: "Take your monthly burn rate. Multiply by 18. That's your minimum. Then add 50% buffer for the unexpected. That's your real number. If it scares you — good. That means you're taking it seriously. Now test whether your idea can actually make that money back before you spend it. That's what a startup simulation does.",
-        },
-        cta: {
-          title: "Calculate your runway in 15 minutes",
-          subtitle: "Run a free simulation and see if your idea can survive 180 days of real market data.",
-        },
-      },
     },
   },
   guide: {
