@@ -85,7 +85,8 @@ export const en = {
   },
   howItWorks: {
     title: "How It Works",
-    subtitle: "Five phases. 180 days. One brutal truth about your startup idea.",
+    subtitle: "Five phases. 180 days of simulated market data. One brutal truth about your startup idea — in just 15-30 minutes of your real time.",
+    timeNote: "⚠️ All 'days' below are simulated. The whole process takes 15-30 minutes, not 180 days. The AI compresses 6 months of market reality into one conversation.",
     steps: [
       {
         number: "01",
@@ -471,6 +472,7 @@ export const en = {
     simulation: {
       title: "The 180-Day Startup Simulation Explained",
       subtitle: "What happens in each phase, what numbers you'll see, and what decisions you'll make.",
+      timeNote: "Note: All 'days' below are simulated. The entire simulation takes 15-30 minutes of your real time. The AI compresses 6 months of market reality into one conversation.",
       phases: [
         {
           name: "Prologue (Day 0)",
@@ -702,7 +704,7 @@ export const en = {
     guide: {
       heading: "How the 180-day startup simulation works",
       intro:
-        "This is a pressure test, not a pitch deck. You describe an idea, make one decision at a time, and watch a model of your market respond. Cash, runway, users, churn and morale move together, so a win in one area usually costs you in another.",
+        "This is a pressure test, not a pitch deck. You describe an idea, make one decision at a time, and watch a model of your market respond. Cash, runway, users, churn and morale move together, so a win in one area usually costs you in another. The whole 180-day simulation takes just 15-30 minutes of your real time.",
       inputTitle: "What you bring on Day 1",
       inputItems: [
         "Your idea in plain language — no business plan required",

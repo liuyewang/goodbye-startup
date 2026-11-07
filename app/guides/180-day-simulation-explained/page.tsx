@@ -22,6 +22,9 @@ export default function GuideSimulationPage() {
             <p className="subtitle text-balance">
               {t.guide.simulation.subtitle}
             </p>
+            <div className="mt-4 inline-block bg-amber-50 border border-amber-200 rounded-lg px-4 py-2 text-sm text-amber-800">
+              {t.guide.simulation.timeNote}
+            </div>
           </div>
         </div>
       </section>

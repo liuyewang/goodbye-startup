@@ -19,6 +19,9 @@ export default function HowItWorksPage() {
             <p className="subtitle text-balance">
               {t.howItWorks.subtitle}
             </p>
+            <div className="mt-6 inline-block bg-amber-50 border border-amber-200 rounded-lg px-4 py-2 text-sm text-amber-800">
+              {t.howItWorks.timeNote}
+            </div>
           </div>
         </div>
       </section>
