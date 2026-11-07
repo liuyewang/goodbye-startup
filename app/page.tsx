@@ -158,6 +158,9 @@ export default function Home() {
           <div className="max-w-2xl mx-auto text-center mb-16">
             <h2 className="heading-lg mb-4 text-balance">{t.howItWorks.title}</h2>
             <p className="subtitle text-balance">{t.howItWorks.subtitle}</p>
+            <div className="mt-4 inline-block bg-amber-50 border border-amber-200 rounded-lg px-4 py-2 text-sm text-amber-800">
+              {t.howItWorks.timeNote}
+            </div>
           </div>
 
           <div className="relative">
