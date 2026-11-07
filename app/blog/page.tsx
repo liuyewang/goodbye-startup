@@ -15,9 +15,23 @@ export default function BlogPage() {
       date: "Nov 2026",
     },
     {
+      href: "/blog/customer-acquisition-cost-benchmarks",
+      title: t.blog.posts.cac.title,
+      description: t.blog.posts.cac.description,
+      readTime: "6 min read",
+      date: "Nov 2026",
+    },
+    {
       href: "/blog/how-much-money-do-you-need-to-start-a-startup",
       title: t.blog.posts.howMuchMoney.title,
       description: t.blog.posts.howMuchMoney.description,
+      readTime: "5 min read",
+      date: "Nov 2026",
+    },
+    {
+      href: "/blog/churn-rate-how-to-reduce",
+      title: t.blog.posts.churn.title,
+      description: t.blog.posts.churn.description,
       readTime: "5 min read",
       date: "Nov 2026",
     },

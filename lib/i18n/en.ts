@@ -340,6 +340,110 @@ export const en = {
           subtitle: "Run a free simulation and see if your idea can survive 180 days of real market data.",
         },
       },
+      churn: {
+        title: "How to Reduce Churn Rate: 5 Things That Actually Work",
+        description: "Churn kills more startups than competition. Here are the real benchmarks and what actually moves the needle.",
+        intro: "You spend $50 to get a customer, they stay for 2 months, then they leave. That's the silent killer. Most founders obsess over acquisition and ignore churn — but churn is what determines whether you're building a business or a leaky bucket. Here's what actually works.",
+        section1: {
+          title: "What's a 'good' churn rate, anyway?",
+          body: "For B2C SaaS, 3-5% monthly churn is typical for early-stage products. Anything above 7% monthly means you're losing more customers than you can replace. At 10% monthly churn, your entire customer base turns over every 10 months — you're running on a treadmill. The best products get it under 2%.",
+        },
+        section2: {
+          title: "5 things that actually reduce churn",
+          body: "Not the generic 'improve onboarding' advice. These are the specific levers that move the number:",
+          tips: [
+            "The first 72 hours matter more than anything. If a user doesn't experience value in their first session, they're gone forever. Design for the 'aha moment' in the first 5 minutes.",
+            "Send a 30-day check-in email. Just one. Ask 'is this working for you?' You'll catch half the churn before it happens.",
+            "Annual plans. 20% discount for annual prepayment cuts churn by 50% — because people don't cancel annual subscriptions.",
+            "Reduce the number of features. Every extra feature adds cognitive load. Fewer features = more focused users = higher retention.",
+            "Talk to 5 churned users every month. You'll learn more in 5 interviews than from any churn analysis dashboard.",
+          ],
+        },
+        section3: {
+          title: "The hidden cost of ignoring churn",
+          body: "If you have 100 users and 5% monthly churn, you lose 5 users per month. You need 5 new users just to stay flat. At 10% churn, you need 10 new users per month. At that rate, acquisition costs eat up all your revenue. The math only works when churn is below 3%.",
+        },
+        section4: {
+          title: "Test your churn assumption before you launch",
+          body: "Most founders build an optimistic spreadsheet that assumes 2% monthly churn. The reality is usually 5-7%. That difference means your business model works or it doesn't. A startup simulator uses realistic churn benchmarks — not your best-case guess.",
+        },
+        cta: {
+          title: "Test your churn math in 15 minutes",
+          subtitle: "Run a free simulation and see if your retention assumptions actually hold up.",
+        },
+      },
+      cac: {
+        title: "Customer Acquisition Cost Benchmarks by Channel (2026)",
+        description: "How much does it actually cost to get a paying customer? The numbers are very different from what founders expect.",
+        intro: "CAC is the single most important number for early-stage startups. Get it right and you're building a business. Get it wrong and you're just buying users. Here's what the real numbers look like by channel — and how to calculate your break-even.",
+        section1: {
+          title: "Why CAC kills 29% of startups",
+          body: "Most founders underestimate CAC by 3-5x. They look at a $5 CPC and think 'that's cheap'. They forget that 1% of visitors convert to sign-ups, and only 1-2% of sign-ups convert to paying customers. That $5 click becomes a $250-$500 paying customer. If your product makes $10/month, you need 25-50 months just to break even.",
+        },
+        section2: {
+          title: "Real CAC benchmarks by channel",
+          body: "These are published ranges for early-stage B2C and SaaS products:",
+          channels: [
+            { name: "Google Ads (search)", cost: "$50 – $200" },
+            { name: "Facebook/Instagram ads", cost: "$20 – $80" },
+            { name: "TikTok ads", cost: "$10 – $40" },
+            { name: "Content marketing (SEO)", cost: "$5 – $20 (time cost)" },
+            { name: "Product Hunt launch", cost: "$0 – $50 (one-time)" },
+            { name: "Word-of-mouth / referrals", cost: "$0 – $5" },
+          ],
+        },
+        section3: {
+          title: "The LTV:CAC ratio that matters",
+          body: "The golden rule: LTV should be 3x your CAC. If a customer stays for 6 months and pays $10/month, their LTV is $60. That means your CAC needs to be under $20. Anything higher and you're losing money on every customer you acquire.",
+        },
+        section4: {
+          title: "How to reduce CAC without killing growth",
+          body: "The fastest way to reduce CAC is not to spend less on ads — it's to improve conversion. Going from 1% to 3% conversion cuts your CAC by 2/3. The second fastest: build something worth sharing so word-of-mouth starts contributing. Most founders never test either of these before scaling ads.",
+        },
+        section5: {
+          title: "Calculate your real CAC before you spend a dollar",
+          body: "Take your planned ad spend. Divide by your expected conversion rate. That's your CAC. Then multiply by 3 to see if your LTV can handle it. If it doesn't fit, you have two options: raise your prices, or improve your conversion rate. The simulator does this math for you — with realistic benchmarks, not optimistic guesses.",
+        },
+        cta: {
+          title: "Calculate your real CAC in 15 minutes",
+          subtitle: "Run a free simulation and see if your acquisition math actually works.",
+        },
+      },
+        title: "How Much Money Do You Actually Need to Start a Startup?",
+        description: "The $30k vs $100k debate is missing the point. Here's what the real numbers look like for solo founders in 2026.",
+        intro: "Everyone asks this question. And everyone gets the answer wrong. The truth is: the amount of money you need depends almost entirely on what kind of startup you're building — and what you're willing to do without. Here's the breakdown.",
+        section1: {
+          title: "The $10k bootstrap MVP",
+          body: "If you're a solo developer building a SaaS tool, you can launch for under $10k. This is the 'build in public on weekends' model. You keep your day job, ship a minimal product, and see if anyone pays. Most successful solo founders started here.",
+        },
+        section2: {
+          title: "What you actually spend money on",
+          body: "The biggest costs aren't what you think. Here's where the money actually goes:",
+          items: [
+            { name: "Cloud hosting (first 6 months)", cost: "$200 – $600" },
+            { name: "Domain + email + basic tools", cost: "$100 – $300" },
+            { name: "Ads to test demand", cost: "$1,000 – $5,000" },
+            { name: "Design (if you can't do it yourself)", cost: "$500 – $2,000" },
+            { name: "Your living expenses (if you quit your job)", cost: "$2,000 – $4,000 / month" },
+          ],
+        },
+        section3: {
+          title: "The real question: how much runway do you need?",
+          body: "Don't ask 'how much money do I need'. Ask 'how many months can I survive without revenue?'. The answer should be 12-18 months. Because that's how long it takes most solo founders to reach product-market fit — if they ever do. If you have $30k and burn $2k/month, you have 15 months. That's barely enough.",
+        },
+        section4: {
+          title: "The hidden costs nobody tells you about",
+          body: "The spreadsheet always forgets these: your own time (opportunity cost of not working your day job), slow seasons (revenue isn't linear), technical debt (the MVP you shipped in 2 weeks takes 3 months to fix), and churn (losing 15% of your users every month means you need constant new acquisition).",
+        },
+        section5: {
+          title: "How to calculate your real number",
+          body: "Take your monthly burn rate. Multiply by 18. That's your minimum. Then add 50% buffer for the unexpected. That's your real number. If it scares you — good. That means you're taking it seriously. Now test whether your idea can actually make that money back before you spend it. That's what a startup simulation does.",
+        },
+        cta: {
+          title: "Calculate your runway in 15 minutes",
+          subtitle: "Run a free simulation and see if your idea can survive 180 days of real market data.",
+        },
+      },
     },
   },
   guide: {

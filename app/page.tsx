@@ -365,6 +365,38 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Latest Articles */}
+      <section className="section-padding bg-dark-50">
+        <div className="container-custom">
+          <div className="max-w-2xl mx-auto text-center mb-12">
+            <h2 className="heading-lg mb-4">Latest Articles</h2>
+            <p className="subtitle">Hard data about startups, validation, and why most ideas fail before they start.</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <Link href="/blog/why-90-percent-of-startups-fail" className="card-hover p-6 block group">
+              <div className="text-sm text-dark-400 mb-2">6 min read</div>
+              <h3 className="text-lg font-semibold text-dark-900 mb-2 group-hover:text-primary-600 transition-colors">Why 90% of Startups Fail</h3>
+              <p className="text-dark-500 text-sm">The data shows exactly where most founders go wrong.</p>
+            </Link>
+            <Link href="/blog/customer-acquisition-cost-benchmarks" className="card-hover p-6 block group">
+              <div className="text-sm text-dark-400 mb-2">6 min read</div>
+              <h3 className="text-lg font-semibold text-dark-900 mb-2 group-hover:text-primary-600 transition-colors">CAC Benchmarks by Channel</h3>
+              <p className="text-dark-500 text-sm">Real numbers for customer acquisition cost by channel.</p>
+            </Link>
+            <Link href="/blog/churn-rate-how-to-reduce" className="card-hover p-6 block group">
+              <div className="text-sm text-dark-400 mb-2">5 min read</div>
+              <h3 className="text-lg font-semibold text-dark-900 mb-2 group-hover:text-primary-600 transition-colors">How to Reduce Churn</h3>
+              <p className="text-dark-500 text-sm">5 things that actually work, not generic advice.</p>
+            </Link>
+          </div>
+          <div className="text-center mt-10">
+            <Link href="/blog" className="text-primary-600 hover:text-primary-700 font-medium">
+              View all articles →
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="section-padding relative overflow-hidden">
         <div className="absolute inset-0 gradient-bg" />

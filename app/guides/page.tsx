@@ -73,6 +73,21 @@ export default function GuidesPage() {
             ))}
           </div>
 
+          {/* Related Blog */}
+          <div className="mt-16 pt-16 border-t border-dark-200">
+            <h2 className="text-xl font-semibold text-dark-900 mb-6">More reading</h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              <Link href="/blog/why-90-percent-of-startups-fail" className="card-hover p-4 block group">
+                <h3 className="font-medium text-dark-900 mb-1 group-hover:text-primary-600 transition-colors">Why 90% of Startups Fail</h3>
+                <p className="text-sm text-dark-500">The data shows exactly where most founders go wrong.</p>
+              </Link>
+              <Link href="/blog/customer-acquisition-cost-benchmarks" className="card-hover p-4 block group">
+                <h3 className="font-medium text-dark-900 mb-1 group-hover:text-primary-600 transition-colors">CAC Benchmarks by Channel</h3>
+                <p className="text-sm text-dark-500">Real numbers for customer acquisition cost.</p>
+              </Link>
+            </div>
+          </div>
+
           {/* CTA */}
           <div className="mt-16 text-center">
             <Link href="/simulator" className="btn-primary btn-lg">

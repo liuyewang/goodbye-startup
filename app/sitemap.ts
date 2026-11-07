@@ -18,6 +18,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/blog",
     "/blog/why-90-percent-of-startups-fail",
     "/blog/how-much-money-do-you-need-to-start-a-startup",
+    "/blog/customer-acquisition-cost-benchmarks",
+    "/blog/churn-rate-how-to-reduce",
     "/how-it-works",
     "/pricing",
     "/simulator",
