@@ -77,6 +77,31 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Problem / Stats */}
+      <section className="section-padding bg-white">
+        <div className="container-custom">
+          <div className="max-w-3xl mx-auto text-center mb-12">
+            <h2 className="heading-lg mb-4 text-balance">{t.problem.title}</h2>
+            <p className="subtitle text-balance">{t.problem.subtitle}</p>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto mb-10">
+            {t.problem.stats.map((stat, index) => (
+              <div key={index} className="text-center p-6 rounded-2xl bg-dark-50">
+                <div className="text-3xl sm:text-4xl font-bold text-primary-600 mb-2">
+                  {stat.value}
+                </div>
+                <div className="text-sm text-dark-500">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-center text-dark-600 max-w-2xl mx-auto leading-relaxed">
+            {t.problem.description}
+          </p>
+        </div>
+      </section>
+
       {/* Features */}
       <section className="section-padding bg-white">
         <div className="container-custom">
@@ -101,6 +126,26 @@ export default function Home() {
                 <p className="text-dark-500 leading-relaxed">
                   {feature.description}
                 </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Who For */}
+      <section className="section-padding bg-dark-50">
+        <div className="container-custom">
+          <div className="max-w-2xl mx-auto text-center mb-16">
+            <h2 className="heading-lg mb-4 text-balance">{t.whoFor.title}</h2>
+            <p className="subtitle text-balance">{t.whoFor.subtitle}</p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            {t.whoFor.items.map((item, index) => (
+              <div key={index} className="card-hover p-6 lg:p-8">
+                <div className="text-3xl mb-4">{item.icon}</div>
+                <h3 className="text-lg font-semibold text-dark-900 mb-2">{item.title}</h3>
+                <p className="text-dark-500 leading-relaxed text-sm">{item.description}</p>
               </div>
             ))}
           </div>

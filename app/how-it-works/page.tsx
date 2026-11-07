@@ -48,8 +48,11 @@ export default function HowItWorksPage() {
                   <h2 className="text-2xl font-bold text-dark-900 mb-3">
                     {step.title}
                   </h2>
-                  <p className="text-dark-500 text-lg leading-relaxed">
+                  <p className="text-dark-500 text-lg leading-relaxed mb-4">
                     {step.description}
+                  </p>
+                  <p className="text-dark-400 leading-relaxed text-sm">
+                    {step.detail}
                   </p>
                 </div>
               </div>

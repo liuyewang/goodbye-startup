@@ -36,6 +36,17 @@ export const en = {
       freeDesc: "Try before you pay",
     },
   },
+  problem: {
+    title: "The brutal truth about startups",
+    subtitle: "Most people don't fail because they're lazy. They fail because they skipped the one step that would have saved them.",
+    stats: [
+      { value: "90%", label: "of startups fail within 3 years" },
+      { value: "$30k", label: "average personal savings drained before quitting" },
+      { value: "14 mo", label: "average runway before running out of cash" },
+      { value: "80%", label: "of founders say the idea was wrong, not the execution" },
+    ],
+    description: "You don't need another motivational book. You don't need another networking event. You need to know — before you spend $30,000 and 14 months of your life — whether your idea can actually survive contact with the market.",
+  },
   features: {
     title: "Why Goodbye Startup?",
     subtitle: "Because 90% of startups fail — and most of them could have seen it coming.",
@@ -80,26 +91,31 @@ export const en = {
         number: "01",
         title: "Describe Your Idea",
         description: "Tell the AI mentor about your startup concept, target market, and initial resources.",
+        detail: "You start with a plain-language description of what you want to build, who you think will pay for it, and how much money and time you're putting on the line. The mentor asks follow-up questions to pin down your price point, your distribution channel, and what makes you different from the ten other people who already tried this. No business plan required — just an honest description of what you're thinking.",
       },
       {
         number: "02",
         title: "Market Reality Check",
         description: "Days 1-5: Get a brutally honest assessment of your idea's market fit and competitive landscape.",
+        detail: "This is where the dream meets the data. The mentor pulls industry benchmarks for your category: typical customer acquisition costs, conversion rates, churn ranges, and what incumbents charge. You'll see your TAM shrink from \"everyone on the internet\" to the actual number of people who might pay you. Expect this phase to hurt — it's supposed to.",
       },
       {
         number: "03",
         title: "Launch & Initial Data",
         description: "Day 60-90: Simulate your product launch with realistic conversion rates and user acquisition costs.",
+        detail: "You make your first real decisions: what to build first, where to launch, how much to spend on ads. The mentor simulates the first 30 days of traffic — and it's rarely pretty. Cold-start click-through rates of 0.5-2%, website-to-signup conversion of 1-3%. You'll see exactly how many visitors you need to get your first paying customer, and what that costs.",
       },
       {
         number: "04",
         title: "User Behavior Simulation",
         description: "Days 91-180: Watch how real users would behave — churn, engagement, word-of-mouth, and more.",
+        detail: "By now you have some users. The hard part starts: retention. The mentor simulates monthly churn (typically 10-20% for early products), word-of-mouth growth, and what happens when you try to raise prices. You'll make decisions about hiring, ad spend, feature priorities — and watch each one move your runway number up or down.",
       },
       {
         number: "05",
         title: "Judgment Day",
         description: "Day 180: Face the final verdict. Did you make it? Or did you run out of runway?",
+        detail: "The mentor gives you a structured second opinion: viable, marginal, or time to say goodbye. It's not a prediction — it's a data-backed assessment of whether your idea, executed the way you executed it, would have survived 180 days in the real market. If the verdict is bad, you just saved $30,000 and 14 months of your life. That's worth more than any success story.",
       },
     ],
     detail: {
@@ -182,6 +198,17 @@ export const en = {
       },
     ],
     guarantee: "30-day money-back guarantee. No questions asked.",
+    valueComparison: {
+      title: "What's the alternative?",
+      intro: "A single simulation costs less than one month of your cloud hosting bill. Here's what you'd risk in the real world instead:",
+      items: [
+        { real: "Quit your job", cost: "$60,000+ foregone salary" },
+        { real: "Spend 6 months building", cost: "2500 hours of your life" },
+        { real: "Launch without market validation", cost: "3–12 months of ad spend" },
+        { real: "Find out your idea was wrong", cost: "Total savings burned" },
+      ],
+      conclusion: "Our simulator lets you find out all of this in 15 minutes. For $0.99 per run. That's the cheapest insurance you'll ever buy.",
+    },
     faq: {
       heading: "Before you pay",
       items: [
@@ -210,6 +237,52 @@ export const en = {
           a: "Every run costs real AI inference. One complete run is enough to judge whether this tool sharpens your thinking before you pay for more.",
         },
       ],
+    },
+  },
+  whoFor: {
+    title: "Who is this for?",
+    subtitle: "If you're nodding at any of these, this simulator was built for you.",
+    items: [
+      {
+        icon: "💻",
+        title: "Solo developers",
+        description: "You can build it, but you're not sure if anyone will pay for it. Test the idea before you quit your job.",
+      },
+      {
+        icon: "🎓",
+        title: "First-time founders",
+        description: "You've never run a business. Learn how cash burn, churn, and CAC actually work — without losing your savings.",
+      },
+      {
+        icon: "🚀",
+        title: "Side-project starters",
+        description: "You're building on weekends. Simulate whether your side project has a shot at becoming your main thing.",
+      },
+      {
+        icon: "💼",
+        title: "9-5 refugees",
+        description: "You hate your job and want out. Find out if your escape plan is viable — or if you're just jumping from one bad situation to another.",
+      },
+    ],
+  },
+  guides: {
+    title: "Guides & Resources",
+    subtitle: "Everything you need to know before you test your startup idea.",
+    howItWorks: {
+      title: "How the 180-Day Simulation Works",
+      description: "A deep dive into the five phases, the data benchmarks behind every number, and what actually gets computed when you make a decision.",
+    },
+    simulator: {
+      title: "Inside the Simulator",
+      description: "How the AI mentor works, what benchmarks it uses, and what you'll experience across the four stages of a run.",
+    },
+    pricing: {
+      title: "Pricing & Value",
+      description: "What you get for free, what you get with Pro, and why a $9.99/month tool is cheaper than quitting your job.",
+    },
+    about: {
+      title: "About Goodbye Startup",
+      description: "Why we built this, our mission, and the values that guide how the AI mentor talks to you.",
     },
   },
   faq: {
@@ -290,6 +363,24 @@ export const en = {
       realismTitle: "Why the numbers are bounded",
       realism:
         "Ranges come from published benchmarks for early-stage consumer and SaaS businesses, not from an optimistic narrative. The model is deliberately harsh at the edges: acquisition costs more than founders expect, churn compounds, and every hire is sticky.",
+      benchmarksTitle: "The benchmarks behind the numbers",
+      benchmarksIntro:
+        "When the mentor tells you your conversion rate is low, it's not making it up. These are the published ranges it draws from:",
+      benchmarks: [
+        { label: "Cold-start CTR (ads)", value: "0.5% – 2%" },
+        { label: "Website → signup conversion", value: "1% – 3%" },
+        { label: "Free → paid conversion", value: "0.5% – 2%" },
+        { label: "Monthly churn (early product)", value: "10% – 20%" },
+        { label: "Customer acquisition cost (B2C)", value: "$5 – $50" },
+        { label: "Average revenue per user / month", value: "$5 – $30" },
+      ],
+      stagesTitle: "What you'll go through",
+      stages: [
+        { phase: "Prologue (Day 0)", description: "You describe your idea, your starting cash, and your target customer. The mentor sets baseline assumptions and asks you to confirm them." },
+        { phase: "Market Analysis (Days 1–5)", description: "The mentor crunches your TAM, compares you to competitors, and tells you whether your price point is realistic. This is where you'll find out if the market is big enough — or if it's already saturated." },
+        { phase: "Launch Phase (Days 60–90)", description: "You make your first real decisions: what to build, where to launch, how much to spend. The mentor simulates your first 30 days of traffic and shows you exactly how many visitors you need to get your first paying customer." },
+        { phase: "Growth Phase (Days 91–180)", description: "Now you have users. The hard part starts: retention, churn, hiring, ad spend. Every decision moves your runway number up or down. By Day 180, you'll know whether your idea can survive — or whether it's time to say goodbye." },
+      ],
       note:
         "One free run per browser, no account needed. Your inputs stay on your device until you decide to upgrade.",
     },

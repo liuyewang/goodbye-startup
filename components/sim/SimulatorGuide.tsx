@@ -51,6 +51,46 @@ export default function SimulatorGuide() {
           {guide.realismTitle}
         </h2>
         <p className="mb-6 leading-relaxed text-dark-500">{guide.realism}</p>
+
+        {/* Benchmarks table */}
+        <h2 className="mb-3 text-lg font-semibold text-dark-900">
+          {guide.benchmarksTitle}
+        </h2>
+        <p className="mb-4 leading-relaxed text-dark-500 text-sm">
+          {guide.benchmarksIntro}
+        </p>
+        <div className="mb-10 overflow-hidden rounded-lg border border-dark-200">
+          <table className="w-full text-sm">
+            <thead className="bg-dark-50">
+              <tr>
+                <th className="px-4 py-2 text-left font-semibold text-dark-900">Metric</th>
+                <th className="px-4 py-2 text-right font-semibold text-dark-900">Typical Range</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-dark-100">
+              {guide.benchmarks.map((b) => (
+                <tr key={b.label}>
+                  <td className="px-4 py-2 text-dark-600">{b.label}</td>
+                  <td className="px-4 py-2 text-right font-mono text-primary-600">{b.value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Stages */}
+        <h2 className="mb-3 text-lg font-semibold text-dark-900">
+          {guide.stagesTitle}
+        </h2>
+        <div className="mb-10 space-y-4">
+          {guide.stages.map((s) => (
+            <div key={s.phase} className="rounded-lg border border-dark-200 p-4">
+              <h3 className="mb-1 font-semibold text-dark-900">{s.phase}</h3>
+              <p className="text-sm leading-relaxed text-dark-500">{s.description}</p>
+            </div>
+          ))}
+        </div>
+
         <p className="text-sm text-dark-400">{guide.note}</p>
       </div>
     </section>

@@ -96,6 +96,23 @@ export default function PricingPage() {
         </div>
       </section>
 
+      {/* Value Comparison */}
+      <section className="py-16 lg:py-20 bg-white">
+        <div className="container-custom max-w-3xl">
+          <h2 className="heading-md mb-4 text-center">{t.pricing.valueComparison.title}</h2>
+          <p className="text-center text-dark-500 mb-10">{t.pricing.valueComparison.intro}</p>
+          <div className="space-y-4 mb-8">
+            {t.pricing.valueComparison.items.map((item) => (
+              <div key={item.real} className="flex items-center justify-between rounded-lg border border-dark-200 p-4">
+                <span className="text-dark-600">{item.real}</span>
+                <span className="font-semibold text-accent-600">{item.cost}</span>
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-dark-600 font-medium">{t.pricing.valueComparison.conclusion}</p>
+        </div>
+      </section>
+
       {/* Pre-purchase FAQs */}
       <section className="py-16 lg:py-20 bg-dark-50">
         <div className="container-custom max-w-3xl">

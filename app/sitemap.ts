@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // server-rendered explainer (components/sim/SimulatorGuide.tsx).
   const pages = [
     "",
+    "/guides",
     "/how-it-works",
     "/pricing",
     "/simulator",
