@@ -93,7 +93,7 @@ Formula contract: each step after Day0 spans deltaDays/30 months. Retained custo
 **Files:** README, AGENTS, HANDOFF, current BRD/PRD/architecture, security/contributing/deployment/ADR docs, CI and test scenarios.
 **Interfaces:** one documented quickstart and `npm run check`, local mock mode, environment contract, preview/release checklist and rollback.
 
-- [ ] Complete docs and archive/supersede old instructions without erasing history. Include current folder, remote, architecture decisions, prompts/versioning/evaluation, data boundary, budget limits, deployment and recovery.
-- [ ] Run full tests, typecheck, lint/format, production build, local Worker smoke, browser tests, audit and secret scan; record exact results and external limits.
-- [ ] Fresh independent whole-branch review; fix important findings with reproducing tests, rerun affected checks and full regression.
-- [ ] Commit verified release candidate; leave production and paid verification actions explicit and reviewable. No success claim for unexecuted checks.
+- [x] Complete docs and archive/supersede old instructions without erasing history. Include current folder, remote, architecture decisions, prompts/versioning/evaluation, data boundary, budget limits, deployment and recovery.
+- [x] Run full tests, typecheck, lint/format, production build, local Worker smoke, browser tests, audit and secret scan; record exact results and external limits.
+- [x] Fresh independent whole-branch review; fix important findings with reproducing tests, rerun affected checks and full regression.
+- [x] Commit verified release candidate; leave production and paid verification actions explicit and reviewable. No success claim for unexecuted checks.

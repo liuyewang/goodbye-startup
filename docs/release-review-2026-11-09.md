@@ -24,7 +24,7 @@ The reviewer did not independently validate real DeepSeek quality/account suppor
 - TypeScript, ESLint, Prettier, production build and tracked/client-bundle secret-pattern scan.
 - Fifteen public HTML routes: status, title budget, canonical, OG URL, JSON-LD and security header checks; robots, sitemap, static RSS, llms.txt and Markdown.
 - Built local Worker REST smoke: origin rejection, schemas, signed session, setup, six turns, idempotent replay, quota and delete. Local scheduled retention invocation is checked separately from deployed cron.
-- `npm audit` reports zero known vulnerabilities in the installed lockfile. `wrangler deploy --dry-run` packages the Worker without deploying (about 412 KiB gzip before final recovery fixes).
+- `npm audit` reports zero known vulnerabilities in the installed lockfile. The final `wrangler deploy --dry-run` packages 66 static assets and a 1390.11 KiB Worker (412.89 KiB gzip) without deploying.
 
 Build warnings from upstream vinext/Vite concern sourcemap mapping and chunk placement. They are recorded rather than hidden. A beta adapter still requires remote preview validation. GitHub CI is configured with pinned official action SHAs and read-only permission, but no remote workflow run occurred because the branch was not pushed.
 
@@ -44,3 +44,5 @@ The final browser run passed all 32 cases in 54.9 seconds. After rebuilding, res
 Local acceptance can be completed independently. Still required for a real release: authorize/provision preview D1 and Worker, supply private secrets, approve a small real-model evaluation, verify remote bindings/limits/cleanup, then separately review production routing and rollback. Do not change `wise.goodbye.help`. Anonymous identity can be reset by clearing cookies; this is documented, not person-level enforcement. No checkout or subscriptions exist.
 
 Disposition: **存活** as a locally verified reference implementation with explicit remote/model release gates. Do not describe it as already deployed or empirically predictive.
+
+Implementation and final recovery fixes end at commit `03e2347`. The last full `npm run check` on that commit passed all seven test files / 41 cases and every other included gate. The branch is retained locally as agreed; no merge or push was performed. Later documentation-only completion updates do not change the verified implementation.
