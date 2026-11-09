@@ -163,3 +163,13 @@ it("purges expired state and operation snapshots while retaining quota", async (
     false,
   );
 });
+it("expires the same request ID without charging another attempt", async () => {
+  const r = await run();
+  await reserve(r.id, "crashed");
+  await expect(reserve(r.id, "crashed", 0, now + 61000)).rejects.toThrow(
+    "REQUEST_EXPIRED",
+  );
+  expect((await repo.getSession("owner", now + 61000)).attempts).toBe(1);
+  await reserve(r.id, "replacement", 0, now + 61000);
+  expect((await repo.getSession("owner", now + 61000)).attempts).toBe(2);
+});

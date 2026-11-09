@@ -32,6 +32,7 @@ type OperationRow = {
   session_hash: string;
   run_id: string;
   error_code: string | null;
+  lease_until: number;
 };
 export type Run = { id: string; state: SimulationState; expiresAt: number };
 export type Reservation = {
@@ -172,6 +173,14 @@ export class Repository {
           expectedVersion: version,
           replay: SimulationStateSchema.parse(JSON.parse(prior.state_json)),
         };
+      if (prior.status === "pending" && prior.lease_until <= now) {
+        await this.q(
+          "UPDATE operations SET status='failed',error_code='REQUEST_EXPIRED' WHERE token=? AND status='pending' AND lease_until<=?",
+          prior.token,
+          now,
+        ).run();
+        throw new Error("REQUEST_EXPIRED");
+      }
       throw new Error(
         prior.status === "pending"
           ? "REQUEST_PENDING"

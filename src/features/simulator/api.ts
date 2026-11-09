@@ -69,3 +69,17 @@ export async function api<T>(
     );
   return schema.parse(result.data.data);
 }
+
+/** Trim oldest context by both characters and UTF-8 bytes; preserve the latest decision. */
+export function fitTurnHistory(
+  input: import("../../server/http/validation").TurnInput,
+): import("../../server/http/validation").TurnInput {
+  const result = { ...input, history: input.history.slice(-12) };
+  while (
+    result.history.length &&
+    (result.history.reduce((n, m) => n + m.content.length, 0) > 12000 ||
+      new TextEncoder().encode(JSON.stringify(result)).byteLength > 32768)
+  )
+    result.history.shift();
+  return result;
+}

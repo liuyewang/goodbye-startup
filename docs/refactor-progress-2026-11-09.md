@@ -79,3 +79,12 @@
 - 修正 CAC 漏斗的算术错误、流失率复利误解；删除无法核验的普遍失败率/退款/真实市场检索承诺，明确模型假设和信息来源。
 - 全部 15 页本地 HTML 返回 200，标题预算、canonical、独立 OG URL、JSON-LD、安全响应头及 robots/sitemap/RSS/llms.txt 通过检查。根 URL 尾斜杠按 URL 等价规则验证。
 - 新增 GSC 用户规则已接入：doctor 确认当前项目 goodbye 绑定 sc-domain:goodbye.help、只读 scope；搜索数据与本地代码检查分开，不将测试通过宣称为搜索效果提升。
+
+## Loop 5：独立复审与验收
+
+- 全分支独立审查发现 4 项恢复缺陷：双标签覆盖文本、相同请求 ID 的过期 lease 无法恢复、删除/丢失 Cookie 后本地导出入口丢失、写入失败后刷新覆盖内存。均先复现失败，再修复并通过回归。
+- 成功阶段文本按 run/version 独立保存；内存/磁盘合并保护；本地索引独立于服务器身份，仍不能恢复服务端权威。
+- 补充真实丢包回放与 UTF-8 请求大小验证；客户端按字节裁剪最旧历史，保留最新决策。
+- 生产预览存储路径问题已修复为显式 `--persist-to .wrangler/state`；15 页输出、完整 REST 流程及 Local Explorer scheduled 清理均有本地证据。
+- GSC 只读报告：2026-10-11 至 11-07、America/Los_Angeles、web/final、28 行日期，0 点击/4 展示；首页 indexed PASS，sitemap pending，无查询词返回。不能据此声称优化效果。
+- 详细审查、取舍及外部验收边界：`docs/release-review-2026-11-09.md`。

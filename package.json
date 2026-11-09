@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vinext dev --host 127.0.0.1",
     "build": "npm run content:generate && vinext build",
-    "preview": "wrangler dev --config dist/server/wrangler.json --port 4173",
+    "preview": "wrangler dev --config dist/server/wrangler.json --persist-to .wrangler/state --port 4173",
     "deploy": "wrangler deploy --config dist/server/wrangler.json",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",

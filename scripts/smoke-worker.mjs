@@ -93,3 +93,18 @@ assert.equal((await call("/api/chat", "POST", {})).status, 410);
 console.log(
   "Worker smoke passed: origin, schema, session, setup, six turns, replay, quota, delete and retired proxy.",
 );
+if (process.env.TEST_SCHEDULED === "1") {
+  const response = await fetch(
+    base +
+      "/cdn-cgi/local/explorer/api/local/scheduled?worker=goodbye-startup-refactor",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ cron: "0 3 * * *" }),
+    },
+  );
+  assert.equal(response.status, 200);
+  const result = await response.json();
+  assert.equal(result.result.outcome, "ok");
+  console.log("Scheduled retention cleanup passed in local workerd.");
+}

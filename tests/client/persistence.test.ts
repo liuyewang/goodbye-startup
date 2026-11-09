@@ -56,3 +56,21 @@ it("does not import a legacy balance as authoritative state", () => {
   expect(readLegacy(s)).toContain("9999999999");
   expect(loadTranscript("run", s).data).toBeNull();
 });
+
+it("preserves committed slots after a stale metadata overwrite", () => {
+  const s = memory();
+  const old = {
+    schemaVersion: 1 as const,
+    runId: "run",
+    idea: "idea",
+    turns: [],
+    pending: null,
+  };
+  const latest = {
+    ...old,
+    turns: [{ version: 1, day: 0, decision: "keep me", proposal: null }],
+  };
+  saveTranscript(latest, s);
+  s.setItem("gs_transcript_v1_run", JSON.stringify(old));
+  expect(loadTranscript("run", s).data?.turns[0].decision).toBe("keep me");
+});

@@ -1,11 +1,18 @@
 "use client";
-import { useCallback, useEffect, useState, type FormEvent } from "react";
+import {
+  useCallback,
+  useRef,
+  useEffect,
+  useState,
+  type FormEvent,
+} from "react";
 import { z } from "zod";
 import { useI18n } from "../../i18n";
 import { getVerdict } from "../../domain/simulation/engine";
 import { SetupSchema } from "../../domain/simulation/schema";
 import {
   api,
+  fitTurnHistory,
   ApiError,
   BootstrapSchema,
   RunSchema,
@@ -17,6 +24,8 @@ import {
   downloadRecord,
   loadTranscript,
   readLegacy,
+  readLastRun,
+  mergeTranscripts,
   saveTranscript,
   type Transcript,
 } from "./persistence";
@@ -36,6 +45,7 @@ export default function Simulator(): React.JSX.Element {
   const [bootstrap, setBootstrap] = useState<Bootstrap | null>(null);
   const [run, setRun] = useState<Run | null>(null);
   const [record, setRecord] = useState<Transcript | null>(null);
+  const recordRef = useRef<Transcript | null>(null);
   const [idea, setIdea] = useState("");
   const [cash, setCash] = useState("10000");
   const [cost, setCost] = useState("1500");
@@ -51,13 +61,44 @@ export default function Simulator(): React.JSX.Element {
   const [legacy, setLegacy] = useState<string | null>(null);
   const [showQuota, setShowQuota] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
-  function persist(data: Transcript): void {
+  function applyRecord(data: Transcript | null): void {
+    recordRef.current = data;
     setRecord(data);
+  }
+  function persist(data: Transcript, clearedRequestId?: string): void {
+    let merged = mergeTranscripts(recordRef.current, data, clearedRequestId);
     try {
-      if (!saveTranscript(data, localStorage)) setStorageWarning(true);
+      merged = mergeTranscripts(
+        loadTranscript(data.runId, localStorage).data,
+        merged,
+        clearedRequestId,
+      );
+      if (!saveTranscript(merged, localStorage, clearedRequestId))
+        setStorageWarning(true);
     } catch {
       setStorageWarning(true);
     }
+    applyRecord(merged);
+  }
+  function exportCurrent(): void {
+    let current = recordRef.current;
+    try {
+      if (current)
+        current = mergeTranscripts(
+          loadTranscript(current.runId, localStorage).data,
+          current,
+        );
+    } catch {
+      /* The in-memory copy remains exportable. */
+    }
+    downloadRecord(
+      {
+        record: current,
+        state: run?.state ?? null,
+        exportedAt: new Date().toISOString(),
+      },
+      "goodbye-simulation.json",
+    );
   }
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -68,14 +109,23 @@ export default function Simulator(): React.JSX.Element {
       setRun(result.run);
       try {
         setLegacy(readLegacy(localStorage));
-        const id = result.run?.id ?? result.session.runId;
+        const id =
+          result.run?.id ??
+          result.session.runId ??
+          readLastRun(localStorage) ??
+          recordRef.current?.runId;
         if (id) {
           const saved = loadTranscript(id, localStorage);
-          setRecord(saved.data);
+          const memory =
+            recordRef.current?.runId === id ? recordRef.current : null;
+          const recovered = memory
+            ? mergeTranscripts(saved.data, memory)
+            : saved.data;
+          applyRecord(recovered);
           setStorageWarning(saved.warning);
-          if (saved.data) {
-            setIdea(saved.data.idea);
-            setDecision(saved.data.pending?.decision ?? "");
+          if (recovered) {
+            setIdea(recovered.idea);
+            setDecision(recovered.pending?.decision ?? "");
           }
         }
       } catch {
@@ -135,7 +185,7 @@ export default function Simulator(): React.JSX.Element {
         `/api/simulations/${target.id}/turn`,
         TurnResultSchema,
         "POST",
-        { ...pending, idea, language, history },
+        fitTurnHistory({ ...pending, idea, language, history }),
       );
       setRun(result.run);
       persist({
@@ -149,7 +199,7 @@ export default function Simulator(): React.JSX.Element {
               {
                 version: result.run.state.version,
                 day: result.run.state.day,
-                decision: text,
+                decision: pending.decision,
                 proposal: result.proposal,
               },
             ].slice(-6)
@@ -163,7 +213,7 @@ export default function Simulator(): React.JSX.Element {
       const code = e instanceof ApiError ? e.code : "NETWORK";
       setError(code);
       if (!["NETWORK", "REQUEST_PENDING", "REQUEST_CONFLICT"].includes(code))
-        persist({ ...next, pending: null });
+        persist({ ...next, pending: null }, pending.requestId);
     } finally {
       setBusy(false);
     }
@@ -257,12 +307,7 @@ export default function Simulator(): React.JSX.Element {
       {legacy && (
         <div className="mb-5 flex flex-wrap items-center gap-3 rounded-lg border border-dark-200 p-3 text-sm">
           <p>{c.legacy}</p>
-          <button
-            className={secondaryClass}
-            onClick={() =>
-              downloadRecord({ legacy }, "goodbye-legacy-save.json")
-            }
-          >
+          <button className={secondaryClass} onClick={exportCurrent}>
             {c.legacyExport}
           </button>
         </div>

@@ -42,7 +42,9 @@ TEST_BASE_URL=http://127.0.0.1:4173 node scripts/audit-pages.ts
 TEST_BASE_URL=http://127.0.0.1:4173 node scripts/smoke-worker.mjs
 ```
 
-Apply migrations locally before the preview. Wrangler and Vite share `.wrangler/state`. The Worker default configuration fails closed with daily AI budget `0`; local `.dev.vars` overrides it for mock tests. A real deployment needs an actual D1 ID and secrets; see [deployment](docs/deployment.md).
+Apply migrations locally before the preview. The preview script explicitly pins `--persist-to .wrangler/state`, so Wrangler and Vite share the migrated local database. Without that flag the generated config would resolve a different state directory under `dist/server`. The Worker default configuration fails closed with daily AI budget `0`; local `.dev.vars` overrides it for mock tests. A real deployment needs an actual D1 ID and secrets; see [deployment](docs/deployment.md).
+
+Stop and restart the preview after a new build: a running Wrangler asset snapshot can become stale when the build replaces `dist/client`. To verify retention locally, start `npm run preview -- --test-scheduled` and run `TEST_BASE_URL=http://127.0.0.1:4173 TEST_SCHEDULED=1 node scripts/smoke-worker.mjs`.
 
 ## Source map
 
@@ -66,4 +68,4 @@ No accounts, real checkout, subscriptions, paid entitlement or server-side trans
 
 Numerical saves expire 30 days after a successful turn (drafts from creation). Used quota expires 180 days after first success. Expired records cannot be imported back into authority from the browser. Text stays locally and is sent to DeepSeek for inference. The server stores numerical snapshots and bounded operational metadata, not ideas, decisions, AI prose, raw IPs or prompts. DeepSeek and Cloudflare apply their own service policies.
 
-See [architecture](docs/tech-stack.md), [product contract](docs/PRD.md), [AI evaluation](docs/ai-evaluation.md), [security](SECURITY.md), [contributing](CONTRIBUTING.md), [handoff](HANDOFF.md), and [current progress](docs/refactor-progress-2026-11-09.md). Historical documents live under `docs/archive/` and are not execution instructions.
+See [architecture](docs/tech-stack.md), [product contract](docs/PRD.md), [AI evaluation](docs/ai-evaluation.md), [security](SECURITY.md), [contributing](CONTRIBUTING.md), [handoff](HANDOFF.md), [current progress](docs/refactor-progress-2026-11-09.md), and [acceptance and review](docs/release-review-2026-11-09.md). Historical documents live under `docs/archive/` and are not execution instructions.
