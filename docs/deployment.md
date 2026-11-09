@@ -1,6 +1,6 @@
 # Deployment and rollback
 
-This refactor has not changed the live Cloudflare Pages project. Do not deploy it with the old Pages build command. The user authorized a separate preview and up to 20 real model requests on 2026-11-09; see [preview validation](preview-validation-2026-11-09.md). Production migration remains a separate, reviewable operation requiring authorization.
+The refactor is deployed to a separate Workers/D1 preview and has not replaced the live Pages application. Do not deploy it with the old Pages build command. The 20-request evaluation is complete and preview inference is closed; see [preview validation](preview-validation-2026-11-09.md). The old Pages integration excludes only the refactor branch from its obsolete preview build. The user separately authorized refreshing the production provider secret and republishing the preserved original artifact. Production migration remains a separate, reviewable operation requiring authorization.
 
 ## Isolated preview configuration
 
@@ -38,7 +38,7 @@ Keep `compatibility_date=2025-09-01` and `nodejs_compat` until separately regres
 
 1. Run `npm ci`, local setup/migration, `npm run check`, browser tests, public-page audit and Worker smoke. Confirm local fixture mode so checks do not spend provider credits.
 2. Review git diff, dependency overrides, D1 schema and privacy/copy changes. Keep the original Pages deployment available.
-3. After authorization, provision a preview D1 database and a separate Worker. Put its ID in an environment-specific Wrangler configuration. `wrangler d1 create` and remote migrations create external state; they have not been run here. Inspect plan quotas/costs first.
+3. After authorization, provision a preview D1 database and a separate Worker. Put its ID in an environment-specific Wrangler configuration. `wrangler d1 create` and remote migrations create external state; the isolated preview was provisioned under the 2026-11-09 authorization. Inspect plan quotas/costs before creating any further environment.
 4. Set secrets via `npx wrangler secret put SESSION_SECRET` and `DEEPSEEK_API_KEY` for that Worker. Set preview origin, real model and a small approved daily cap. Do not reuse production D1 for browser tests.
 5. Apply `npx wrangler d1 migrations apply DB --remote` using the reviewed preview config. Build, then deploy its generated `dist/server/wrangler.json`. The `deploy` script targets that generated configuration and is not automatic CI.
 6. On preview, verify cookie Secure/HttpOnly/SameSite, origin enforcement, D1 bindings, rate limiting, daily cap, scheduled purge, assets, all 15 routes and metadata. Perform a small, explicitly authorized real-provider evaluation from `ai-evaluation.md`. Passing mock tests does not prove model quality or provider/model availability.
@@ -54,3 +54,7 @@ Keep `compatibility_date=2025-09-01` and `nodejs_compat` until separately regres
 - Local reset: use a separate test DB/state directory or explicitly remove only local `.wrangler/state` when no valuable local saves are needed. Do not suggest a blanket `git clean -fdx`.
 
 Official references: [Workers deployment](https://developers.cloudflare.com/workers/wrangler/commands/), [D1 migrations](https://developers.cloudflare.com/d1/reference/migrations/), [D1 recovery](https://developers.cloudflare.com/d1/reference/time-travel/). GSC, DNS and deployment authorizations are separate.
+
+## Preserving the legacy Pages artifact
+
+The previous manual Pages deployment included nine uncommitted UI changes. A Pages retry rebuilt clean `a47c007` and temporarily omitted them; verification caught this and the original local artifact was redeployed. For future credential-only refreshes, preserve and verify the deployed artifact or use source baseline `ee0d2f0`, not just the old deployment metadata SHA. See the preview report for deployment IDs and recovery evidence. Do not rebuild the legacy app from the refactor branch.

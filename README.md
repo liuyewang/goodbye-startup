@@ -5,7 +5,8 @@ A bilingual educational startup simulator. Six stages cover 180 **simulated** da
 - Repository: [liuyewang/goodbye-startup](https://github.com/liuyewang/goodbye-startup)
 - Existing production site: [goodbye.help](https://goodbye.help)
 - Local checkout: `/Users/guan/Documents/ChatGPT/创业模拟器(Goodbye)`
-- Refactor branch: `codex/full-project-refactor`. The new Workers/D1 application is a local release candidate; the existing Pages production deployment has not been migrated.
+- Refactor branch: `codex/full-project-refactor`; [draft PR #1](https://github.com/liuyewang/goodbye-startup/pull/1).
+- Isolated [Workers/D1 preview](https://goodbye-startup-preview.indie-utility-lab.workers.dev) is deployed. Its 20-request evaluation is complete and AI calls are paused at budget zero. See [preview validation](docs/preview-validation-2026-11-09.md). Existing Pages production has not been migrated.
 
 ## Start locally without paid inference
 
