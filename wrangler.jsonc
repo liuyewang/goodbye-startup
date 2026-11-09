@@ -40,4 +40,34 @@
   "triggers": {
     "crons": ["0 3 * * *"],
   },
+  "env": {
+    "preview": {
+      "name": "goodbye-startup-preview",
+      "workers_dev": true,
+      "preview_urls": false,
+      "routes": [],
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "goodbye-startup-preview",
+          "database_id": "aba5dbef-6d2a-4b86-a335-b3b5e8e6c400",
+          "migrations_dir": "migrations",
+        },
+      ],
+      "ratelimits": [
+        {
+          "name": "AI_RATE_LIMITER",
+          "namespace_id": "1002",
+          "simple": { "limit": 6, "period": 60 },
+        },
+      ],
+      "vars": {
+        "APP_ENV": "preview",
+        "AI_MODE": "deepseek",
+        "DEEPSEEK_MODEL": "deepseek-flash",
+        "AI_DAILY_CALL_LIMIT": "0",
+        "SITE_ORIGIN": "https://goodbye-startup-preview.indie-utility-lab.workers.dev",
+      },
+    },
+  },
 }

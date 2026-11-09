@@ -1,6 +1,21 @@
 # Deployment and rollback
 
-This refactor has not changed the live Cloudflare Pages project. Do not deploy it with the old Pages build command. Production migration is a separate, reviewable operation after local checks and user authorization.
+This refactor has not changed the live Cloudflare Pages project. Do not deploy it with the old Pages build command. The user authorized a separate preview and up to 20 real model requests on 2026-11-09; see [preview validation](preview-validation-2026-11-09.md). Production migration remains a separate, reviewable operation requiring authorization.
+
+## Isolated preview configuration
+
+`env.preview` names `goodbye-startup-preview` with its own D1, rate-limit namespace and workers.dev origin. It has no production routes, uses `X-Robots-Tag: noindex, nofollow` for HTML and preview static assets, and leaves AI budget at zero. The preview D1 was created under the authorized scope; the top-level production database ID remains a nondeployable placeholder.
+
+Select the environment at **build time**, then deploy the generated config; passing `--env` after building the default app does not select the right Vite environment:
+
+```sh
+CLOUDFLARE_ENV=preview npm run build
+npx wrangler deploy --config dist/server/wrangler.json --dry-run
+# After provisioning, migrations, secrets, permission and budget checks:
+npx wrangler deploy --config dist/server/wrangler.json
+```
+
+Secret commands and migrations against the source configuration use `--config wrangler.jsonc --env preview`. Verify the generated config names `goodbye-startup-preview`, has the preview DB ID and no production routes before deployment. Do not leave a positive daily budget enabled after a finite evaluation: it resets daily and is not the lifetime 20-request authorization.
 
 ## Environment contract
 

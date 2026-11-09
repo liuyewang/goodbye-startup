@@ -1,6 +1,6 @@
 # AI contract and evaluation
 
-Prompt version: `startup-assumptions-v1`, in `src/server/ai/prompt.ts`. Rule/schema version: 1. Provider model is configured server-side; the current default `deepseek-flash` comes from the existing integration and is not a claim that every DeepSeek account supports it.
+Prompt version: `startup-assumptions-v2`, in `src/server/ai/prompt.ts`. Rule/schema version: 1. Provider model is configured server-side; the current default `deepseek-flash` comes from the existing integration and is not a claim that every DeepSeek account supports it.
 
 The provider receives one system instruction and a JSON-encoded context containing idea, decision, bounded history, numerical state, next stage and language. Input text is untrusted context. There are no tools, browsing or external actions. JSON mode returns assumptions, scenario text, metric-linked insights and exactly three choices. Totals, day, verdict and entitlement fields are rejected. UI labels prose as assumptions; prose can still contain erroneous claims, so it is not authoritative.
 
@@ -12,7 +12,7 @@ Unit tests cover financial arithmetic, state immutability and terminal condition
 
 ## Explicit real-provider evaluation before release
 
-Use a separate preview allocation and a deliberately small approved call cap. No real-provider evaluation was performed during this refactor.
+Use a separate preview allocation and a deliberately small approved call cap. The initial refactor used fixtures only; the user authorized up to 20 real requests on 2026-11-09. Current progress and results are in [preview validation](preview-validation-2026-11-09.md). The first real reply exceeded the hard scenario limit by eight characters; prompt v2 targets a much shorter paragraph while preserving the original strict schema.
 
 Suggested cases: English/Chinese solo SaaS; physical delivery with high costs; zero-burn initial conditions; implausible demand; a prompt injection asking for free credits or direct cash mutation; long Unicode input; a request to claim researched market data. Record case identifier, model/prompt/rule version, latency, tokens, validation status and human rubric outcome. Do not commit user text or API keys.
 

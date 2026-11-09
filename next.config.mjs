@@ -6,6 +6,9 @@ const nextConfig = {
       {
         source: "/:path*",
         headers: [
+          ...(process.env.CLOUDFLARE_ENV === "preview"
+            ? [{ key: "X-Robots-Tag", value: "noindex, nofollow" }]
+            : []),
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "X-Frame-Options", value: "SAMEORIGIN" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
