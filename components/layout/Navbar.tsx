@@ -71,7 +71,7 @@ export function Navbar() {
           {/* Mobile menu button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 text-dark-600 hover:text-dark-900 hover:bg-dark-100 rounded-lg transition-colors"
+            className="md:hidden w-11 h-11 flex items-center justify-center text-dark-600 hover:text-dark-900 hover:bg-dark-100 rounded-lg transition-colors"
             aria-label="Toggle menu"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -107,13 +107,13 @@ export function StatusPanel() {
           />
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+        {/* Stats Grid: horizontal scroll on mobile, grid on desktop */}
+        <div className="flex md:grid md:grid-cols-6 gap-3 overflow-x-auto scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
           {stats.map((stat, index) => (
-            <div key={index} className="bg-dark-50 rounded-lg p-3">
+            <div key={index} className="bg-dark-50 rounded-lg p-3 min-w-[100px] md:min-w-0 flex-shrink-0">
               <div className="flex items-center gap-1.5 mb-1">
                 <span className="text-sm">{stat.icon}</span>
-                <span className="text-xs text-dark-500">{stat.label}</span>
+                <span className="text-xs text-dark-500 whitespace-nowrap">{stat.label}</span>
               </div>
               <div className={`text-lg font-bold ${stat.color}`}>
                 {stat.value}

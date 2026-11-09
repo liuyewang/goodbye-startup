@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero */}
-      <section className="relative py-20 lg:py-32 overflow-hidden bg-gradient-to-b from-primary-50/50 to-white">
+      <section className="relative py-14 sm:py-20 lg:py-32 overflow-hidden bg-gradient-to-b from-primary-50/50 to-white">
         {/* Background grid */}
         <div className="absolute inset-0 bg-grid-pattern opacity-40" />
 
@@ -34,14 +34,14 @@ export default function Home() {
               {t.hero.subtitle}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up" style={{ animationDelay: "0.2s" }}>
-              <Link href="/simulator" className="btn-primary btn-lg">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-slide-up" style={{ animationDelay: "0.2s" }}>
+              <Link href="/simulator" className="btn-primary btn-lg w-full sm:w-auto">
                 {t.hero.ctaPrimary}
                 <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
               </Link>
-              <Link href="/how-it-works" className="btn-secondary btn-lg">
+              <Link href="/how-it-works" className="btn-secondary btn-lg w-full sm:w-auto">
                 {t.hero.ctaSecondary}
               </Link>
             </div>
@@ -85,13 +85,30 @@ export default function Home() {
             <p className="subtitle text-balance">{t.problem.subtitle}</p>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto mb-10">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto mb-10">
             {t.problem.stats.map((stat, index) => (
-              <div key={index} className="text-center p-6 rounded-2xl bg-dark-50">
-                <div className="text-3xl sm:text-4xl font-bold text-primary-600 mb-2">
+              <div
+                key={index}
+                className={`text-center p-6 rounded-2xl transition-all duration-200 active:scale-[0.97] ${
+                  index === 0
+                    ? "bg-primary-600 text-white shadow-lg shadow-primary-600/25"
+                    : "bg-white border border-dark-200 shadow-sm hover:shadow-md"
+                }`}
+              >
+                <div
+                  className={`text-3xl sm:text-4xl font-bold mb-2 ${
+                    index === 0 ? "text-white" : "text-primary-600"
+                  }`}
+                >
                   {stat.value}
                 </div>
-                <div className="text-sm text-dark-500">{stat.label}</div>
+                <div
+                  className={`text-sm ${
+                    index === 0 ? "text-primary-100" : "text-dark-500"
+                  }`}
+                >
+                  {stat.label}
+                </div>
               </div>
             ))}
           </div>
@@ -110,20 +127,35 @@ export default function Home() {
             <p className="subtitle text-balance">{t.features.subtitle}</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {t.features.items.map((feature, index) => (
               <div
                 key={index}
-                className="card-hover p-6 lg:p-8"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className={`card-hover p-6 lg:p-7 ${
+                  index === 0
+                    ? "lg:row-span-2 bg-gradient-to-br from-primary-600 to-primary-700 border-primary-600 text-white"
+                    : ""
+                }`}
               >
-                <div className="w-12 h-12 rounded-xl bg-primary-100 flex items-center justify-center text-2xl mb-5">
+                <div
+                  className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-5 ${
+                    index === 0 ? "bg-white/15" : "bg-primary-100"
+                  }`}
+                >
                   {feature.icon}
                 </div>
-                <h3 className="text-lg font-semibold text-dark-900 mb-2">
+                <h3
+                  className={`text-lg font-semibold mb-2 ${
+                    index === 0 ? "text-white" : "text-dark-900"
+                  }`}
+                >
                   {feature.title}
                 </h3>
-                <p className="text-dark-500 leading-relaxed">
+                <p
+                  className={`leading-relaxed ${
+                    index === 0 ? "text-primary-100" : "text-dark-500"
+                  }`}
+                >
                   {feature.description}
                 </p>
               </div>

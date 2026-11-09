@@ -48,7 +48,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
   const isUser = message.role === "user";
 
   return (
-    <div className={`flex ${isUser ? "justify-end" : "justify-start"} mb-4`}>
+    <div className={`flex message-enter ${isUser ? "justify-end" : "justify-start"} mb-4`}>
       <div className={isUser ? "message-user" : "message-ai"}>
         {isUser ? (
           <p className="whitespace-pre-wrap leading-relaxed text-sm">
