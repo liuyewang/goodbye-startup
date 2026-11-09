@@ -1,3 +1,4 @@
+import type { Usage } from '../ai/provider';
 import { SimulationStateSchema, type SimulationState } from '../../domain/simulation/schema';
 
 const DAY = 86_400_000;
@@ -83,14 +84,14 @@ export class Repository {
     }
     return {runId:id,sessionHash:hash,requestId,token,expectedVersion:version};
   }
-  async commitTurn(op: Reservation,state: SimulationState,now: number): Promise<void> {
+  async commitTurn(op: Reservation,state: SimulationState,now: number,usage?: Usage): Promise<void> {
     const parsed=SimulationStateSchema.parse(state);
     if(parsed.version!==op.expectedVersion+1) throw new Error('VERSION_CONFLICT');
     const json=JSON.stringify(parsed);
     const result=await this.db.batch([
       this.q(`UPDATE runs SET state_json=?,version=?,last_token=?,expires_at=? WHERE id=? AND session_hash=? AND version=? AND expires_at>?
         AND EXISTS(SELECT 1 FROM operations WHERE token=? AND status='pending' AND lease_until>?)`,json,parsed.version,op.token,now+RUN_TTL,op.runId,op.sessionHash,op.expectedVersion,now,op.token,now),
-      this.q("UPDATE operations SET status='succeeded',state_json=? WHERE token=? AND status='pending' AND EXISTS(SELECT 1 FROM runs WHERE id=? AND last_token=?)",json,op.token,op.runId,op.token),
+      this.q("UPDATE operations SET status='succeeded',state_json=?,prompt_version=?,model=?,input_tokens=?,output_tokens=? WHERE token=? AND status='pending' AND EXISTS(SELECT 1 FROM runs WHERE id=? AND last_token=?)",json,usage?.promptVersion??null,usage?.model??null,usage?.inputTokens??null,usage?.outputTokens??null,op.token,op.runId,op.token),
       this.q("UPDATE sessions SET expires_at=CASE WHEN used_at IS NULL THEN ? ELSE expires_at END,used_at=COALESCE(used_at,?) WHERE session_hash=? AND EXISTS(SELECT 1 FROM operations WHERE token=? AND status='succeeded')",now+SESSION_TTL,now,op.sessionHash,op.token),
     ]);
     if(result[0].meta.changes!==1) throw new Error('STALE_REQUEST');
