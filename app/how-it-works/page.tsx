@@ -92,10 +92,10 @@ export default function HowItWorksPage() {
         <div className="container-custom relative">
           <div className="max-w-2xl mx-auto text-center text-white">
             <h2 className="heading-lg mb-6 text-balance">
-              Ready to simulate 180 days in 15 minutes?
+              {t.common.ctaTitle}
             </h2>
             <p className="text-lg text-white/80 mb-10 text-balance">
-              It's free to try. No credit card required. Get the verdict before you quit your job.
+              {t.common.ctaBody}
             </p>
             <Link href="/simulator" className="btn bg-white text-primary-600 hover:bg-white/90 btn-lg">
               {t.common.startFree}

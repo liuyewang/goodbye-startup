@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "vinext dev --host 127.0.0.1",
-    "build": "vinext build",
+    "build": "npm run content:generate && vinext build",
     "preview": "wrangler dev --config dist/server/wrangler.json --port 4173",
     "deploy": "wrangler deploy --config dist/server/wrangler.json",
     "typecheck": "tsc --noEmit",
@@ -16,7 +16,8 @@
     "test:e2e": "playwright test",
     "check": "npm run typecheck && npm run lint && npm test && npm run build",
     "cf:types": "wrangler types",
-    "db:migrate:local": "wrangler d1 migrations apply DB --local"
+    "db:migrate:local": "wrangler d1 migrations apply DB --local",
+    "content:generate": "node scripts/generate-content.ts"
   },
   "dependencies": {
     "next": "16.4.5",
