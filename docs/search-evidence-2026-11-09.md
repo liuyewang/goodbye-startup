@@ -13,4 +13,4 @@ Homepage inspection reports PASS / submitted and indexed, with Google's stored c
 | P1       | Article audit: CAC arithmetic, unsupported universal benchmarks   | Correct formulas and label hypothetical examples, preserve slugs     | Bilingual content tests and source review                                        |
 | P2       | GSC has only four property impressions and no query rows          | Preserve URLs and revisit finalized data after an authorized release | Compare a later adequate window without treating sparse data as causal evidence  |
 
-Local metadata tests prove code behavior only. No improvement in search visibility is claimed, and the refactor has not been deployed.
+The refactor was subsequently deployed and all 15 public pages passed the live metadata audit; see the production release report. This proves deployed output only. No newer GSC measurement was taken during cutover and no improvement in search visibility is claimed.

@@ -15,9 +15,9 @@ Adversarial review: the existing Cloudflare token is source-IP restricted, so de
 - [x] Disable repository Actions and remove workflows after the user clarified the local-only requirement; do not configure any GitHub runners or deployment secrets.
 - [x] Review deployment/configuration changes, run relevant checks and push the release changes to the existing PR.
 - [x] Disable obsolete Pages production and preview Git builds before merging reviewed PR #1 into main as `794d7fd`.
-- [ ] Verify the local-only main revision and publish that exact revision with local Wrangler.
-- [ ] Switch goodbye.help to the verified Worker; preserve www/startup redirects and leave wise.goodbye.help untouched. Verify public pages, metadata, cookies, state, retention and at most six real model calls.
-- [ ] Record final versions, branch/check/deployment correspondence and rollback steps; synchronize handoff documents.
+- [x] Verify the local-only main revision and publish that exact revision with local Wrangler.
+- [x] Switch goodbye.help to the verified Worker; preserve www/startup redirects and leave wise.goodbye.help untouched. Verify public pages, metadata, cookies, state, retention and at most six real model calls.
+- [x] Record final versions, branch/check/deployment correspondence and rollback steps; synchronize handoff documents.
 
 ## Baseline and recovery
 
@@ -29,7 +29,7 @@ Adversarial review: the existing Cloudflare token is source-IP restricted, so de
 
 ## Evidence and decisions
 
-Release work is in progress. PR #1 was merged as `794d7fd`; the formal domain has not yet moved from Pages.
+Release complete. PR #1 was merged as `794d7fd`; local-only cleanup was committed as `7cec1a7`. The formal domain now serves that verified main application revision. Subsequent documentation commits record this release and do not alter its application artifact.
 
 ### User-directed deployment change
 
@@ -46,10 +46,42 @@ The earlier interpretation retained the `Verify` workflow for automatic tests. T
 - Production candidate deployed without a domain route, then private provider/session secrets were provisioned. All 15 public pages and robots/sitemap/RSS/llms/Markdown passed. Health and D1-backed session reads pass with secure cookie flags.
 - The staging origin check correctly rejects writes even when the request carries the apex Origin header, because it also checks the actual request URL. The first live-check script incorrectly expected 400; the remote 403 reproduced the mistake. The script was corrected to expect staging rejection and reserve canonical input-validation checks for after cutover. Application security was not weakened.
 - Independent release review found no blocking issues. Its minor suggestion was applied: the production artifact guard now checks `preview_urls=false` and requires workers.dev to be closed once the apex domain is configured.
-- Cloudflare domain changeset preflight succeeded for only `goodbye.help`; no DNS or domain mutation has occurred yet.
+- Cloudflare domain changeset preflight succeeded for only `goodbye.help`; the subsequent controlled cutover is recorded below.
 
-The candidate was validated with a temporary endpoint. The reviewed source now contains the final apex custom-domain route and `workers_dev=false`; applying this final configuration is deferred until local main checks pass and the old Pages domain binding is ready to transfer.
+The candidate was validated with a temporary endpoint. After local main checks passed, its final apex custom-domain route and `workers_dev=false` configuration were applied during the cutover below.
 
 ### Local-only verification
 
 After removing the workflow, `npm run check` passed all 41 tests, types, lint, formatting, build and client secret scan. `npm run test:e2e` passed all 32 cases locally across Chromium, Firefox, WebKit and a mobile viewport (1.1 minutes). No GitHub runner was used and these checks made no provider calls. Repository Actions readback remains disabled; the previous main run had already completed and no jobs were active.
+
+## Final release evidence
+
+| Item               | Verified result                                                                         |
+| ------------------ | --------------------------------------------------------------------------------------- |
+| Production URL     | `https://goodbye.help`                                                                  |
+| Application source | `main@7cec1a77ac88739eaea1847de5446d144828b880`                                         |
+| Worker             | `goodbye-startup-production`                                                            |
+| Active version     | `86bdd727-9abe-4d3b-b1c9-7b64b373a053`, 100% traffic                                    |
+| Production D1      | `68f019ae-d303-4f2e-8374-e24a761515c2`                                                  |
+| Production budget  | 60 attempted DeepSeek calls per UTC day                                                 |
+| Release acceptance | Exactly 6/6 attempts; all HTTP 200; stages 0, 5, 90, 120, 150, 180                      |
+| Preview budget     | 0; earlier 20-call authorization remains exhausted                                      |
+| Automation policy  | GitHub Actions disabled; workflow removed; Pages Git production/preview builds disabled |
+| Publish path       | Local Wrangler CLI with existing local credentials; no CI token added                   |
+| Plan               | Cloudflare Free; no upgrade                                                             |
+
+The generated production artifact guard, secret scan and deployment dry-run passed (Worker gzip 413.08 KiB). Local HEAD equaled origin/main and the checkout was clean at upload. `wrangler versions upload` recorded the full main SHA, then `wrangler versions deploy` activated the exact version. Readiness and D1-backed sessions were checked on the temporary endpoint before transferring the apex.
+
+Only the old apex CNAME and its Pages custom-domain attachment were removed. Local `wrangler triggers deploy` bound the apex to the production Worker. Remote readback confirms the domain is enabled, workers.dev and version previews are disabled, and daily cleanup is scheduled at `0 3 * * *`. The entire redirect ruleset and every unrelated DNS record match their private pre-cutover snapshots, including wise and apex MX/TXT. The retained Pages deployment ID is unchanged.
+
+Formal-site checks passed for health, no-store API responses, Secure/HttpOnly/SameSite cookies, origin rejection, invalid setup validation, all 15 HTML pages, titles/canonical/OG/JSON-LD, static RSS, robots, sitemap, llms.txt and public Markdown. The simulator is indexable. Both www-to-apex and startup-to-simulator redirects return the expected 301 destinations. The retired `/api/chat` returns 410. Browser language switching preserved entered form text; mobile layout was reviewed locally without starting an extra simulation.
+
+The six real attempts completed on 2026-11-09 at 13:03 UTC. The first three responses were English and the last three Chinese. Manual content inspection found consistent tutor-product context, bounded assumptions and uncertainty language; schema/timeline checks passed and Day 0 did not deduct cash. This small acceptance confirms the live path, not predictive accuracy or all possible model outputs. The synthetic run was deleted; session eligibility remained used. D1 readback shows six daily calls, one used session with six attempts, and zero remaining synthetic runs/operations. The durable ledger and synthetic responses stay outside Git with private permissions. No automatic provider retry occurred and no further release inference is authorized.
+
+## Rollback and remaining limits
+
+The old Pages project and deployment `b52ed56c-2790-4cab-8c67-d5aead5ee71c` remain available at their pages.dev address. For an application-only Worker rollback, select a compatible retained version and deploy it with local Wrangler. Do not down-migrate or erase production D1. If a full Pages rollback is required, remove only the apex Worker custom-domain binding, reattach `goodbye.help` to the retained Pages project, and restore its proxied apex CNAME from the private snapshot. Pages reactivation may take time; verify readiness and both redirects before declaring recovery. Keep Git auto-builds disabled. Pages cannot interpret new D1 saves.
+
+The production cron configuration is verified, while its first scheduled production execution has not yet been observed. The same handler has passed local execution and prior isolated preview execution; this is not a claim of a production cron run. Anonymous browser quotas remain bypassable by a new identity and are bounded by the global budget. No account/payments or live market research was added. Search impact is unmeasured. The vinext beta compatibility tradeoff remains documented in architecture/review.
+
+Final adversarial conclusion: **存活**. Local and formal-site acceptance pass; source, deployment version, account limits and local-only publishing policy are recorded. The finite real-model acceptance budget is exhausted and the loop stops without additional inference.

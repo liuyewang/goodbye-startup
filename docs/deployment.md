@@ -1,6 +1,6 @@
 # Deployment and rollback
 
-The refactor is deployed to a separate Workers/D1 preview and has not replaced the live Pages application. Do not deploy it with the old Pages build command. The 20-request evaluation is complete and preview inference is closed; see [preview validation](preview-validation-2026-11-09.md). The old Pages integration has all production and preview Git builds disabled. The user separately authorized refreshing the production provider secret and republishing the preserved original artifact. The user subsequently authorized production migration and explicitly selected local Wrangler deployment rather than GitHub Actions deployment. The current release is tracked in [production release](production-release-2026-11-09.md).
+The refactored application is live at `https://goodbye.help` on Worker `goodbye-startup-production` with isolated production D1. It was published locally from main, with GitHub Actions and legacy Pages Git builds disabled. Do not use the old Pages build command. Both finite acceptance allowances are exhausted: 20 preview/evaluation calls and six production release calls. Preview inference remains closed; production has an ongoing 60-attempt cap per UTC day. The old Pages project/artifact is retained for rollback. See [the production release](production-release-2026-11-09.md) for exact source/version correspondence and verification.
 
 ## Isolated preview configuration
 
@@ -34,7 +34,7 @@ Secret commands and migrations against the source configuration use `--config wr
 
 Keep `compatibility_date=2025-09-01` and `nodejs_compat` until separately regression-tested. Provider and session secrets use Wrangler secret commands or the dashboard; never put them in JSON config, shell history or command arguments. Pages secrets cannot be read back or exported to a new Worker. Supply the secret from its owner’s existing private source.
 
-## Reviewable release sequence
+## Initial provisioning sequence (completed on 2026-11-09)
 
 1. Run `npm ci`, local setup/migration, `npm run check`, browser tests, public-page audit and Worker smoke. Confirm local fixture mode so checks do not spend provider credits.
 2. Review git diff, dependency overrides, D1 schema and privacy/copy changes. Keep the original Pages deployment available.
@@ -42,7 +42,7 @@ Keep `compatibility_date=2025-09-01` and `nodejs_compat` until separately regres
 4. Set secrets via `npx wrangler secret put SESSION_SECRET` and `DEEPSEEK_API_KEY` for that Worker. Set preview origin, real model and a small approved daily cap. Do not reuse production D1 for browser tests.
 5. Apply `npx wrangler d1 migrations apply DB --remote` using the reviewed preview config. Build, then deploy its generated `dist/server/wrangler.json`. The `deploy` script targets that generated configuration and is not automatic CI.
 6. On preview, verify cookie Secure/HttpOnly/SameSite, origin enforcement, D1 bindings, rate limiting, daily cap, scheduled purge, assets, all 15 routes and metadata. Perform a small, explicitly authorized real-provider evaluation from `ai-evaluation.md`. Passing mock tests does not prove model quality or provider/model availability.
-7. Review domain cutover separately. The current domain is attached to Pages; do not bind a conflicting Worker custom domain before reviewing Cloudflare routing. Preserve `www` → apex and `startup.goodbye.help` → `/simulator` redirects. Do not touch `wise.goodbye.help` (separate payment callback service).
+7. Review domain cutover separately. For the initial migration, the domain was attached to Pages and required a reviewed transfer before binding the Worker custom domain. It is now attached to the production Worker; do not repeat the initial detach steps for routine releases. Preserve `www` → apex and `startup.goodbye.help` → `/simulator` redirects. Do not touch `wise.goodbye.help` (separate payment callback service).
 8. After cutover, read back live HTML/headers/RSS/robots/sitemap and verify real user flow. Review logs by request ID/code, never text. Confirm the scheduled retention purge executes.
 
 ## Rollback and recovery
@@ -77,6 +77,6 @@ TEST_BASE_URL=https://goodbye.help node scripts/audit-pages.ts
 TEST_BASE_URL=https://goodbye.help node scripts/check-live.mjs
 ```
 
-The live check uses health/session reads and invalid setup requests, never model inference. Production permits 60 attempted model calls per UTC day; failed provider attempts also count. Preview remains at zero. The six-call release acceptance allowance is separate and tracked in a private durable ledger.
+The live check uses health/session reads and invalid setup requests, never model inference. Production permits 60 attempted model calls per UTC day; failed provider attempts also count. Preview remains at zero. The separate six-call release acceptance allowance was fully consumed and is tracked in a private durable ledger; those six also counted toward that day's production cap. Do not reopen finite evaluation budgets without authorization.
 
-The initial production candidate is staged at its temporary workers.dev endpoint with no domain route. After verifying the main build, transfer only the apex custom domain from Pages to Workers, record it in `env.production.routes`, disable the temporary workers.dev endpoint, and repeat live checks. Preserve existing www/startup redirect rules and every unrelated DNS record. Retain the old Pages project/artifact for rollback and disable its obsolete Git auto-deploy before merging main.
+The initial candidate was staged at a temporary workers.dev endpoint, then the verified main version was activated with `wrangler versions upload` and `wrangler versions deploy`. Only the apex Pages CNAME/domain attachment was removed, followed by `wrangler triggers deploy` to bind the production custom domain and cron. Final `env.production.routes` binds only the apex, and workers.dev/version previews are disabled. Routine releases can use the deploy command above without detaching the domain again. Existing www/startup redirects and unrelated DNS records were verified unchanged.
