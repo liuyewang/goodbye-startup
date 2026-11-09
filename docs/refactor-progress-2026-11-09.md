@@ -29,7 +29,7 @@
 - [x] 核对 Cloudflare/Next.js/DeepSeek 官方资料与 npm 元数据。
 - [x] 形成推荐架构及可审阅设计：`docs/superpowers/specs/2026-11-09-full-project-refactor-design.md`。
 - [x] 独立 builder check 与设计修订（AI 叙事/结算、免费额度、记录过期三个契约）。
-- [ ] 用户审阅设计后编制具体实施计划。
+- [x] 用户已批准完整方案；实施计划已建立，进入连续执行。
 
 ### 重要发现与决策依据
 
@@ -50,3 +50,11 @@
 - Loop 5：完整场景、异常/并发/刷新、生产构建、复审与文档交付。
 
 每轮记录检查依据、修复、验证命令/结果和剩余限制；不以一次测试通过代替真实产品验收。
+
+## Loop 1–2 实施证据
+
+- vinext 1.4.4 兼容检查 91%，没有不支持的导入；采用其官方 Wrangler 配置路径，Cloudflare Vite 插件 1.67.0。默认 cf 初始化要求 beta 插件 v2，本轮不叠加该迁移。
+- 删除旧 next-on-pages 与 async_hooks 构建补丁；保留 compatibility_date=2025-09-01/nodejs_compat。开发首页与生产构建后的本地 Workers 首页、模拟页均返回 HTML。
+- ESLint 10 与旧 Next lint preset 的 React 插件 peer 约束冲突，改用 TypeScript + React Hooks 官方规则；重新解析依赖，不使用 force/legacy-peer-deps。
+- 领域规则 8 项测试通过；真实本地 D1 的所有权、首次成功计额、幂等、并发、过期租约、10 次尝试、日额度、删除与过期共 10 项测试通过。
+- 尚未调用真实付费模型、创建远程 D1 或修改线上部署。

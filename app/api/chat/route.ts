@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { NextRequest, NextResponse } from "next/server";
 import { SYSTEM_PROMPT_EN } from "@/lib/prompts/system-en";
 import { SYSTEM_PROMPT_ZH } from "@/lib/prompts/system-zh";
@@ -62,24 +63,23 @@ export async function POST(request: NextRequest) {
     );
 
     if (!response.ok) {
-      const errorData = await response.text();
-      console.error("DeepSeek API error:", response.status, errorData);
+      await response.body?.cancel();
       return NextResponse.json(
-        { error: "Failed to get response from AI", details: errorData, status: response.status },
+        { error: "Failed to get response from AI" },
         { status: response.status }
       );
     }
 
-    const data = await response.json();
+    const data = z.object({ choices: z.array(z.object({ message: z.object({ content: z.string() }) })) }).parse(await response.json());
 
     // Extract text from response
     const text = data?.choices?.[0]?.message?.content || "";
 
     return NextResponse.json({ text });
   } catch (error) {
-    console.error("API error:", error);
+    console.error("AI request failed", error instanceof Error ? error.name : "UnknownError");
     return NextResponse.json(
-      { error: "Internal server error", details: error instanceof Error ? error.message : String(error) },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }

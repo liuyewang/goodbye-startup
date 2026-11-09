@@ -37,7 +37,7 @@ function PaywallScreen() {
 }
 
 function SimulatorContent() {
-  const { state, addMessage, hasUsedFreeSimulation, resetGame, isLoading } = useGame();
+  const { state, addMessage, hasUsedFreeSimulation, isLoading } = useGame();
   const { t } = useI18n();
   const [isTyping, setIsTyping] = useState(false);
   const [initialized, setInitialized] = useState(false);
@@ -94,7 +94,7 @@ function SimulatorContent() {
         throw new Error("API request failed");
       }
 
-      const data = await response.json();
+      const data = await response.json() as { text?: string };
 
       if (data.text) {
         addMessage({ role: "ai", content: data.text });

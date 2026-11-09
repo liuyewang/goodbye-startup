@@ -48,3 +48,11 @@ next-env.d.ts
 # OS
 .DS_Store
 Thumbs.db
+
+# Local verification
+playwright-report/
+test-results/
+.dev.vars.*
+worker-configuration.d.ts
+
+!.dev.vars.example

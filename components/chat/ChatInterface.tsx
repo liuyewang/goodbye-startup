@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useGame } from "@/lib/game/GameContext";
-import { useI18n } from "@/lib/i18n";
 import { MessageList } from "./MessageList";
 import { ChatInput } from "./ChatInput";
 
@@ -13,7 +12,6 @@ interface ChatInterfaceProps {
 
 export function ChatInterface({ onSendMessage, isTyping = false }: ChatInterfaceProps) {
   const { state, addMessage } = useGame();
-  const { t } = useI18n();
   const [localTyping, setLocalTyping] = useState(false);
 
   const handleSend = async (message: string) => {

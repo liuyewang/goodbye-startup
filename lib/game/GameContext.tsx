@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
-import { GameState, GameStats, Message, INITIAL_STATE, INITIAL_STATS } from "./types";
+import { GameState, GameStats, Message, INITIAL_STATE } from "./types";
 import { loadGameState, saveGameState, clearGameState, getSimulationCount, incrementSimulationCount } from "./storage";
 
 interface GameContextType {

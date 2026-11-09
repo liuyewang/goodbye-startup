@@ -1,4 +1,4 @@
-import { GameState, INITIAL_STATE } from "./types";
+import { GameState } from "./types";
 
 const STORAGE_KEY = "gs_game_state";
 const SIMULATION_COUNT_KEY = "gs_simulation_count";
