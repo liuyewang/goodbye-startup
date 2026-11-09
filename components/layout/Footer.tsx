@@ -62,6 +62,22 @@ export default function Footer() {
                   {t.nav.startSimulator}
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/blog"
+                  className="text-sm hover:text-white transition-colors"
+                >
+                  {t.common.blogTitle}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/guides"
+                  className="text-sm hover:text-white transition-colors"
+                >
+                  {t.common.guideTitle}
+                </Link>
+              </li>
             </ul>
           </div>
 

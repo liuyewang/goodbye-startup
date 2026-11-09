@@ -28,6 +28,11 @@ for (const page of pages) {
     /<script[^>]+type="application\/ld\+json"[^>]*>(.*?)<\/script>/gs,
   ))
     JSON.parse(match[1]);
+  // Content hubs must remain discoverable in server-rendered navigation.
+  const footer = html.match(/<footer\b[^>]*>[\s\S]*?<\/footer>/)?.[0];
+  assert.ok(footer, page.path + " footer");
+  for (const hub of ["/blog", "/guides"])
+    assert.ok(footer.includes(`href="${hub}"`), page.path + " link to " + hub);
   assert.equal(response.headers.get("x-content-type-options"), "nosniff");
   console.log("PASS", page.path, title.length);
 }
@@ -40,6 +45,22 @@ for (const path of [
 ]) {
   const response = await fetch(base + path);
   assert.equal(response.status, 200, path);
+  if (path === "/sitemap.xml") {
+    assert.ok(response.headers.get("content-type")?.includes("xml"));
+    const xml = await response.text();
+    const locations = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(
+      (match) => new URL(match[1]).href,
+    );
+    assert.deepEqual(
+      locations.sort(),
+      pages.map((page) => new URL(SITE_URL + page.path).href).sort(),
+      "Sitemap must list every public canonical URL exactly once",
+    );
+  }
+  if (path === "/robots.txt")
+    assert.ok(
+      (await response.text()).includes(`Sitemap: ${SITE_URL}/sitemap.xml`),
+    );
   console.log("PASS", path);
 }
 console.log("Public page audit passed.");
