@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useI18n } from "@/lib/i18n";
+import { useI18n } from "@/src/i18n";
 
 export function Footer() {
   const { t } = useI18n();

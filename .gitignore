@@ -56,3 +56,5 @@ test-results/
 worker-configuration.d.ts
 
 !.dev.vars.example
+
+.vinext/

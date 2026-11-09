@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import LanguageProvider from "@/src/i18n";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 
@@ -124,9 +125,9 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(appJsonLd) }}
         />
-        <Navbar />
+        <LanguageProvider><Navbar />
         <main className="flex-1 pt-16">{children}</main>
-        <Footer />
+        <Footer /></LanguageProvider>
       </body>
     </html>
   );

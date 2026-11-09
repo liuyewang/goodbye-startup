@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useI18n } from "@/lib/i18n";
-import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
+import { useI18n } from "@/src/i18n";
+import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
 
 export function Navbar() {
   const { t } = useI18n();
