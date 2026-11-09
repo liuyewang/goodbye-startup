@@ -7,3 +7,12 @@ package-lock.json
 worker-configuration.d.ts
 playwright-report
 test-results
+
+.vinext
+docs/archive
+public/content
+public/llms.txt
+public/blog/feed.xml
+
+# Approved historical design/plans retain their original formatting
+docs/superpowers

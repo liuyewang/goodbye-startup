@@ -1,338 +1,67 @@
-# AGENTS.md
+# Goodbye Startup — agent instructions
 
-> AI Agent Development Specification for Goodbye Startup
-> Last Updated: 2026-08-05
+Updated 2026-11-09 after the user-approved full refactor. This file replaces the old Next 14/Gemini/Pages/browser-authority instructions. Historical copies are in `docs/archive/` and are not active requirements.
 
----
+## 全局用户规则
 
-## 1. Project Overview
+- 复杂任务主动检查、诊断、修复、验证、复审，在授权内持续推进；达到验收标准、无已知关键问题后停止有边界的 loop。
+- 优先核对适用的官方方法，不为追新增加无必要复杂度。多步骤任务维护进度文档，持续报告发现、证据及限制。
+- CLI 优先；权限、付费、不可逆操作或外部依赖需要明确边界。先完成可独立推进的工作，不伪造部署、模型质量或搜索效果。
+- Firecrawl 默认不用；普通搜索/读取足够即停止。付费批量抓取前说明用途/规模并取得授权，不自动扩张。
 
-**Project Name**: Goodbye Startup
-**Description**: A data-driven AI startup simulator built with Next.js + Cloudflare
-**Primary Audience**: US-based aspiring entrepreneurs (25-35)
-**Secondary Audience**: Chinese users (i18n supported)
-**Status**: MVP Development
+<!-- BEGIN GSC-INSIGHTS -->
 
----
+## GSC 网站搜索优化
 
-## 2. Tech Stack Constraints (HARD RULES)
+- 对网站的SEO、自然搜索表现、索引诊断或内容优先级任务，使用用户级 `gsc-insights` skill：`~/.agents/skills/gsc-insights/SKILL.md`。命令为 `gsc`，找不到时用 `~/.local/bin/gsc`。
+- 先运行 `gsc doctor` 确认当前项目绑定；绑定来自用户级注册表或项目 `.gsc.json`。没有绑定不猜测域名。只读取当前项目或用户明确指定的站点；普通代码/样式修改无需强制取数。
+- 复用已有只读授权和适用的新鲜报告；原始数据与凭据留在仓库外。分析注明日期、覆盖天数、口径和缺失，优化任务附证据、优先级与验收标准。
+- 工具跨项目使用不改变各项目的协作、编辑或发布授权。遇授权失效再说明；不自动扩大scope、创建定时任务或启用付费服务。新站可按已授权范围接入，未上线/无数据不报成零流量。
 
-### 2.1 Frontend
-- **Framework**: Next.js 14 with App Router (no Pages Router)
-- **Language**: TypeScript (strict mode)
-- **Styling**: Tailwind CSS (no CSS-in-JS libraries)
-- **State**: React Context + localStorage (no Redux/Zustand for MVP)
-- **i18n**: Custom lightweight implementation (no next-intl / i18next)
+<!-- END GSC-INSIGHTS -->
 
-### 2.2 Backend
-- **Runtime**: Cloudflare Pages Functions (Workers)
-- **API**: REST only (no GraphQL for MVP)
-- **Database**: localStorage (MVP) → Cloudflare D1 (v1.1)
-- **AI**: Google Gemini 3.5 Flash with Google Search enabled
+## Source of truth
 
-### 2.3 Deployment
-- **Platform**: Cloudflare Pages
-- **Domain**: goodbye.help
-- **CI/CD**: Git push → auto deploy
+Read README → `docs/PRD.md` → `docs/tech-stack.md` → `docs/deployment.md`. Follow the approved plan and `docs/refactor-progress-2026-11-09.md`; preserve user edits and keep Conventional Commits. Use the Superpowers design/plan/execution/verification/review workflow when applicable. Do not restart approved design gates merely because context compacted.
 
-### 2.4 Forbidden Dependencies
-Do NOT add these without explicit approval:
-- Any state management library (Redux, Zustand, MobX, etc.)
-- Any UI component library (MUI, Ant Design, Chakra, etc.)
-- Any i18n library
-- Any form library (React Hook Form, Formik, etc.)
-- Any animation library (Framer Motion, GSAP, etc.)
-- Any CSS framework other than Tailwind
+Actual stack: strict TypeScript, React 19, Next 16 compatible App Router through vinext, Vite, Tailwind 3.4, Cloudflare Workers/D1 and DeepSeek. The production Pages site is retained until an authorized cutover. No UI component, animation, form, state-management or i18n library may be added without explicit approval. No ORM, agent framework or new service without a concrete need.
 
-**Reason**: Keep bundle size small, reduce complexity, maintain full control over UI.
+## Trust boundaries
 
----
+- Pure model in `src/domain/simulation`, provider in `src/server/ai`, D1 in `src/server/storage`, thin REST routes in `app/api`.
+- Browser text and model outputs are untrusted. Validate both; never import local cash/versions/entitlement into server authority.
+- Server controls `[0,5,90,120,150,180]`, numeric settlement and outcome. First AI reply initializes Day 0 without charging costs. Money is integer cents; finite bounds live in schemas.
+- A signed HttpOnly cookie identifies an anonymous allocation, not a natural person. One free eligibility is used on first success; maximum 10 provider attempts. Atomic D1 reservation and lease/version commit are mandatory. No automatic provider retry.
+- Numerical saves expire after 30 days; used quota after 180 days. Daily scheduled cleanup plus opportunistic cleanup removes expired data. Deleting/abandoning/expiry does not refund used eligibility.
+- No accounts or real payments. Paid plans are unavailable; do not invent checkout, billing, refunds or person-level limits.
+- Never persist/log ideas, user decisions, AI prose, prompts or raw IPs. Secrets stay in runtime bindings. Never commit `.env.local`, `.dev.vars`, raw GSC reports or credentials.
+- Request body 32KiB; idea/decision 2000 characters; history 12 messages/12000 characters; upstream body 128KiB; 4096 output tokens; 45-second timeout. Fail closed if production configuration is missing.
+- Success envelope `{data, requestId}`, error `{error, code, requestId}`. Do not expose upstream payloads or stack traces.
 
-## 3. Directory Structure Convention
+## UI and content
 
-```
-goodbye-startup/
-├── app/                          # Next.js App Router
-│   ├── layout.tsx               # Root layout (Navbar + Footer + providers)
-│   ├── page.tsx                 # Landing page
-│   ├── sim/page.tsx             # Simulator page
-│   ├── how-it-works/page.tsx    # Product explanation
-│   ├── pricing/page.tsx         # Pricing page
-│   ├── about/page.tsx           # About page
-│   ├── privacy/page.tsx         # Privacy policy
-│   ├── api/chat/route.ts        # Gemini API proxy
-│   └── globals.css              # Global styles + Tailwind directives
-├── components/                   # React components
-│   ├── layout/                  # Layout components (Navbar, Footer)
-│   ├── ui/                      # Reusable UI components (Button, Card, etc.)
-│   ├── chat/                    # Chat interface components
-│   └── sim/                     # Simulator-specific components
-├── lib/                          # Utility libraries
-│   ├── i18n/                    # Internationalization
-│   │   ├── index.ts
-│   │   ├── en.ts
-│   │   └── zh.ts
-│   ├── prompts/                 # AI system prompts
-│   │   ├── system-prompt-en.ts
-│   │   └── system-prompt-zh.ts
-│   ├── game/                    # Game state logic
-│   │   ├── types.ts
-│   │   ├── context.tsx
-│   │   └── storage.ts
-│   └── gemini.ts                # Gemini API wrapper
-├── hooks/                        # Custom React hooks
-├── docs/                         # Project documentation
-│   ├── BRD.md
-│   ├── PRD.md
-│   ├── tech-stack.md
-│   ├── execution-plan.md
-│   └── superpowers/             # Superpowers workflow docs
-│       └── plans/
-├── public/                       # Static assets
-├── tests/                        # Tests (when added)
-├── AGENTS.md                     # This file
-├── README.md
-├── package.json
-├── next.config.js
-├── tailwind.config.js
-├── tsconfig.json
-├── postcss.config.js
-├── wrangler.toml                 # Cloudflare config
-└── .gitignore
+- Default English SSR; read persisted/browser language after hydration. Use shared React context, no reload on language changes. All copy must be bilingual; typed dictionaries/registry are the content source.
+- Say “一次模拟”, never “一次对话”. Where 工作原理 shows stage days, explain “天数是模拟内的，真实只需约 15 分钟”.
+- AI proposals are assumptions, not researched facts. Display authoritative metrics separately. Do not claim real-time market retrieval or predictive accuracy.
+- React safely renders text. No untrusted HTML. JSON-LD uses `safeJsonLd` escaping.
+- Use function components, default component/page exports, `type` object shapes, `unknown` instead of `any`, explicit exported signatures. Interface augmentation for generated Cloudflare bindings is an exception.
+- Tailwind/custom CSS only; no inline styles. Keep mobile scrolling and keyboard/IME behavior usable. Do not lock the body to hide substantive content.
+- Preserve 15 public URLs. `src/content/registry.ts` owns metadata, sitemap, RSS and public Markdown. Title ≤60, description ≤155, self canonical and distinct OG URL. Root slash normalization is URL-equivalent.
+- Keep static RSS `public/blog/feed.xml`, raster OG `public/og.png`, permitted public AI crawlers. Public exports never include API/session content. FAQ schema and visible text share the same copy.
+
+## Commands and release boundary
+
+```sh
+npm ci
+npm run setup:local
+npm run db:migrate:local
+npm run dev
+npm run check
+npm run test:e2e
 ```
 
-**Rule**: Create directories only when needed. Don't create empty directories speculatively.
+Normal checks use local mock mode and do not spend provider credits. Workers uses ignored `.dev.vars`; legacy `.env.local` is not the binding source. Keep pinned compatibility date `2025-09-01` and `nodejs_compat` until separately verified.
 
----
+Run behavioral tests for state/persistence/trust/recovery changes, real D1 integration for SQL, browser scenarios for UX, production build + runtime smoke before claiming completion. Keep external provider evaluation distinct from deterministic fixture success. Archive stale docs instead of leaving contradictory active instructions.
 
-## 4. Naming Conventions
-
-### 4.1 Files
-- **Components**: PascalCase (`Navbar.tsx`, `ChatInterface.tsx`)
-- **Utilities / Hooks**: camelCase (`useGameState.ts`, `gemini.ts`)
-- **Types**: PascalCase (`GameState`, `Message`)
-- **Pages**: `page.tsx` (Next.js convention)
-- **Config files**: kebab-case (`tailwind.config.js`)
-
-### 4.2 Variables & Functions
-- **Variables**: camelCase
-- **Functions**: camelCase (verb + noun: `getUser`, `sendMessage`)
-- **Constants**: UPPER_SNAKE_CASE (`MAX_FREE_SIMULATIONS`, `GEMINI_MODEL`)
-- **Booleans**: prefix with `is` / `has` / `should` (`isLoading`, `hasCompleted`)
-
-### 4.3 Components
-- **Default export**: Always use default export for page and component files
-- **Props interface**: `ComponentNameProps` (e.g., `ButtonProps`)
-
-### 4.4 Git Commits
-Follow Conventional Commits:
-```
-feat: add new feature
-fix: fix a bug
-docs: update documentation
-style: formatting, no code change
-refactor: refactor code
-test: add tests
-chore: build process, tooling, dependencies
-```
-
-**Examples**:
-- `feat: add chat interface component`
-- `fix: fix language switcher state persistence`
-- `docs: update PRD with pricing details`
-
----
-
-## 5. Code Style Rules
-
-### 5.1 TypeScript
-- Always use `type` for object shapes, `interface` only for extends/implements
-- No `any` — use `unknown` if type is truly uncertain
-- Prefer type inference over explicit annotations
-- All function parameters and return types must be explicitly typed for exported functions
-
-### 5.2 React
-- Use function components only (no class components)
-- Prefer Server Components for static content
-- Use Client Components (`'use client'`) only when needed (state, effects, browser APIs)
-- Hooks at the top of the component
-- No inline styles — use Tailwind classes
-
-### 5.3 Tailwind CSS
-- Use utility classes, don't write custom CSS unless absolutely necessary
-- Responsive: mobile-first (`sm:`, `md:`, `lg:`)
-- Colors: use the custom `primary` color palette defined in tailwind.config.js
-- Spacing: use Tailwind's spacing scale, don't use arbitrary values unless needed
-
-### 5.4 API Routes
-- Always validate input
-- Always return proper HTTP status codes
-- Error responses: `{ error: string }`
-- Success responses: `{ data: ... }`
-- Never expose API keys or sensitive data to client
-
----
-
-## 6. Security Rules (HARD RULES)
-
-### 6.1 API Key Security
-- NEVER put API keys in client-side code
-- ALL API keys must be in environment variables
-- API proxy must be server-side only
-- Never commit `.env` files to Git
-
-### 6.2 User Data
-- MVP: no user accounts, all data in localStorage
-- Don't collect personal information
-- Don't store chat history server-side (MVP)
-- If storing data later, encrypt sensitive data
-
-### 6.3 Input Validation
-- Validate all user input on both client and server
-- Sanitize user-generated content before rendering
-- No `dangerouslySetInnerHTML` without sanitization
-
-### 6.4 Rate Limiting
-- Implement basic rate limiting on API endpoints
-- Prevent abuse of Gemini API (cost control)
-
----
-
-## 7. i18n Rules
-
-### 7.1 Language Strategy
-- Default: English (`en`)
-- Secondary: Chinese (`zh`)
-- Detection: localStorage → browser language → default (en)
-- Switching: manual switcher in Navbar, persists to localStorage
-
-### 7.2 Translation Rules
-- All UI text must go through the i18n system
-- No hardcoded English strings in components
-- Translation keys: `namespace.keyName` (e.g., `nav.home`, `hero.title`)
-- AI-generated content: handled by Gemini itself (prompt language determines output)
-
----
-
-## 8. Game / Simulator Rules
-
-### 8.1 Game State
-- State managed via React Context
-- Persisted to localStorage
-- Key: `goodbye-startup-state`
-- Structure: defined in `lib/game/types.ts`
-
-### 8.2 Free Tier Limit
-- 1 free simulation per user
-- Counter stored in localStorage
-- Paywall triggers when user starts 2nd simulation
-- Paywall: redirect to /pricing or show modal
-
-### 8.3 AI Interaction
-- System prompt determines AI behavior
-- Language follows UI language setting
-- Google Search enabled for fact-checking
-- Parse stats from AI response (JSON or structured format)
-
----
-
-## 9. Deployment Rules
-
-### 9.1 Environment Variables
-Set in Cloudflare Pages dashboard:
-- `GEMINI_API_KEY` - Gemini API key (required)
-- `NEXT_PUBLIC_SITE_URL` - Site URL (for metadata)
-
-### 9.2 Build Command
-```bash
-npx @cloudflare/next-on-pages
-```
-
-### 9.3 Deploy Command
-```bash
-npx wrangler pages deploy .vercel/output/static
-```
-
-### 9.4 Domain
-- Primary (canonical): `goodbye.help` — CNAME → `goodbye-startup.pages.dev`, proxied
-- `www.goodbye.help` — 301 → apex via Zone Redirect Rule (`http_request_dynamic_redirect`); DNS CNAME stays proxied, do NOT bind www to Pages
-- `startup.goodbye.help` — 301 → `https://goodbye.help/simulator` via the same Redirect Rule (simulator entry, not a mirrored site). It is intentionally NOT bound as a Pages custom domain — Pages would shadow the redirect rule.
-- `wise.goodbye.help` — separate Lemon Squeezy payment callback (Aliyun ECS), do not touch
-- SSL mode: Full (strict). DNS managed by Cloudflare; auto-cert.
-- Git integration: Pages project is connected to `liuyewang/goodbye-startup`, production branch `main`, build dest `.vercel/output/static`, env `GEMINI_API_KEY`. Direct `wrangler pages deploy` still works and overrides.
-
-### 9.5 SEO & GEO Conventions
-- Metadata: root `app/layout.tsx` sets metadataBase + default title template + OG/Twitter; each route segment adds its own `layout.tsx` with `title`/`description`/`alternates.canonical`.
-- `/simulator` is indexable since 2026-11-06: `robots: index, follow` + self canonical `/simulator`, listed in `app/sitemap.ts`. Its indexable copy lives in `components/sim/SimulatorGuide.tsx` (strings under i18n `sim.guide`) — if you change the flow, phases, or stat model, update that copy in the same commit, otherwise the page becomes thin content again.
-- `app/sitemap.ts` and `app/robots.ts` are Next-native (prerendered). robots.txt **explicitly allows** GPTBot/OAI-SearchBot/ChatGPT-User/ClaudeBot/PerplexityBot/Google-Extended — GEO strategy is to be cited by AI engines, do not block them.
-- JSON-LD: Organization + WebApplication in root layout; FAQPage on landing. When adding content sections with Q&A structure, keep the visible HTML answer text in sync with the JSON-LD `acceptedAnswer` (AI crawlers read the HTML, JSON-LD only enriches).
-- Favicon is a static SVG in `public/`; the OG image is `public/og.png` (1200×630 PNG, generated from `public/og.svg` with `sharp`) — social and AI platforms do not render SVG in previews, so always ship a raster OG image. No `ImageResponse` (avoids next-on-pages edge compatibility issues).
-- Title budget: segment titles must stay short enough that `title + " | Goodbye Startup"` (17 chars) ≤ 60 chars; descriptions ≤ 155 chars. Check with a curl + length audit after deploy.
-- Verification after deploy: `curl` the deployed URL for `<title>`, canonical, `application/ld+json` count, `/robots.txt`, `/sitemap.xml`, and security headers.
-
----
-
-## 10. Testing Rules (MVP)
-
-**MVP Testing Priority**: Manual testing > automated tests
-
-For MVP, focus on:
-1. Manual end-to-end testing of core flow
-2. Cross-browser testing (Chrome, Safari, Firefox)
-3. Mobile responsive testing
-4. i18n testing (both languages)
-
-Automated tests can be added post-MVP.
-
----
-
-## 11. Documentation Rules
-
-### 11.1 Required Docs
-- `README.md` - Project overview, quick start
-- `AGENTS.md` - This file (AI agent spec)
-- `docs/BRD.md` - Business requirements
-- `docs/PRD.md` - Product requirements
-- `docs/tech-stack.md` - Technical architecture
-- `docs/execution-plan.md` - High-level timeline
-
-### 11.2 Code Documentation
-- Comment "why", not "what"
-- JSDoc for exported functions
-- Complex logic needs inline comments
-- No commented-out code (delete it, Git remembers)
-
----
-
-## 12. Workflow Rules
-
-Follow the Superpowers workflow:
-
-1. **Brainstorming**: Clarify requirements before coding
-2. **Writing Plans**: Break work into bite-sized tasks
-3. **Executing Plans**: Task by task, commit after each
-4. **Verification**: Test before declaring done
-5. **Code Review**: Self-review before finalizing
-
----
-
-## 13. Known Constraints & Tradeoffs
-
-Document decisions that might seem odd but are intentional:
-
-1. **No UI library**: Full control over design, smaller bundle
-2. **Custom i18n**: Lightweight, no dependency bloat
-3. **localStorage instead of DB**: MVP speed, no auth needed
-4. **No state management library**: Context is enough for MVP
-5. **Fake payment page**: For PayPal application, real payment later
-
----
-
-## 14. Emergency Contact
-
-If something is unclear or you need a decision:
-- Check PRD first
-- Check tech-stack.md second
-- If still unclear, stop and ask the human
-
-**Never make up requirements. When in doubt, ask.**
+Do not push/deploy/provision paid resources/change production domains without existing authorization or a concrete final review. Existing `www` redirect → apex and `startup.goodbye.help` → `/simulator` remain; `wise.goodbye.help` is a separate service and must not be touched. CI validates without deploying.

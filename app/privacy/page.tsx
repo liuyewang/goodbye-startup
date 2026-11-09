@@ -12,12 +12,8 @@ export default function PrivacyPage() {
         <div className="absolute inset-0 bg-grid-pattern opacity-30" />
         <div className="container-custom relative">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="heading-lg mb-4">
-              {t.privacy.title}
-            </h1>
-            <p className="text-dark-500">
-              {t.privacy.lastUpdated}
-            </p>
+            <h1 className="heading-lg mb-4">{t.privacy.title}</h1>
+            <p className="text-dark-500">{t.privacy.lastUpdated}</p>
           </div>
         </div>
       </section>

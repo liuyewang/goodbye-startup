@@ -1,3 +1,5 @@
+> Historical snapshot, superseded by the root README and current docs. Do not use these commands for the refactored branch.
+
 # AI Agent 开发笔记
 
 **项目名称**：Goodbye Startup  

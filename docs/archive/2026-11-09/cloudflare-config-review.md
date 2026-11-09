@@ -1,3 +1,5 @@
+> Historical snapshot, superseded by the root README and current docs. Do not use these commands for the refactored branch.
+
 # goodbye.help Cloudflare 配置规范审查与变更记录
 
 > **其他会话接手前必读**：本文件是 goodbye.help 域名在 Cloudflare 上的**唯一事实来源**。任何涉及 DNS、SSL/TLS、重定向、缓存、安全设置的改动，先读本文件再动手，改完必须回写到「变更清单」。

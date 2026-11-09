@@ -1,3 +1,5 @@
+> Historical snapshot, superseded by the root README and current docs. Do not use these commands for the refactored branch.
+
 # 任务进度：SEO + GEO 优化、部署、文档同步
 
 **日期**：2026-11-06

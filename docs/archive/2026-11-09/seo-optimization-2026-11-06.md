@@ -1,3 +1,5 @@
+> Historical snapshot, superseded by the root README and current docs. Do not use these commands for the refactored branch.
+
 # SEO 优化与 Loop 复核记录（2026-11-06）
 
 > 本轮范围：把 `/simulator` 从 noindex 改为可索引，并在此基础上重跑一轮全站 SEO 优化，最后用 Loop 模式做五视角复核。

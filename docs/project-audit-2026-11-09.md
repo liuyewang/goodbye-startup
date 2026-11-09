@@ -31,17 +31,17 @@
 
 ## 地址与版本
 
-| 项目 | 位置或结果 |
-| --- | --- |
-| 当前工作目录 | `/Users/guan/Documents/ChatGPT/创业模拟器(Goodbye)` |
-| 旧工作目录 | `/Users/guan/Doubao/chats/2026-10-23/new-chat-2/goodbye-startup`，本次确认仍存在 |
-| GitHub | https://github.com/liuyewang/goodbye-startup |
-| Git remote | `git@github.com:liuyewang/goodbye-startup.git` |
-| 生产主站 | https://goodbye.help |
-| 模拟器 | https://goodbye.help/simulator |
-| Pages 项目域名 | https://goodbye-startup.pages.dev，本次 GET 200 |
-| www | `https://www.goodbye.help/pricing?ref=audit` → 301 → `https://goodbye.help/pricing?ref=audit` |
-| startup | https://startup.goodbye.help → 301 → https://goodbye.help/simulator |
+| 项目             | 位置或结果                                                                                    |
+| ---------------- | --------------------------------------------------------------------------------------------- |
+| 当前工作目录     | `/Users/guan/Documents/ChatGPT/创业模拟器(Goodbye)`                                           |
+| 旧工作目录       | `/Users/guan/Doubao/chats/2026-10-23/new-chat-2/goodbye-startup`，本次确认仍存在              |
+| GitHub           | https://github.com/liuyewang/goodbye-startup                                                  |
+| Git remote       | `git@github.com:liuyewang/goodbye-startup.git`                                                |
+| 生产主站         | https://goodbye.help                                                                          |
+| 模拟器           | https://goodbye.help/simulator                                                                |
+| Pages 项目域名   | https://goodbye-startup.pages.dev，本次 GET 200                                               |
+| www              | `https://www.goodbye.help/pricing?ref=audit` → 301 → `https://goodbye.help/pricing?ref=audit` |
+| startup          | https://startup.goodbye.help → 301 → https://goodbye.help/simulator                           |
 | 历史 www.startup | 本次请求报 `Could not resolve host: www.startup.goodbye.help`；不能沿用旧配置文档中的存在状态 |
 
 `git ls-remote origin refs/heads/main` 本次返回 `a47c0073b1e0cb715de869278d96cae42b9f6875`，与本地 HEAD、origin/main 一致；该提交日期为 2026-11-07。
@@ -52,22 +52,22 @@
 
 ## 文档地图
 
-| 文档 | 用途 | 当前判断 |
-| --- | --- | --- |
-| `HANDOFF.md` | 新 AI 接手入口、技术迁移、部署坑、文案约束 | 重要但非完整验收记录；key 占位描述已过时，遗漏核心状态/计费缺口 |
-| `README.md` | 简介、启动与文档导航 | 仍写 Next 14 / Gemini / `npm run deploy`，与当前配置不符 |
-| `AGENTS.md` | 依赖、安全、文案、部署和工作流约束 | 约束继续有效；技术栈、环境变量、存储 key 等部分信息过时，以用户最新指示和代码事实区分 |
-| `docs/BRD.md` | 商业定位、用户、定价、成功指标 | 2026-08-05 原始商业方案，目标数据不代表已达成 |
-| `docs/PRD.md` | 用户流程、功能范围、验收标准 | 原始产品方案；验收项未逐项签收 |
-| `docs/tech-stack.md` | 架构、数据模型、API、部署、扩展 | Gemini、Google Search、SSE、R2 等不能当成当前实现 |
-| `docs/execution-plan.md` | 原始三天排期、任务拆分 | 大量未勾选项与已存在代码并存，里程碑又使用完成符号，不能当真实当前进度 |
-| `docs/superpowers/plans/2026-08-05-mvp-implementation.md` | 细化实施步骤 | 前四项较细，后八项主要是提纲；不是已经执行完毕的证明 |
-| `docs/agent-notes.md` | 需求确认、技术取舍与历史操作笔记 | 保留决策背景；Gemini、部署 `.next` 等命令过时 |
-| `docs/progress-2026-10-23.md` | 用户自定义初始模型、无人机天气 app 模拟测试 | 仍写“设计完成，开始实现”；相关表单/类型/接口在两份目录中未找到 |
-| `docs/progress-seo-geo.md` | 第一轮 SEO/GEO 优化完成记录 | 历史记录；当时 simulator noindex 已被后续工作替代 |
-| `docs/seo-optimization-2026-11-06.md` | simulator 索引、内容补强、中文 SEO 取舍、guides 修复 | 解释后续决策；早期 6/7 页检查不覆盖目前所有 15 页 |
-| `docs/cloudflare-config-review.md` | DNS、TLS、安全、重定向、回滚与待办 | 有用的历史操作记录，但 startup 等状态与后来的 AGENTS.md/线上结果有出入 |
-| 本文 | 2026-11-09 的交接核查及当前缺口 | 本次新增，未改动上述历史材料 |
+| 文档                                                      | 用途                                                 | 当前判断                                                                              |
+| --------------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `HANDOFF.md`                                              | 新 AI 接手入口、技术迁移、部署坑、文案约束           | 重要但非完整验收记录；key 占位描述已过时，遗漏核心状态/计费缺口                       |
+| `README.md`                                               | 简介、启动与文档导航                                 | 仍写 Next 14 / Gemini / `npm run deploy`，与当前配置不符                              |
+| `AGENTS.md`                                               | 依赖、安全、文案、部署和工作流约束                   | 约束继续有效；技术栈、环境变量、存储 key 等部分信息过时，以用户最新指示和代码事实区分 |
+| `docs/BRD.md`                                             | 商业定位、用户、定价、成功指标                       | 2026-08-05 原始商业方案，目标数据不代表已达成                                         |
+| `docs/PRD.md`                                             | 用户流程、功能范围、验收标准                         | 原始产品方案；验收项未逐项签收                                                        |
+| `docs/tech-stack.md`                                      | 架构、数据模型、API、部署、扩展                      | Gemini、Google Search、SSE、R2 等不能当成当前实现                                     |
+| `docs/execution-plan.md`                                  | 原始三天排期、任务拆分                               | 大量未勾选项与已存在代码并存，里程碑又使用完成符号，不能当真实当前进度                |
+| `docs/superpowers/plans/2026-08-05-mvp-implementation.md` | 细化实施步骤                                         | 前四项较细，后八项主要是提纲；不是已经执行完毕的证明                                  |
+| `docs/agent-notes.md`                                     | 需求确认、技术取舍与历史操作笔记                     | 保留决策背景；Gemini、部署 `.next` 等命令过时                                         |
+| `docs/progress-2026-10-23.md`                             | 用户自定义初始模型、无人机天气 app 模拟测试          | 仍写“设计完成，开始实现”；相关表单/类型/接口在两份目录中未找到                        |
+| `docs/progress-seo-geo.md`                                | 第一轮 SEO/GEO 优化完成记录                          | 历史记录；当时 simulator noindex 已被后续工作替代                                     |
+| `docs/seo-optimization-2026-11-06.md`                     | simulator 索引、内容补强、中文 SEO 取舍、guides 修复 | 解释后续决策；早期 6/7 页检查不覆盖目前所有 15 页                                     |
+| `docs/cloudflare-config-review.md`                        | DNS、TLS、安全、重定向、回滚与待办                   | 有用的历史操作记录，但 startup 等状态与后来的 AGENTS.md/线上结果有出入                |
+| 本文                                                      | 2026-11-09 的交接核查及当前缺口                      | 本次新增，未改动上述历史材料                                                          |
 
 Cloudflare 配置文档还记录一个飞书副本：https://my.feishu.cn/docx/BdeNdZy7ooLanMxR1YVcSrm7nXb 。本轮未读取该在线副本，不能确认它与本地同步。
 
@@ -88,18 +88,18 @@ Cloudflare 配置文档还记录一个飞书副本：https://my.feishu.cn/docx/B
 
 ## 实际技术与运行方式
 
-| 层 | 当前实现 |
-| --- | --- |
-| 前端 | Next.js App Router，lockfile 为 15.5.2；React/React DOM 19.2.8 |
-| 类型/样式 | TypeScript strict、Tailwind 3.4、自定义 CSS，无新增 UI/动画/状态/i18n 库 |
-| 状态 | React Context + localStorage：`gs_game_state`、`gs_simulation_count`；语言为 `gs_language` |
-| AI 路由 | `POST /api/chat`，edge runtime，读取 `DEEPSEEK_API_KEY`，请求 DeepSeek `deepseek-flash` |
-| AI 返回 | 非流式，`max_tokens=4096`、`temperature=0.7`，成功返回 `{ text }`；未实现文档里的 `{ data: ... }` 统一包装 |
-| 语言 | 自定义 en/zh 字典；localStorage → 浏览器语言 → 英文；切换后刷新页面 |
-| 部署 | Cloudflare Pages + `@cloudflare/next-on-pages`，产物 `.vercel/output/static` |
-| 兼容配置 | `compatibility_date=2025-09-01` + `nodejs_compat` |
-| 存储/账号 | 无用户账号、数据库、云端存档；D1/R2 是历史方案或后续方向 |
-| 数据来源 | 提示词写死的基准范围 + 模型知识；没有接入 Google Search、实时检索、基准数据库 |
+| 层        | 当前实现                                                                                                   |
+| --------- | ---------------------------------------------------------------------------------------------------------- |
+| 前端      | Next.js App Router，lockfile 为 15.5.2；React/React DOM 19.2.8                                             |
+| 类型/样式 | TypeScript strict、Tailwind 3.4、自定义 CSS，无新增 UI/动画/状态/i18n 库                                   |
+| 状态      | React Context + localStorage：`gs_game_state`、`gs_simulation_count`；语言为 `gs_language`                 |
+| AI 路由   | `POST /api/chat`，edge runtime，读取 `DEEPSEEK_API_KEY`，请求 DeepSeek `deepseek-flash`                    |
+| AI 返回   | 非流式，`max_tokens=4096`、`temperature=0.7`，成功返回 `{ text }`；未实现文档里的 `{ data: ... }` 统一包装 |
+| 语言      | 自定义 en/zh 字典；localStorage → 浏览器语言 → 英文；切换后刷新页面                                        |
+| 部署      | Cloudflare Pages + `@cloudflare/next-on-pages`，产物 `.vercel/output/static`                               |
+| 兼容配置  | `compatibility_date=2025-09-01` + `nodejs_compat`                                                          |
+| 存储/账号 | 无用户账号、数据库、云端存档；D1/R2 是历史方案或后续方向                                                   |
+| 数据来源  | 提示词写死的基准范围 + 模型知识；没有接入 Google Search、实时检索、基准数据库                              |
 
 请求链路：浏览器输入 → `SimulatorContent` 组装完整消息历史 → `/api/chat` 添加中/英文系统提示词 → DeepSeek → `{ text }` → 追加消息 → localStorage 保存。当前这条链路中没有结构化状态解析环节。
 
@@ -109,21 +109,21 @@ Cloudflare 配置文档还记录一个飞书副本：https://my.feishu.cn/docx/B
 
 以下涉及核心行为的结论来自源代码及全项目调用点核对，未运行真实 AI 完整模拟；不将静态分析伪称为端到端测试。
 
-| 优先级 | 缺口 | 证据/影响 |
-| --- | --- | --- |
-| 高 | AI 回复没有驱动状态面板 | `components/sim/SimulatorContent.tsx:97` 只读取 `data.text` 并追加消息；`updateStats/setDay/setPhase/setGameOver` 只有 Context 定义与导出，没有业务调用。AI 可在文字里叙述进展，页面的天数/阶段/数值却不随之更新 |
-| 高 | 结束、重开与免费限制未连通 | `resetGame` 未被调用；次数仅在该方法内递增；没有完成结算/重开按钮链路。无法认定“第二次触发付费墙”已实现 |
-| 高 | 已用免费次数状态会卡初始化 | `SimulatorContent.tsx:59` 仅在免费未用且无消息、或已有消息时设 initialized；已用次数+空消息刷新时 initialized 一直 false，既不显示付费墙又停留在 loading |
-| 高 | 已提出的自定义初始模型仍缺失 | 10 月 23 日要求资金/团队/就业状态/月燃烧率由用户设定；当前无 SetupForm/GameSetup/startGame(setup)，仍硬编码现金 10000、跑道 6、用户 0、收入 0、士气 80、月燃烧 1500 |
-| 高 | API 防滥用在应用代码中未实现 | 仅验证 messages 是数组，未验证每条 role/content、长度、数量和 language；无应用级速率限制、身份/次数校验、超时或历史裁剪。Cloudflare 是否另配限流未验证 |
-| 中 | 支付与定价承诺不一致 | `app/pricing/page.tsx:80` 的三个按钮均无 onClick/链接，包括 Start Free；没有 checkout/webhook/权益校验。真实支付原本属 MVP 不做项，但当前也没有 Coming Soon 交互；文案却声称可退款、可账单门户取消、可导出和比较模拟 |
-| 中 | 价格方案不统一 | 套餐卡为免费 / $9.99/月 / $49.99终身，另写 $0.99/次。不能自行选定其中一个作为最终商业决策 |
-| 中 | 隐私说明与 AI 供应商不符 | 中英文隐私页仍写 Google Gemini，且有账号/邮件收集等模板表述；当前请求发送到 DeepSeek。线上 `/privacy` 也已确认包含旧供应商名 |
-| 中 | 数据能力描述超出实现 | 文案声称每次决策更新财务模型、取真实市场基准；当前无独立计算引擎/检索或结构化状态。基准数值及案例缺少可维护的来源清单，不应把模型生成的数字描述成实时测量 |
-| 中 | 文案铁律与部分 i18n 未落实 | 英文仍有 `one conversation`；多处为 15–30 分钟而非本次用户明确的约 15 分钟。Most Popular、Metric/Typical Range、错误提示及 `mo` 等存在硬编码英文 |
-| 中 | 文档进度漂移 | README/AGENTS/tech-stack 仍有 Next14/Gemini；旧任务完成符号与未勾选项冲突；HANDOFF 的 key/页数/完成度叙述不完整 |
-| 中 | 本地改动尚未纳入远程版本 | 9 个修改文件未提交，HANDOFF 未跟踪；线上已见其中 viewport 改动。生产、Git、两份本地目录没有一份明确的版本对照记录 |
-| 低 | 代码规范与构建资料仍有欠账 | 多处 interface/命名导出/内联 style 与规则不同；React19 配 @types/react18；历史 fix-node-imports 脚本未串入 pages:build 且使用 macOS sed 写法。未做构建，不能断言这些会导致当前构建失败 |
+| 优先级 | 缺口                         | 证据/影响                                                                                                                                                                                                            |
+| ------ | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 高     | AI 回复没有驱动状态面板      | `components/sim/SimulatorContent.tsx:97` 只读取 `data.text` 并追加消息；`updateStats/setDay/setPhase/setGameOver` 只有 Context 定义与导出，没有业务调用。AI 可在文字里叙述进展，页面的天数/阶段/数值却不随之更新     |
+| 高     | 结束、重开与免费限制未连通   | `resetGame` 未被调用；次数仅在该方法内递增；没有完成结算/重开按钮链路。无法认定“第二次触发付费墙”已实现                                                                                                              |
+| 高     | 已用免费次数状态会卡初始化   | `SimulatorContent.tsx:59` 仅在免费未用且无消息、或已有消息时设 initialized；已用次数+空消息刷新时 initialized 一直 false，既不显示付费墙又停留在 loading                                                             |
+| 高     | 已提出的自定义初始模型仍缺失 | 10 月 23 日要求资金/团队/就业状态/月燃烧率由用户设定；当前无 SetupForm/GameSetup/startGame(setup)，仍硬编码现金 10000、跑道 6、用户 0、收入 0、士气 80、月燃烧 1500                                                  |
+| 高     | API 防滥用在应用代码中未实现 | 仅验证 messages 是数组，未验证每条 role/content、长度、数量和 language；无应用级速率限制、身份/次数校验、超时或历史裁剪。Cloudflare 是否另配限流未验证                                                               |
+| 中     | 支付与定价承诺不一致         | `app/pricing/page.tsx:80` 的三个按钮均无 onClick/链接，包括 Start Free；没有 checkout/webhook/权益校验。真实支付原本属 MVP 不做项，但当前也没有 Coming Soon 交互；文案却声称可退款、可账单门户取消、可导出和比较模拟 |
+| 中     | 价格方案不统一               | 套餐卡为免费 / $9.99/月 / $49.99终身，另写 $0.99/次。不能自行选定其中一个作为最终商业决策                                                                                                                            |
+| 中     | 隐私说明与 AI 供应商不符     | 中英文隐私页仍写 Google Gemini，且有账号/邮件收集等模板表述；当前请求发送到 DeepSeek。线上 `/privacy` 也已确认包含旧供应商名                                                                                         |
+| 中     | 数据能力描述超出实现         | 文案声称每次决策更新财务模型、取真实市场基准；当前无独立计算引擎/检索或结构化状态。基准数值及案例缺少可维护的来源清单，不应把模型生成的数字描述成实时测量                                                            |
+| 中     | 文案铁律与部分 i18n 未落实   | 英文仍有 `one conversation`；多处为 15–30 分钟而非本次用户明确的约 15 分钟。Most Popular、Metric/Typical Range、错误提示及 `mo` 等存在硬编码英文                                                                     |
+| 中     | 文档进度漂移                 | README/AGENTS/tech-stack 仍有 Next14/Gemini；旧任务完成符号与未勾选项冲突；HANDOFF 的 key/页数/完成度叙述不完整                                                                                                      |
+| 中     | 本地改动尚未纳入远程版本     | 9 个修改文件未提交，HANDOFF 未跟踪；线上已见其中 viewport 改动。生产、Git、两份本地目录没有一份明确的版本对照记录                                                                                                    |
+| 低     | 代码规范与构建资料仍有欠账   | 多处 interface/命名导出/内联 style 与规则不同；React19 配 @types/react18；历史 fix-node-imports 脚本未串入 pages:build 且使用 macOS sed 写法。未做构建，不能断言这些会导致当前构建失败                               |
 
 历史明确不做的账号、云端存档、排行榜、多人模式、真实支付等属于范围取舍；应与“本来要求做、实际尚未闭合”的模拟状态、免费次数、自定义初始参数区别对待。
 

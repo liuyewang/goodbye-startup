@@ -18,7 +18,9 @@
 
   body {
     @apply bg-white text-dark-900 antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
   }
 
   /* Custom scrollbar */
@@ -176,7 +178,9 @@
 
   /* Press feedback: tactile feel on touch devices */
   .press-scale {
-    transition: transform 0.1s ease, box-shadow 0.2s ease;
+    transition:
+      transform 0.1s ease,
+      box-shadow 0.2s ease;
   }
   .press-scale:active {
     transform: scale(0.96);
@@ -202,9 +206,15 @@
     animation: statPop 0.4s ease-out;
   }
   @keyframes statPop {
-    0% { transform: scale(1); }
-    40% { transform: scale(1.12); }
-    100% { transform: scale(1); }
+    0% {
+      transform: scale(1);
+    }
+    40% {
+      transform: scale(1.12);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 
   /* Hide scrollbar but keep scroll */
@@ -223,7 +233,11 @@
     animation: shimmer 1.5s infinite;
   }
   @keyframes shimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
   }
 }

@@ -13,12 +13,8 @@ export default function AboutPage() {
         <div className="absolute inset-0 bg-grid-pattern opacity-30" />
         <div className="container-custom relative">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="heading-xl mb-6 text-balance">
-              {t.about.title}
-            </h1>
-            <p className="subtitle text-balance">
-              {t.about.subtitle}
-            </p>
+            <h1 className="heading-xl mb-6 text-balance">{t.about.title}</h1>
+            <p className="subtitle text-balance">{t.about.subtitle}</p>
           </div>
         </div>
       </section>
@@ -90,7 +86,10 @@ export default function AboutPage() {
             <p className="text-lg text-white/80 mb-10 text-balance">
               {t.common.ctaBody}
             </p>
-            <Link href="/simulator" className="btn bg-white text-primary-600 hover:bg-white/90 btn-lg">
+            <Link
+              href="/simulator"
+              className="btn bg-white text-primary-600 hover:bg-white/90 btn-lg"
+            >
               {t.common.startFree}
             </Link>
           </div>

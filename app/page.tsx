@@ -3,10 +3,10 @@
 import { useI18n } from "@/src/i18n";
 import Link from "next/link";
 import PricingPlans from "@/src/content/PricingPlans";
-import {articles,safeJsonLd} from "@/src/content/registry";
+import { articles, safeJsonLd } from "@/src/content/registry";
 
 export default function Home() {
-  const { t,language } = useI18n();
+  const { t, language } = useI18n();
 
   return (
     <div className="min-h-screen">
@@ -37,13 +37,29 @@ export default function Home() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-slide-up">
-              <Link href="/simulator" className="btn-primary btn-lg w-full sm:w-auto">
+              <Link
+                href="/simulator"
+                className="btn-primary btn-lg w-full sm:w-auto"
+              >
                 {t.hero.ctaPrimary}
-                <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                <svg
+                  className="w-5 h-5 ml-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 7l5 5m0 0l-5 5m5-5H6"
+                  />
                 </svg>
               </Link>
-              <Link href="/how-it-works" className="btn-secondary btn-lg w-full sm:w-auto">
+              <Link
+                href="/how-it-works"
+                className="btn-secondary btn-lg w-full sm:w-auto"
+              >
                 {t.hero.ctaSecondary}
               </Link>
             </div>
@@ -178,8 +194,12 @@ export default function Home() {
             {t.whoFor.items.map((item, index) => (
               <div key={index} className="card-hover p-6 lg:p-8">
                 <div className="text-3xl mb-4">{item.icon}</div>
-                <h3 className="text-lg font-semibold text-dark-900 mb-2">{item.title}</h3>
-                <p className="text-dark-500 leading-relaxed text-sm">{item.description}</p>
+                <h3 className="text-lg font-semibold text-dark-900 mb-2">
+                  {item.title}
+                </h3>
+                <p className="text-dark-500 leading-relaxed text-sm">
+                  {item.description}
+                </p>
               </div>
             ))}
           </div>
@@ -190,7 +210,9 @@ export default function Home() {
       <section className="section-padding bg-dark-50">
         <div className="container-custom">
           <div className="max-w-2xl mx-auto text-center mb-16">
-            <h2 className="heading-lg mb-4 text-balance">{t.howItWorks.title}</h2>
+            <h2 className="heading-lg mb-4 text-balance">
+              {t.howItWorks.title}
+            </h2>
             <p className="subtitle text-balance">{t.howItWorks.subtitle}</p>
             <div className="mt-4 inline-block bg-amber-50 border border-amber-200 rounded-lg px-4 py-2 text-sm text-amber-800">
               {t.howItWorks.timeNote}
@@ -210,8 +232,12 @@ export default function Home() {
                   }`}
                 >
                   {/* Content */}
-                  <div className={`${index % 2 === 0 ? "lg:text-right lg:pr-12" : "lg:col-start-2 lg:pl-12"}`}>
-                    <div className={`card p-6 lg:p-8 inline-block ${index % 2 === 0 ? "lg:ml-auto" : ""}`}>
+                  <div
+                    className={`${index % 2 === 0 ? "lg:text-right lg:pr-12" : "lg:col-start-2 lg:pl-12"}`}
+                  >
+                    <div
+                      className={`card p-6 lg:p-8 inline-block ${index % 2 === 0 ? "lg:ml-auto" : ""}`}
+                    >
                       <div className="text-4xl font-bold gradient-text mb-3">
                         {step.number}
                       </div>
@@ -247,7 +273,7 @@ export default function Home() {
             <p className="subtitle text-balance">{t.pricing.subtitle}</p>
           </div>
 
-          <PricingPlans/>
+          <PricingPlans />
 
           <p className="text-center text-sm text-dark-500 mt-8">
             {t.pricing.guarantee}
@@ -339,7 +365,28 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section-padding bg-dark-50"><div className="container-custom"><h2 className="heading-lg mb-4">{t.common.blogTitle}</h2><p className="subtitle mb-8">{t.common.indexIntro}</p><div className="grid gap-5 md:grid-cols-3">{articles.filter(a=>a.kind==='blog').slice(0,3).map(a=><Link key={a.path} href={a.path} className="card-hover p-6"><h3 className="text-lg font-semibold">{a.title[language]}</h3><p className="mt-3 text-sm text-dark-500">{a.intro[language]}</p></Link>)}</div><Link href="/blog" className="mt-6 inline-block text-primary-700">{t.common.moreReading}</Link></div></section>
+      <section className="section-padding bg-dark-50">
+        <div className="container-custom">
+          <h2 className="heading-lg mb-4">{t.common.blogTitle}</h2>
+          <p className="subtitle mb-8">{t.common.indexIntro}</p>
+          <div className="grid gap-5 md:grid-cols-3">
+            {articles
+              .filter((a) => a.kind === "blog")
+              .slice(0, 3)
+              .map((a) => (
+                <Link key={a.path} href={a.path} className="card-hover p-6">
+                  <h3 className="text-lg font-semibold">{a.title[language]}</h3>
+                  <p className="mt-3 text-sm text-dark-500">
+                    {a.intro[language]}
+                  </p>
+                </Link>
+              ))}
+          </div>
+          <Link href="/blog" className="mt-6 inline-block text-primary-700">
+            {t.common.moreReading}
+          </Link>
+        </div>
+      </section>
 
       {/* CTA Section */}
       <section className="section-padding relative overflow-hidden">
@@ -364,8 +411,18 @@ export default function Home() {
                 className="btn bg-white text-primary-600 hover:bg-white/90 btn-lg"
               >
                 {t.common.startFree}
-                <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                <svg
+                  className="w-5 h-5 ml-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 7l5 5m0 0l-5 5m5-5H6"
+                  />
                 </svg>
               </Link>
             </div>

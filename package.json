@@ -14,10 +14,12 @@
     "test": "vitest run --config vitest.config.ts",
     "test:watch": "vitest --config vitest.config.ts",
     "test:e2e": "playwright test",
-    "check": "npm run typecheck && npm run lint && npm test && npm run build",
+    "check": "npm run cf:types && npm run typecheck && npm run lint && npm run format:check && npm test && npm run build && npm run secrets:check",
     "cf:types": "wrangler types",
     "db:migrate:local": "wrangler d1 migrations apply DB --local",
-    "content:generate": "node scripts/generate-content.ts"
+    "content:generate": "node scripts/generate-content.ts",
+    "setup:local": "node scripts/setup-local.mjs",
+    "secrets:check": "node scripts/check-secrets.mjs"
   },
   "dependencies": {
     "next": "16.4.5",
