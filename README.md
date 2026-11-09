@@ -6,7 +6,7 @@ A bilingual educational startup simulator. Six stages cover 180 **simulated** da
 - Production site: [goodbye.help](https://goodbye.help)
 - Local checkout: `/Users/guan/Documents/ChatGPT/创业模拟器(Goodbye)`
 - Production source branch: `main`; [refactor PR #1](https://github.com/liuyewang/goodbye-startup/pull/1) was merged. Production cutover is tracked in [the release report](docs/production-release-2026-11-09.md).
-- Isolated [Workers/D1 preview](https://goodbye-startup-preview.indie-utility-lab.workers.dev) is deployed. Its 20-request evaluation is complete and AI calls are paused at budget zero. See [preview validation](docs/preview-validation-2026-11-09.md). The formal site now runs the refactored production Worker with isolated D1 and a daily cap of 60 attempted model calls; the legacy Pages artifact is retained privately for controlled recovery. See [infrastructure cleanup](docs/configuration-cleanup-2026-11-09.md).
+- Isolated [Workers/D1 preview](https://goodbye-startup-preview.indie-utility-lab.workers.dev) is deployed. Its 20-request evaluation is complete and AI calls are paused at budget zero. See [preview validation](docs/preview-validation-2026-11-09.md). The formal site now runs the refactored production Worker with isolated D1 and a daily cap of 300 attempted model calls; the legacy Pages artifact is retained privately for controlled recovery. See [infrastructure cleanup](docs/configuration-cleanup-2026-11-09.md).
 
 ## Start locally without paid inference
 

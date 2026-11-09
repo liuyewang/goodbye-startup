@@ -33,3 +33,7 @@ The retained Pages project is only a safe retirement endpoint; it holds no provi
 ## Final verification
 
 All 81 unique historical deployment/alias URLs returned 404 for the old API path. Both the project Pages address and the sole remaining retirement deployment returned 410 LEGACY_RETIRED; its homepage redirected to goodbye.help. Formal health/readiness, D1-backed session, cookie flags, invalid-origin rejection and invalid-input rejection passed. No provider call was made. Final conclusion: **存活** — exposed legacy inference paths are closed and the local-only release policy remains intact.
+
+## Authorized daily budget update
+
+The user subsequently approved increasing the production global attempted-model-call cap from 60 to 300 per UTC day. Preview remains zero. Per-session attempt limits and the 6-per-60-second burst guard are unchanged; existing daily counters are not reset. Plan verdict: **存活** — this changes the explicit provider usage budget only, without adding services or changing the Cloudflare plan. Source config, artifact guard and current operating docs are updated together. Deployment and verification pending.
