@@ -1,10 +1,10 @@
 # Deployment and rollback
 
-The refactor is deployed to a separate Workers/D1 preview and has not replaced the live Pages application. Do not deploy it with the old Pages build command. The 20-request evaluation is complete and preview inference is closed; see [preview validation](preview-validation-2026-11-09.md). The old Pages integration excludes only the refactor branch from its obsolete preview build. The user separately authorized refreshing the production provider secret and republishing the preserved original artifact. Production migration remains a separate, reviewable operation requiring authorization.
+The refactor is deployed to a separate Workers/D1 preview and has not replaced the live Pages application. Do not deploy it with the old Pages build command. The 20-request evaluation is complete and preview inference is closed; see [preview validation](preview-validation-2026-11-09.md). The old Pages integration excludes only the refactor branch from its obsolete preview build. The user separately authorized refreshing the production provider secret and republishing the preserved original artifact. The user subsequently authorized production migration and explicitly selected local Wrangler deployment rather than GitHub Actions deployment. The current release is tracked in [production release](production-release-2026-11-09.md).
 
 ## Isolated preview configuration
 
-`env.preview` names `goodbye-startup-preview` with its own D1, rate-limit namespace and workers.dev origin. It has no production routes, uses `X-Robots-Tag: noindex, nofollow` for HTML and preview static assets, and leaves AI budget at zero. The preview D1 was created under the authorized scope; the top-level production database ID remains a nondeployable placeholder.
+`env.preview` names `goodbye-startup-preview` with its own D1, rate-limit namespace and workers.dev origin. It has no production routes, uses `X-Robots-Tag: noindex, nofollow` for HTML and preview static assets, and leaves AI budget at zero. The preview D1 was created under the authorized scope; the top-level default database ID remains a nondeployable placeholder. The explicit `production` environment has its own real D1 binding and a 60-call daily cap.
 
 Select the environment at **build time**, then deploy the generated config; passing `--env` after building the default app does not select the right Vite environment:
 
@@ -21,7 +21,7 @@ Secret commands and migrations against the source configuration use `--config wr
 
 | Binding/variable      | Purpose                                     | Default / rule                                                             |
 | --------------------- | ------------------------------------------- | -------------------------------------------------------------------------- |
-| `DB`                  | D1 numerical state and quota                | Required; committed ID is a nondeployable placeholder                      |
+| `DB`                  | D1 numerical state and quota                | Required; default is a placeholder, preview/production have isolated IDs   |
 | `SESSION_SECRET`      | HMAC signing and identifier separation      | Secret, at least 32 random bytes; never a public variable                  |
 | `DEEPSEEK_API_KEY`    | Provider authorization                      | Secret, needed for real inference                                          |
 | `DEEPSEEK_MODEL`      | Server-selected model                       | `deepseek-flash`, verify account support during explicit evaluation        |
@@ -58,3 +58,23 @@ Official references: [Workers deployment](https://developers.cloudflare.com/work
 ## Preserving the legacy Pages artifact
 
 The previous manual Pages deployment included nine uncommitted UI changes. A Pages retry rebuilt clean `a47c007` and temporarily omitted them; verification caught this and the original local artifact was redeployed. For future credential-only refreshes, preserve and verify the deployed artifact or use source baseline `ee0d2f0`, not just the old deployment metadata SHA. See the preview report for deployment IDs and recovery evidence. Do not rebuild the legacy app from the refactor branch.
+
+## Production releases via local Wrangler
+
+GitHub Actions only verifies code; pushing main does not deploy. The user chose local CLI publishing, so there is no Cloudflare Actions secret or deployment job. Use the existing authorized local Cloudflare token. Its allowed IPv4 path is selected with `NODE_OPTIONS='--dns-result-order=ipv4first --no-network-family-autoselection'`; do not remove IP restrictions or broaden scopes to make a deployment work.
+
+Release only a clean, reviewed main revision after its GitHub checks pass. Confirm local HEAD equals remote main and record that SHA with the resulting Worker version. Build the explicit production environment; never deploy a default or preview artifact to production:
+
+```sh
+CLOUDFLARE_ENV=production npm run build
+node scripts/check-deploy-config.mjs
+npm run secrets:check
+npx wrangler d1 migrations apply DB --remote --env production
+npx wrangler deploy --config dist/server/wrangler.json
+TEST_BASE_URL=https://goodbye.help node scripts/audit-pages.ts
+TEST_BASE_URL=https://goodbye.help node scripts/check-live.mjs
+```
+
+The live check uses health/session reads and invalid setup requests, never model inference. Production permits 60 attempted model calls per UTC day; failed provider attempts also count. Preview remains at zero. The six-call release acceptance allowance is separate and tracked in a private durable ledger.
+
+The initial production candidate is staged at its temporary workers.dev endpoint with no domain route. After verifying the main build, transfer only the apex custom domain from Pages to Workers, record it in `env.production.routes`, disable the temporary workers.dev endpoint, and repeat live checks. Preserve existing www/startup redirect rules and every unrelated DNS record. Retain the old Pages project/artifact for rollback and disable its obsolete Git auto-deploy before merging main.
