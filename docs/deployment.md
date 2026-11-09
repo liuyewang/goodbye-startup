@@ -1,6 +1,6 @@
 # Deployment and rollback
 
-The refactor is deployed to a separate Workers/D1 preview and has not replaced the live Pages application. Do not deploy it with the old Pages build command. The 20-request evaluation is complete and preview inference is closed; see [preview validation](preview-validation-2026-11-09.md). The old Pages integration excludes only the refactor branch from its obsolete preview build. The user separately authorized refreshing the production provider secret and republishing the preserved original artifact. The user subsequently authorized production migration and explicitly selected local Wrangler deployment rather than GitHub Actions deployment. The current release is tracked in [production release](production-release-2026-11-09.md).
+The refactor is deployed to a separate Workers/D1 preview and has not replaced the live Pages application. Do not deploy it with the old Pages build command. The 20-request evaluation is complete and preview inference is closed; see [preview validation](preview-validation-2026-11-09.md). The old Pages integration has all production and preview Git builds disabled. The user separately authorized refreshing the production provider secret and republishing the preserved original artifact. The user subsequently authorized production migration and explicitly selected local Wrangler deployment rather than GitHub Actions deployment. The current release is tracked in [production release](production-release-2026-11-09.md).
 
 ## Isolated preview configuration
 
@@ -61,11 +61,13 @@ The previous manual Pages deployment included nine uncommitted UI changes. A Pag
 
 ## Production releases via local Wrangler
 
-GitHub Actions only verifies code; pushing main does not deploy. The user chose local CLI publishing, so there is no Cloudflare Actions secret or deployment job. Use the existing authorized local Cloudflare token. Its allowed IPv4 path is selected with `NODE_OPTIONS='--dns-result-order=ipv4first --no-network-family-autoselection'`; do not remove IP restrictions or broaden scopes to make a deployment work.
+GitHub stores code only. Repository Actions are disabled and all workflow files have been removed: no GitHub test runner, build or deployment is used. Legacy Pages Git builds are also disabled. Run testing, building and publishing locally; pushing main does not deploy. Use the existing authorized local Cloudflare token; no new CI token or Actions secret is needed. Its allowed IPv4 path is selected with `NODE_OPTIONS='--dns-result-order=ipv4first --no-network-family-autoselection'`; do not remove IP restrictions or broaden scopes to make a deployment work.
 
-Release only a clean, reviewed main revision after its GitHub checks pass. Confirm local HEAD equals remote main and record that SHA with the resulting Worker version. Build the explicit production environment; never deploy a default or preview artifact to production:
+Release only a clean, reviewed main revision after local checks pass. Confirm local HEAD equals remote main and record that SHA with the resulting Worker version. Build the explicit production environment; never deploy a default or preview artifact to production:
 
 ```sh
+npm run check
+npm run test:e2e
 CLOUDFLARE_ENV=production npm run build
 node scripts/check-deploy-config.mjs
 npm run secrets:check

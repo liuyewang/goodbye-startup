@@ -5,7 +5,7 @@ A bilingual educational startup simulator. Six stages cover 180 **simulated** da
 - Repository: [liuyewang/goodbye-startup](https://github.com/liuyewang/goodbye-startup)
 - Existing production site: [goodbye.help](https://goodbye.help)
 - Local checkout: `/Users/guan/Documents/ChatGPT/创业模拟器(Goodbye)`
-- Refactor branch: `codex/full-project-refactor`; [draft PR #1](https://github.com/liuyewang/goodbye-startup/pull/1).
+- Production source branch: `main`; [refactor PR #1](https://github.com/liuyewang/goodbye-startup/pull/1) was merged. Production cutover is tracked in [the release report](docs/production-release-2026-11-09.md).
 - Isolated [Workers/D1 preview](https://goodbye-startup-preview.indie-utility-lab.workers.dev) is deployed. Its 20-request evaluation is complete and AI calls are paused at budget zero. See [preview validation](docs/preview-validation-2026-11-09.md). Existing Pages production has not been migrated.
 
 ## Start locally without paid inference
@@ -24,6 +24,8 @@ Open `http://127.0.0.1:5173`. The local demo uses deterministic fixtures and sho
 For an intentional real-provider evaluation, set `AI_MODE=deepseek` and `DEEPSEEK_API_KEY` in the ignored `.dev.vars`; leave `APP_ENV=local`. The previously configured `.env.local` remains ignored, but Cloudflare bindings use `.dev.vars`, not that legacy file. Do not paste secrets into issues, logs or source. Real requests incur provider usage; the default checks never make them.
 
 ## Engineering checks
+
+All checks, browser tests, builds and deployments run locally. GitHub stores code only: repository Actions are disabled and workflow files have been removed. Local Playwright browser binaries are test dependencies; they are not uploaded with the website. Publishing uses the local Cloudflare Wrangler CLI and existing local credentials.
 
 ```sh
 npm run check                 # generated types, typecheck, lint, format, tests, build, secret scan

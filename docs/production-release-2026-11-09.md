@@ -2,7 +2,7 @@
 
 ## Authorization and target
 
-The user approved replacing the legacy Pages deployment flow, validating Workers production, merging `codex/full-project-refactor` into `main`, and switching the formal site. The user then explicitly chose **local Wrangler CLI deployment instead of GitHub Actions deployment**. GitHub Actions remains verification-only; no new CI token or Actions secret is needed. Cloudflare must remain Free. The user approved a production cap of **60 attempted DeepSeek calls per UTC day** and **at most six additional real inference attempts for this release acceptance**. The earlier 20-call evaluation is exhausted and is not reopened. Preview inference remains closed.
+The user approved replacing the legacy Pages deployment flow, validating Workers production, merging `codex/full-project-refactor` into `main`, and switching the formal site. The user then explicitly chose **local Wrangler CLI deployment instead of GitHub Actions deployment**. The user further clarified that GitHub must not run tests either. All testing, builds and publishing run locally; GitHub stores code only. Repository Actions are disabled and workflow files are removed. No new CI token or Actions secret is needed. Cloudflare must remain Free. The user approved a production cap of **60 attempted DeepSeek calls per UTC day** and **at most six additional real inference attempts for this release acceptance**. The earlier 20-call evaluation is exhausted and is not reopened. Preview inference remains closed.
 
 First principles: the production branch, deployment artifact and live site must agree. A merge must not trigger the obsolete Pages build. Only passing source revisions may reach the production Worker, and production storage/secrets must remain separate from preview. Keep the legacy Pages artifact available for rollback.
 
@@ -12,9 +12,10 @@ Adversarial review: the existing Cloudflare token is source-IP restricted, so de
 
 - [x] Read current Git/PR, Pages deployment and preview status; confirm the user-approved release scope.
 - [x] Prepare explicit production Wrangler environment, isolated D1 and secrets; validate candidate on its temporary Workers endpoint without consuming model calls.
-- [x] Restore verification-only GitHub Actions after the user chose local CLI deployment; do not configure any Actions deployment secret.
-- [ ] Review deployment/configuration changes, run relevant checks and push the release changes to the existing PR.
-- [ ] Disable the obsolete Pages production auto-build before merge; merge the reviewed refactor into main after passing checks and deploy that exact revision with local Wrangler.
+- [x] Disable repository Actions and remove workflows after the user clarified the local-only requirement; do not configure any GitHub runners or deployment secrets.
+- [x] Review deployment/configuration changes, run relevant checks and push the release changes to the existing PR.
+- [x] Disable obsolete Pages production and preview Git builds before merging reviewed PR #1 into main as `794d7fd`.
+- [ ] Verify the local-only main revision and publish that exact revision with local Wrangler.
 - [ ] Switch goodbye.help to the verified Worker; preserve www/startup redirects and leave wise.goodbye.help untouched. Verify public pages, metadata, cookies, state, retention and at most six real model calls.
 - [ ] Record final versions, branch/check/deployment correspondence and rollback steps; synchronize handoff documents.
 
@@ -23,21 +24,21 @@ Adversarial review: the existing Cloudflare token is source-IP restricted, so de
 - Repository: `liuyewang/goodbye-startup`; refactor head `329ef70`; main `a47c007`.
 - Original production Pages artifact: deployment `b52ed56c-2790-4cab-8c67-d5aead5ee71c`, containing the preserved mobile changes from `ee0d2f0`. Keep it and the Pages project available.
 - Existing preview Worker version: `0d37fba4-37e3-4d3d-8d76-3120a7a3a622`; D1 `aba5dbef-6d2a-4b86-a335-b3b5e8e6c400`. Do not reuse its database or session signing secret in production.
-- Existing Pages production auto-deploy is enabled on main with `npx @cloudflare/next-on-pages`; the refactor branch is excluded from Pages previews.
+- Before this release, Pages production auto-deploy was enabled on main with `npx @cloudflare/next-on-pages`. It is now disabled; Pages preview Git builds are also disabled.
 - GitHub initially had no repository Actions secrets or variables. Two non-secret release variables were briefly added during CI preparation, then removed because the user chose CLI deployment; readback confirms no repository Actions secrets or variables. Existing Cloudflare credentials remain private local environment variables, never copied into documentation or logs.
 
 ## Evidence and decisions
 
-Release work is in progress. No production migration or merge has occurred in this phase yet.
+Release work is in progress. PR #1 was merged as `794d7fd`; the formal domain has not yet moved from Pages.
 
 ### User-directed deployment change
 
-The GitHub deployment/access jobs were removed before pushing. Existing `Verify` continues to run tests/builds only. Production will be explicitly published by local Wrangler after verifying the exact main revision. No automatic deployment on Git push is promised.
+The earlier interpretation retained the `Verify` workflow for automatic tests. The user clarified that this was not wanted. Repository Actions now reads `enabled: false`, there are no running GitHub jobs, and `.github/workflows/ci.yml` is deleted. The workflow had downloaded test browsers onto a GitHub runner; all subsequent browser testing uses the local machine. GitHub stores code only. Production is explicitly published by local Wrangler after local verification of the exact main revision.
 
 ### Preparation evidence
 
 - Production D1 `goodbye-startup-production` created in WNAM, ID `68f019ae-d303-4f2e-8374-e24a761515c2`; migration `0001_simulation.sql` applied successfully. Preview storage remains separate.
-- Explicit `env.production` added with daily limit 60, official model `deepseek-flash`, canonical origin `https://goodbye.help` and a separate session secret to be provisioned. It was initially staged without a domain route at a temporary workers.dev endpoint; the final reviewed source binds only the apex and disables workers.dev.
+- Explicit `env.production` added with daily limit 60, official model `deepseek-flash`, canonical origin `https://goodbye.help` and a separately provisioned session secret. It was initially staged without a domain route at a temporary workers.dev endpoint; the final reviewed source binds only the apex and disables workers.dev.
 - Local `npm run check` passed: 41 core/D1/provider tests, generated types, lint, formatting, build and secret scan. Production build and dry-run also passed; Worker gzip is 413.06 KiB.
 - The deployment guard rejects the default environment/placeholder and accepts the generated production configuration. It checks the exact D1, origin, budget, runtime compatibility and allowed domain scope.
 - Private rollback snapshots of Pages source/build settings, original deployment, apex CNAME and redirect rules are stored outside Git. All MX/TXT records and unrelated hostnames are outside the cutover scope.
@@ -47,4 +48,8 @@ The GitHub deployment/access jobs were removed before pushing. Existing `Verify`
 - Independent release review found no blocking issues. Its minor suggestion was applied: the production artifact guard now checks `preview_urls=false` and requires workers.dev to be closed once the apex domain is configured.
 - Cloudflare domain changeset preflight succeeded for only `goodbye.help`; no DNS or domain mutation has occurred yet.
 
-The candidate was validated with a temporary endpoint. The reviewed source now contains the final apex custom-domain route and `workers_dev=false`; applying this final configuration is deferred until main checks pass and the old Pages domain binding is ready to transfer.
+The candidate was validated with a temporary endpoint. The reviewed source now contains the final apex custom-domain route and `workers_dev=false`; applying this final configuration is deferred until local main checks pass and the old Pages domain binding is ready to transfer.
+
+### Local-only verification
+
+After removing the workflow, `npm run check` passed all 41 tests, types, lint, formatting, build and client secret scan. `npm run test:e2e` passed all 32 cases locally across Chromium, Firefox, WebKit and a mobile viewport (1.1 minutes). No GitHub runner was used and these checks made no provider calls. Repository Actions readback remains disabled; the previous main run had already completed and no jobs were active.

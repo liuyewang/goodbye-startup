@@ -10,4 +10,4 @@ All user-facing copy is bilingual and follows the translation contract; generate
 
 Use Conventional Commits. Before review run `npm run check`, browser tests and relevant runtime audits. Run `npm run format` to apply formatting. Regenerate public assets with `npm run content:generate`; do not edit generated Markdown/RSS by hand. Do not commit local environment files, raw GSC data, reports, traces with real inputs or credentials.
 
-A clean local branch is not a deployment. Push/merge/domain changes, remote resource creation and paid evaluations require their own existing authorization or explicit final approval. CI validates but does not publish.
+A clean local branch is not a deployment. Push/merge/domain changes, remote resource creation and paid evaluations require their own existing authorization or explicit final approval. GitHub stores code only; Actions are disabled. Run checks, browser tests, builds and Wrangler deployments locally. Do not introduce a GitHub workflow or runner without an explicit user request.
