@@ -1,0 +1,6 @@
+APP_ENV=local
+AI_MODE=mock
+AI_DAILY_CALL_LIMIT=1000
+SITE_ORIGIN=http://127.0.0.1:5173
+SESSION_SECRET=replace-with-at-least-32-random-bytes
+# DEEPSEEK_API_KEY=

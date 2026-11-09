@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useI18n } from "@/lib/i18n";
-import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
+import { useI18n } from "@/src/i18n";
+import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
 
-export function Navbar() {
+export default function Navbar() {
   const { t } = useI18n();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -33,6 +33,12 @@ export function Navbar() {
           : "bg-transparent"
       }`}
     >
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:bg-white focus:p-3"
+      >
+        {t.common.skip}
+      </a>
       <nav className="container-custom h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group">
@@ -71,14 +77,30 @@ export function Navbar() {
           {/* Mobile menu button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 text-dark-600 hover:text-dark-900 hover:bg-dark-100 rounded-lg transition-colors"
-            aria-label="Toggle menu"
+            className="md:hidden w-11 h-11 flex items-center justify-center text-dark-600 hover:text-dark-900 hover:bg-dark-100 rounded-lg transition-colors"
+            aria-label={t.common.menu}
+            aria-expanded={mobileMenuOpen}
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               {mobileMenuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
               )}
             </svg>
           </button>

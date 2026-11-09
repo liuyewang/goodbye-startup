@@ -1,0 +1,25 @@
+# Goodbye Startup
+
+> An educational AI startup simulator. All days are simulated; real use takes about 15 minutes. Outputs are assumptions, not market research or predictions.
+
+## Public documentation
+
+- [AI Startup Simulator](https://goodbye.help/content/index.md): Explore startup assumptions in 180 simulated days, about 15 real minutes. Track cash, customers and runway. One free simulation; no account required.
+- [Startup Simulator](https://goodbye.help/content/simulator.md): Set your resources, make decisions and explore an assumption-based startup scenario. 180 simulated days take about 15 real minutes.
+- [How It Works](https://goodbye.help/content/how-it-works.md): Learn how six simulated stages turn AI assumptions into calculated cash, customers and runway. Real use takes about 15 minutes.
+- [Pricing](https://goodbye.help/content/pricing.md): One free simulation is available. Paid plans are not yet offered. Learn about anonymous eligibility, retries, local records and exports.
+- [About](https://goodbye.help/content/about.md): Goodbye Startup helps aspiring founders practice decisions, understand model assumptions and choose their next real-world experiment.
+- [Privacy](https://goodbye.help/content/privacy.md): How browser transcripts, DeepSeek inference, anonymous numerical saves, cookies and 30-day and 180-day retention periods work.
+- [Startup Learning Blog](https://goodbye.help/content/blog.md): Clear explanations of startup assumptions, acquisition costs, retention and cash planning, with formulas, examples and source links.
+- [Startup Guides](https://goodbye.help/content/guides.md): Practical guides to validating ideas, understanding simulation stages and stress-testing cost assumptions.
+- [Why Startups Fail](https://goodbye.help/content/blog-why-90-percent-of-startups-fail.md): The often-repeated “90%” headline is not a universal three-year failure rate.
+- [Startup Funding Needs](https://goodbye.help/content/blog-how-much-money-do-you-need-to-start-a-startup.md): There is no universal startup budget. This is a planning exercise: replace every example with quotations, expenses and demand evidence for your situation.
+- [Customer Acquisition Cost](https://goodbye.help/content/blog-customer-acquisition-cost-benchmarks.md): Channel costs vary with audience, market, offer and measurement window. The examples here are hypothetical arithmetic, not verified 2026 market benchmarks.
+- [Understanding Churn](https://goodbye.help/content/blog-churn-rate-how-to-reduce.md): Define your cohort and time window before comparing retention.
+- [Validate Your Startup Idea](https://goodbye.help/content/guides-startup-idea-validation.md): A useful validation plan asks what evidence would change your decision. Simulation helps organize assumptions; it cannot prove that people will buy.
+- [Startup Cost Assumptions](https://goodbye.help/content/guides-startup-cost-benchmarks.md): These are model inputs and arithmetic examples, not universal industry benchmarks. Replace them with evidence for your market.
+- [The 180-Day Simulation](https://goodbye.help/content/guides-180-day-simulation-explained.md): All days are simulated; real use takes about 15 minutes. The model has six fixed stages and may end early if cash reaches zero.
+
+## Privacy boundary
+
+Only public editorial content is exported here. /api/ is private, not a content source.

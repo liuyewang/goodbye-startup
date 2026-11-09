@@ -1,6 +1,6 @@
 "use client";
 
-import { useI18n } from "@/lib/i18n";
+import { useI18n } from "@/src/i18n";
 import Link from "next/link";
 
 export default function AboutPage() {
@@ -13,12 +13,8 @@ export default function AboutPage() {
         <div className="absolute inset-0 bg-grid-pattern opacity-30" />
         <div className="container-custom relative">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="heading-xl mb-6 text-balance">
-              {t.about.title}
-            </h1>
-            <p className="subtitle text-balance">
-              {t.about.subtitle}
-            </p>
+            <h1 className="heading-xl mb-6 text-balance">{t.about.title}</h1>
+            <p className="subtitle text-balance">{t.about.subtitle}</p>
           </div>
         </div>
       </section>
@@ -85,12 +81,15 @@ export default function AboutPage() {
         <div className="container-custom relative">
           <div className="max-w-2xl mx-auto text-center text-white">
             <h2 className="heading-lg mb-6 text-balance">
-              Ready to test your idea?
+              {t.common.ctaTitle}
             </h2>
             <p className="text-lg text-white/80 mb-10 text-balance">
-              It's free to try. No credit card required.
+              {t.common.ctaBody}
             </p>
-            <Link href="/simulator" className="btn bg-white text-primary-600 hover:bg-white/90 btn-lg">
+            <Link
+              href="/simulator"
+              className="btn bg-white text-primary-600 hover:bg-white/90 btn-lg"
+            >
               {t.common.startFree}
             </Link>
           </div>

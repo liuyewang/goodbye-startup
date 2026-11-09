@@ -18,7 +18,9 @@
 
   body {
     @apply bg-white text-dark-900 antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
   }
 
   /* Custom scrollbar */
@@ -46,7 +48,7 @@
   }
 
   .btn {
-    @apply inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none;
+    @apply inline-flex items-center justify-center rounded-lg font-medium transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none active:scale-[0.97];
   }
 
   .btn-primary {
@@ -82,7 +84,7 @@
   }
 
   .card-hover {
-    @apply card transition-all duration-300 hover:shadow-lg hover:border-dark-300 hover:-translate-y-1;
+    @apply card transition-all duration-200 hover:shadow-lg hover:border-dark-300 hover:-translate-y-1 active:scale-[0.98] active:shadow-md;
   }
 
   .gradient-text {
@@ -161,5 +163,81 @@
   .animate-gradient {
     background-size: 200% 200%;
     animation: gradient 8s ease infinite;
+  }
+
+  /* Safe area helpers (iPhone notch / home indicator) */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+  .mb-safe {
+    margin-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Press feedback: tactile feel on touch devices */
+  .press-scale {
+    transition:
+      transform 0.1s ease,
+      box-shadow 0.2s ease;
+  }
+  .press-scale:active {
+    transform: scale(0.96);
+  }
+
+  /* Message entrance animation */
+  .message-enter {
+    animation: messageEnter 0.3s ease-out;
+  }
+  @keyframes messageEnter {
+    from {
+      opacity: 0;
+      transform: translateY(10px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Number pop animation when stats change */
+  .stat-pop {
+    animation: statPop 0.4s ease-out;
+  }
+  @keyframes statPop {
+    0% {
+      transform: scale(1);
+    }
+    40% {
+      transform: scale(1.12);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  /* Hide scrollbar but keep scroll */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Shimmer skeleton */
+  .skeleton {
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
   }
 }

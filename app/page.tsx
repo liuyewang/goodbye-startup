@@ -1,15 +1,17 @@
 "use client";
 
-import { useI18n } from "@/lib/i18n";
+import { useI18n } from "@/src/i18n";
 import Link from "next/link";
+import PricingPlans from "@/src/content/PricingPlans";
+import { articles, safeJsonLd } from "@/src/content/registry";
 
 export default function Home() {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
 
   return (
     <div className="min-h-screen">
       {/* Hero */}
-      <section className="relative py-20 lg:py-32 overflow-hidden bg-gradient-to-b from-primary-50/50 to-white">
+      <section className="relative py-14 sm:py-20 lg:py-32 overflow-hidden bg-gradient-to-b from-primary-50/50 to-white">
         {/* Background grid */}
         <div className="absolute inset-0 bg-grid-pattern opacity-40" />
 
@@ -30,25 +32,41 @@ export default function Home() {
               <span className="gradient-text">{t.hero.titleHighlight}</span>
             </h1>
 
-            <p className="subtitle max-w-2xl mx-auto mb-10 animate-slide-up text-balance" style={{ animationDelay: "0.1s" }}>
+            <p className="subtitle max-w-2xl mx-auto mb-10 animate-slide-up text-balance">
               {t.hero.subtitle}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up" style={{ animationDelay: "0.2s" }}>
-              <Link href="/simulator" className="btn-primary btn-lg">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-slide-up">
+              <Link
+                href="/simulator"
+                className="btn-primary btn-lg w-full sm:w-auto"
+              >
                 {t.hero.ctaPrimary}
-                <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                <svg
+                  className="w-5 h-5 ml-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 7l5 5m0 0l-5 5m5-5H6"
+                  />
                 </svg>
               </Link>
-              <Link href="/how-it-works" className="btn-secondary btn-lg">
+              <Link
+                href="/how-it-works"
+                className="btn-secondary btn-lg w-full sm:w-auto"
+              >
                 {t.hero.ctaSecondary}
               </Link>
             </div>
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto mt-20 animate-fade-in" style={{ animationDelay: "0.3s" }}>
+          <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto mt-20 animate-fade-in">
             <div className="text-center">
               <div className="text-3xl sm:text-4xl font-bold text-dark-900 mb-1">
                 {t.hero.stats.days}
@@ -85,13 +103,30 @@ export default function Home() {
             <p className="subtitle text-balance">{t.problem.subtitle}</p>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto mb-10">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto mb-10">
             {t.problem.stats.map((stat, index) => (
-              <div key={index} className="text-center p-6 rounded-2xl bg-dark-50">
-                <div className="text-3xl sm:text-4xl font-bold text-primary-600 mb-2">
+              <div
+                key={index}
+                className={`text-center p-6 rounded-2xl transition-all duration-200 active:scale-[0.97] ${
+                  index === 0
+                    ? "bg-primary-600 text-white shadow-lg shadow-primary-600/25"
+                    : "bg-white border border-dark-200 shadow-sm hover:shadow-md"
+                }`}
+              >
+                <div
+                  className={`text-3xl sm:text-4xl font-bold mb-2 ${
+                    index === 0 ? "text-white" : "text-primary-600"
+                  }`}
+                >
                   {stat.value}
                 </div>
-                <div className="text-sm text-dark-500">{stat.label}</div>
+                <div
+                  className={`text-sm ${
+                    index === 0 ? "text-primary-100" : "text-dark-500"
+                  }`}
+                >
+                  {stat.label}
+                </div>
               </div>
             ))}
           </div>
@@ -110,20 +145,35 @@ export default function Home() {
             <p className="subtitle text-balance">{t.features.subtitle}</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {t.features.items.map((feature, index) => (
               <div
                 key={index}
-                className="card-hover p-6 lg:p-8"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className={`card-hover p-6 lg:p-7 ${
+                  index === 0
+                    ? "lg:row-span-2 bg-gradient-to-br from-primary-600 to-primary-700 border-primary-600 text-white"
+                    : ""
+                }`}
               >
-                <div className="w-12 h-12 rounded-xl bg-primary-100 flex items-center justify-center text-2xl mb-5">
+                <div
+                  className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-5 ${
+                    index === 0 ? "bg-white/15" : "bg-primary-100"
+                  }`}
+                >
                   {feature.icon}
                 </div>
-                <h3 className="text-lg font-semibold text-dark-900 mb-2">
+                <h3
+                  className={`text-lg font-semibold mb-2 ${
+                    index === 0 ? "text-white" : "text-dark-900"
+                  }`}
+                >
                   {feature.title}
                 </h3>
-                <p className="text-dark-500 leading-relaxed">
+                <p
+                  className={`leading-relaxed ${
+                    index === 0 ? "text-primary-100" : "text-dark-500"
+                  }`}
+                >
                   {feature.description}
                 </p>
               </div>
@@ -144,8 +194,12 @@ export default function Home() {
             {t.whoFor.items.map((item, index) => (
               <div key={index} className="card-hover p-6 lg:p-8">
                 <div className="text-3xl mb-4">{item.icon}</div>
-                <h3 className="text-lg font-semibold text-dark-900 mb-2">{item.title}</h3>
-                <p className="text-dark-500 leading-relaxed text-sm">{item.description}</p>
+                <h3 className="text-lg font-semibold text-dark-900 mb-2">
+                  {item.title}
+                </h3>
+                <p className="text-dark-500 leading-relaxed text-sm">
+                  {item.description}
+                </p>
               </div>
             ))}
           </div>
@@ -156,7 +210,9 @@ export default function Home() {
       <section className="section-padding bg-dark-50">
         <div className="container-custom">
           <div className="max-w-2xl mx-auto text-center mb-16">
-            <h2 className="heading-lg mb-4 text-balance">{t.howItWorks.title}</h2>
+            <h2 className="heading-lg mb-4 text-balance">
+              {t.howItWorks.title}
+            </h2>
             <p className="subtitle text-balance">{t.howItWorks.subtitle}</p>
             <div className="mt-4 inline-block bg-amber-50 border border-amber-200 rounded-lg px-4 py-2 text-sm text-amber-800">
               {t.howItWorks.timeNote}
@@ -176,8 +232,12 @@ export default function Home() {
                   }`}
                 >
                   {/* Content */}
-                  <div className={`${index % 2 === 0 ? "lg:text-right lg:pr-12" : "lg:col-start-2 lg:pl-12"}`}>
-                    <div className={`card p-6 lg:p-8 inline-block ${index % 2 === 0 ? "lg:ml-auto" : ""}`}>
+                  <div
+                    className={`${index % 2 === 0 ? "lg:text-right lg:pr-12" : "lg:col-start-2 lg:pl-12"}`}
+                  >
+                    <div
+                      className={`card p-6 lg:p-8 inline-block ${index % 2 === 0 ? "lg:ml-auto" : ""}`}
+                    >
                       <div className="text-4xl font-bold gradient-text mb-3">
                         {step.number}
                       </div>
@@ -213,70 +273,7 @@ export default function Home() {
             <p className="subtitle text-balance">{t.pricing.subtitle}</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {t.pricing.plans.map((plan, index) => (
-              <div
-                key={index}
-                className={`relative rounded-2xl p-8 ${
-                  plan.popular
-                    ? "gradient-bg text-white shadow-2xl shadow-primary-500/25 scale-105 z-10"
-                    : "bg-white border border-dark-200"
-                }`}
-              >
-                {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-accent-500 text-white text-sm font-semibold rounded-full shadow-lg">
-                    Most Popular
-                  </div>
-                )}
-
-                <div className="mb-6">
-                  <h3 className={`text-lg font-semibold mb-2 ${plan.popular ? "text-white" : "text-dark-900"}`}>
-                    {plan.name}
-                  </h3>
-                  <div className="flex items-baseline gap-1">
-                    <span className={`text-4xl font-bold ${plan.popular ? "text-white" : "text-dark-900"}`}>
-                      {plan.price}
-                    </span>
-                    <span className={`text-sm ${plan.popular ? "text-white/70" : "text-dark-500"}`}>
-                      {plan.period}
-                    </span>
-                  </div>
-                  <p className={`text-sm mt-2 ${plan.popular ? "text-white/80" : "text-dark-500"}`}>
-                    {plan.description}
-                  </p>
-                </div>
-
-                <ul className="space-y-3 mb-8">
-                  {plan.features.map((feature, fIndex) => (
-                    <li key={fIndex} className="flex items-start gap-3">
-                      <svg
-                        className={`w-5 h-5 flex-shrink-0 mt-0.5 ${plan.popular ? "text-white" : "text-primary-500"}`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span className={`text-sm ${plan.popular ? "text-white/90" : "text-dark-600"}`}>
-                        {feature}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Link
-                  href="/pricing"
-                  className={`w-full justify-center ${
-                    plan.popular
-                      ? "btn bg-white text-primary-600 hover:bg-white/90"
-                      : "btn-secondary"
-                  } btn-md`}
-                >
-                  {plan.cta}
-                </Link>
-              </div>
-            ))}
-          </div>
+          <PricingPlans />
 
           <p className="text-center text-sm text-dark-500 mt-8">
             {t.pricing.guarantee}
@@ -290,7 +287,7 @@ export default function Home() {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
+            __html: safeJsonLd({
               "@context": "https://schema.org",
               "@type": "FAQPage",
               mainEntity: t.faq.items.map((item) => ({
@@ -332,7 +329,7 @@ export default function Home() {
             {t.myths.items.map((item, index) => (
               <div key={index} className="card-hover p-6 lg:p-8">
                 <div className="text-sm font-semibold text-accent-600 mb-2">
-                  Myth: {item.myth}
+                  {t.common.myth} {item.myth}
                 </div>
                 <p className="text-dark-500 leading-relaxed text-sm">
                   {item.truth}
@@ -368,35 +365,26 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Latest Articles */}
       <section className="section-padding bg-dark-50">
         <div className="container-custom">
-          <div className="max-w-2xl mx-auto text-center mb-12">
-            <h2 className="heading-lg mb-4">Latest Articles</h2>
-            <p className="subtitle">Hard data about startups, validation, and why most ideas fail before they start.</p>
+          <h2 className="heading-lg mb-4">{t.common.blogTitle}</h2>
+          <p className="subtitle mb-8">{t.common.indexIntro}</p>
+          <div className="grid gap-5 md:grid-cols-3">
+            {articles
+              .filter((a) => a.kind === "blog")
+              .slice(0, 3)
+              .map((a) => (
+                <Link key={a.path} href={a.path} className="card-hover p-6">
+                  <h3 className="text-lg font-semibold">{a.title[language]}</h3>
+                  <p className="mt-3 text-sm text-dark-500">
+                    {a.intro[language]}
+                  </p>
+                </Link>
+              ))}
           </div>
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            <Link href="/blog/why-90-percent-of-startups-fail" className="card-hover p-6 block group">
-              <div className="text-sm text-dark-400 mb-2">6 min read</div>
-              <h3 className="text-lg font-semibold text-dark-900 mb-2 group-hover:text-primary-600 transition-colors">Why 90% of Startups Fail</h3>
-              <p className="text-dark-500 text-sm">The data shows exactly where most founders go wrong.</p>
-            </Link>
-            <Link href="/blog/customer-acquisition-cost-benchmarks" className="card-hover p-6 block group">
-              <div className="text-sm text-dark-400 mb-2">6 min read</div>
-              <h3 className="text-lg font-semibold text-dark-900 mb-2 group-hover:text-primary-600 transition-colors">CAC Benchmarks by Channel</h3>
-              <p className="text-dark-500 text-sm">Real numbers for customer acquisition cost by channel.</p>
-            </Link>
-            <Link href="/blog/churn-rate-how-to-reduce" className="card-hover p-6 block group">
-              <div className="text-sm text-dark-400 mb-2">5 min read</div>
-              <h3 className="text-lg font-semibold text-dark-900 mb-2 group-hover:text-primary-600 transition-colors">How to Reduce Churn</h3>
-              <p className="text-dark-500 text-sm">5 things that actually work, not generic advice.</p>
-            </Link>
-          </div>
-          <div className="text-center mt-10">
-            <Link href="/blog" className="text-primary-600 hover:text-primary-700 font-medium">
-              View all articles →
-            </Link>
-          </div>
+          <Link href="/blog" className="mt-6 inline-block text-primary-700">
+            {t.common.moreReading}
+          </Link>
         </div>
       </section>
 
@@ -412,10 +400,10 @@ export default function Home() {
         <div className="container-custom relative">
           <div className="max-w-3xl mx-auto text-center text-white">
             <h2 className="heading-lg mb-6 text-balance">
-              Ready to test your idea in 15 minutes?
+              {t.common.ctaTitle}
             </h2>
             <p className="text-lg text-white/80 mb-10 max-w-xl mx-auto text-balance">
-              Don't wait 180 days to find out if your startup fails. Simulate the whole journey in one simulation — for free.
+              {t.common.ctaBody}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
@@ -423,8 +411,18 @@ export default function Home() {
                 className="btn bg-white text-primary-600 hover:bg-white/90 btn-lg"
               >
                 {t.common.startFree}
-                <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                <svg
+                  className="w-5 h-5 ml-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 7l5 5m0 0l-5 5m5-5H6"
+                  />
                 </svg>
               </Link>
             </div>

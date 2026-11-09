@@ -1,36 +1,10 @@
 import type { MetadataRoute } from "next";
-
-const SITE_URL = "https://goodbye.help";
-
-// Bump manually when a page's content actually changes.
-// A build-time `new Date()` changes on every deploy and teaches Google to ignore lastmod.
-const LAST_MODIFIED = new Date("2026-11-06");
-
+import { pages, SITE_URL } from "@/src/content/registry";
 export default function sitemap(): MetadataRoute.Sitemap {
-  // /simulator is included since 2026-11-06: it is now indexable and carries a
-  // server-rendered explainer (components/sim/SimulatorGuide.tsx).
-  const pages = [
-    "",
-    "/guides",
-    "/guides/startup-idea-validation",
-    "/guides/180-day-simulation-explained",
-    "/guides/startup-cost-benchmarks",
-    "/blog",
-    "/blog/why-90-percent-of-startups-fail",
-    "/blog/how-much-money-do-you-need-to-start-a-startup",
-    "/blog/customer-acquisition-cost-benchmarks",
-    "/blog/churn-rate-how-to-reduce",
-    "/how-it-works",
-    "/pricing",
-    "/simulator",
-    "/about",
-    "/privacy",
-  ];
-
-  return pages.map((path) => ({
-    url: `${SITE_URL}${path}`,
-    lastModified: LAST_MODIFIED,
-    changeFrequency: path === "" ? "weekly" : "monthly",
-    priority: path === "" ? 1 : path === "/simulator" ? 0.9 : 0.7,
+  return pages.map((p) => ({
+    url: SITE_URL + p.path,
+    lastModified: new Date(p.updated),
+    changeFrequency: "monthly",
+    priority: p.path === "/" ? 1 : 0.7,
   }));
 }

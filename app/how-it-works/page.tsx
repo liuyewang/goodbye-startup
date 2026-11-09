@@ -1,6 +1,6 @@
 "use client";
 
-import { useI18n } from "@/lib/i18n";
+import { useI18n } from "@/src/i18n";
 import Link from "next/link";
 
 export default function HowItWorksPage() {
@@ -16,9 +16,7 @@ export default function HowItWorksPage() {
             <h1 className="heading-xl mb-6 text-balance">
               {t.howItWorks.title}
             </h1>
-            <p className="subtitle text-balance">
-              {t.howItWorks.subtitle}
-            </p>
+            <p className="subtitle text-balance">{t.howItWorks.subtitle}</p>
             <div className="mt-6 inline-block bg-amber-50 border border-amber-200 rounded-lg px-4 py-2 text-sm text-amber-800">
               {t.howItWorks.timeNote}
             </div>
@@ -92,12 +90,15 @@ export default function HowItWorksPage() {
         <div className="container-custom relative">
           <div className="max-w-2xl mx-auto text-center text-white">
             <h2 className="heading-lg mb-6 text-balance">
-              Ready to simulate 180 days in 15 minutes?
+              {t.common.ctaTitle}
             </h2>
             <p className="text-lg text-white/80 mb-10 text-balance">
-              It's free to try. No credit card required. Get the verdict before you quit your job.
+              {t.common.ctaBody}
             </p>
-            <Link href="/simulator" className="btn bg-white text-primary-600 hover:bg-white/90 btn-lg">
+            <Link
+              href="/simulator"
+              className="btn bg-white text-primary-600 hover:bg-white/90 btn-lg"
+            >
               {t.common.startFree}
             </Link>
           </div>

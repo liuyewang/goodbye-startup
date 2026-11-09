@@ -1,16 +1,9 @@
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description:
-    "How Goodbye Startup collects, uses, and protects your data and AI simulation conversations.",
-  alternates: { canonical: "/privacy" },
-};
-
-export default function PrivacyLayout({
+import { metadataFor } from "@/src/content/registry";
+export const metadata = metadataFor("/privacy");
+export default function Layout({
   children,
 }: {
   children: React.ReactNode;
-}) {
+}): React.ReactNode {
   return children;
 }
