@@ -36,6 +36,7 @@
   },
   "observability": {
     "enabled": true,
+    "redact_query_string": true,
   },
   "triggers": {
     "crons": ["0 3 * * *"],
@@ -71,7 +72,7 @@
     },
     "preview": {
       "name": "goodbye-startup-preview",
-      "workers_dev": true,
+      "workers_dev": false,
       "preview_urls": false,
       "routes": [],
       "d1_databases": [

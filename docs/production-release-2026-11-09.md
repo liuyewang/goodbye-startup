@@ -1,5 +1,7 @@
 # Production release — 2026-11-09
 
+Historical release record. Subsequent [configuration cleanup](configuration-cleanup-2026-11-09.md) retired the online Pages rollback deployments after verified private backup, closed preview access and enabled log redaction. Old deployment IDs below document release history, not current recovery URLs.
+
 ## Authorization and target
 
 The user approved replacing the legacy Pages deployment flow, validating Workers production, merging `codex/full-project-refactor` into `main`, and switching the formal site. The user then explicitly chose **local Wrangler CLI deployment instead of GitHub Actions deployment**. The user further clarified that GitHub must not run tests either. All testing, builds and publishing run locally; GitHub stores code only. Repository Actions are disabled and workflow files are removed. No new CI token or Actions secret is needed. Cloudflare must remain Free. The user approved a production cap of **60 attempted DeepSeek calls per UTC day** and **at most six additional real inference attempts for this release acceptance**. The earlier 20-call evaluation is exhausted and is not reopened. Preview inference remains closed.

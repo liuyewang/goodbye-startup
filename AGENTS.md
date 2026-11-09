@@ -24,7 +24,7 @@ Updated 2026-11-09 after the user-approved full refactor. This file replaces the
 
 Read README → `docs/PRD.md` → `docs/tech-stack.md` → `docs/deployment.md`. Follow the approved plan and `docs/refactor-progress-2026-11-09.md`; preserve user edits and keep Conventional Commits. Use the Superpowers design/plan/execution/verification/review workflow when applicable. Do not restart approved design gates merely because context compacted.
 
-Actual stack: strict TypeScript, React 19, Next 16 compatible App Router through vinext, Vite, Tailwind 3.4, Cloudflare Workers/D1 and DeepSeek. The formal site now runs the production Worker; the original Pages project/artifact is retained for rollback. No UI component, animation, form, state-management or i18n library may be added without explicit approval. No ORM, agent framework or new service without a concrete need.
+Actual stack: strict TypeScript, React 19, Next 16 compatible App Router through vinext, Vite, Tailwind 3.4, Cloudflare Workers/D1 and DeepSeek. The formal site now runs the production Worker; legacy Pages online deployments are retired, with a verified private artifact retained for controlled recovery. See `docs/configuration-cleanup-2026-11-09.md`; do not restore the unrestricted old API. No UI component, animation, form, state-management or i18n library may be added without explicit approval. No ORM, agent framework or new service without a concrete need.
 
 ## Trust boundaries
 

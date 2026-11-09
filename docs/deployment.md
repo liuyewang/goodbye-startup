@@ -1,6 +1,8 @@
 # Deployment and rollback
 
-The refactored application is live at `https://goodbye.help` on Worker `goodbye-startup-production` with isolated production D1. It was published locally from main, with GitHub Actions and legacy Pages Git builds disabled. Do not use the old Pages build command. Both finite acceptance allowances are exhausted: 20 preview/evaluation calls and six production release calls. Preview inference remains closed; production has an ongoing 60-attempt cap per UTC day. The old Pages project/artifact is retained for rollback. See [the production release](production-release-2026-11-09.md) for exact source/version correspondence and verification.
+Current retirement policy: [configuration cleanup](configuration-cleanup-2026-11-09.md) supersedes older Pages rollback instructions below. All legacy online deployments were deleted after verified private artifact backup; Pages now serves a credential-free retirement endpoint. Ordinary rollback should use a compatible Worker version. Preview real-provider credentials and public endpoint are closed.
+
+The refactored application is live at `https://goodbye.help` on Worker `goodbye-startup-production` with isolated production D1. It was published locally from main, with GitHub Actions and legacy Pages Git builds disabled. Do not use the old Pages build command. Both finite acceptance allowances are exhausted: 20 preview/evaluation calls and six production release calls. Preview inference remains closed; production has an ongoing 60-attempt cap per UTC day. The old Pages artifact is retained privately for controlled recovery; its online deployments have been retired. See [the production release](production-release-2026-11-09.md) for exact source/version correspondence and verification.
 
 ## Isolated preview configuration
 
