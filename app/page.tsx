@@ -21,22 +21,22 @@ export default function Home() {
 
         <div className="container-custom relative">
           <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur border border-primary-200 rounded-full text-sm font-medium text-primary-700 mb-8 animate-fade-in">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur border border-primary-200 rounded-full text-sm font-medium text-primary-700 mb-8">
               <span className="w-2 h-2 bg-accent-500 rounded-full animate-pulse" />
               {t.hero.badge}
             </div>
 
-            <h1 className="heading-xl mb-6 animate-slide-up text-balance">
+            <h1 className="heading-xl mb-6 text-balance">
               {t.hero.title}
               <br />
               <span className="gradient-text">{t.hero.titleHighlight}</span>
             </h1>
 
-            <p className="subtitle max-w-2xl mx-auto mb-10 animate-slide-up text-balance">
+            <p className="subtitle max-w-2xl mx-auto mb-10 text-balance">
               {t.hero.subtitle}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-slide-up">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
               <Link
                 href="/simulator"
                 className="btn-primary btn-lg w-full sm:w-auto"
@@ -66,7 +66,7 @@ export default function Home() {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto mt-20 animate-fade-in">
+          <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto mt-20">
             <div className="text-center">
               <div className="text-3xl sm:text-4xl font-bold text-dark-900 mb-1">
                 {t.hero.stats.days}
@@ -259,7 +259,7 @@ export default function Home() {
 
           <div className="text-center mt-16">
             <Link href="/how-it-works" className="btn-secondary btn-lg">
-              {t.common.learnMore}
+              {t.nav.howItWorks}
             </Link>
           </div>
         </div>
@@ -328,7 +328,7 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {t.myths.items.map((item, index) => (
               <div key={index} className="card-hover p-6 lg:p-8">
-                <div className="text-sm font-semibold text-accent-600 mb-2">
+                <div className="text-sm font-semibold text-accent-700 mb-2">
                   {t.common.myth} {item.myth}
                 </div>
                 <p className="text-dark-500 leading-relaxed text-sm">

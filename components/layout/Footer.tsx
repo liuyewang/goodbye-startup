@@ -21,7 +21,7 @@ export default function Footer() {
             <p className="text-sm text-dark-400 leading-relaxed mb-4">
               {t.footer.tagline}
             </p>
-            <p className="text-xs text-dark-500">{t.footer.madeWith}</p>
+            <p className="text-xs text-dark-400">{t.footer.madeWith}</p>
           </div>
 
           {/* Product */}
@@ -118,7 +118,7 @@ export default function Footer() {
 
         {/* Bottom */}
         <div className="mt-12 pt-8 border-t border-dark-800 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-dark-500">{t.footer.copyright}</p>
+          <p className="text-sm text-dark-400">{t.footer.copyright}</p>
           <div className="flex items-center gap-4">
             <a
               href="https://github.com/liuyewang/goodbye-startup"

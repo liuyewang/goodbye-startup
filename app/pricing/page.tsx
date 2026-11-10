@@ -77,7 +77,7 @@ export default function PricingPage() {
           </dl>
           <div className="text-center mt-12">
             <Link href="/about" className="btn-secondary btn-md">
-              {t.common.learnMore}
+              {t.nav.about}
             </Link>
           </div>
         </div>
