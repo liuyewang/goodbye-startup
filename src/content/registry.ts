@@ -13,7 +13,19 @@ const page = (
   path: string,
   title: string,
   description: string,
-): PublicPage => ({ path, title, description, updated: "2026-11-09" });
+): PublicPage => ({
+  path,
+  title,
+  description,
+  updated: [
+    "/",
+    "/about",
+    "/how-it-works",
+    "/guides/startup-idea-validation",
+  ].includes(path)
+    ? "2026-11-10"
+    : "2026-11-09",
+});
 export const pages: PublicPage[] = [
   page(
     "/",

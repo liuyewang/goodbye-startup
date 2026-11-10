@@ -1,7 +1,7 @@
 # AI Startup Simulator
 
 Canonical: https://goodbye.help/
-Updated: 2026-11-09
+Updated: 2026-11-10
 
 AI-Powered Startup Simulator
 
@@ -9,7 +9,7 @@ Say goodbye to your 9-5.
 
 Start your startup journey.
 
-Explore 180 simulated days in about 15 real minutes. Test cash, pricing and retention assumptions before choosing your next real-world experiment.
+For aspiring founders: practice cash, pricing and retention decisions across 180 simulated days in about 15 minutes. One free run, no account. Scenarios are not market research.
 
 Simulate 180 Days in 15 Min — Free
 

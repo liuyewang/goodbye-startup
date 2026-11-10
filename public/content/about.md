@@ -1,7 +1,7 @@
 # About
 
 Canonical: https://goodbye.help/about
-Updated: 2026-11-09
+Updated: 2026-11-10
 
 About Goodbye Startup
 
@@ -14,6 +14,14 @@ We help aspiring founders articulate assumptions, understand cash and retention,
 Why We Built This
 
 A seemingly complete idea often hides untested conditions. A limited model makes those conditions visible so feedback can be discussed and tested.
+
+Who this is for and how to check it
+
+Goodbye Startup is an educational decision rehearsal for aspiring founders, not a demand-validation service or an investment forecast. One anonymous free simulation is available without an account; paid plans are unavailable. The public repository records implementation changes. Report unclear calculations or misleading copy through its issue tracker; no independent certification or customer outcome is implied.
+
+Project history and corrections
+
+https://github.com/liuyewang/goodbye-startup/issues
 
 Our Values
 

@@ -216,6 +216,7 @@ export const articles: Article[] = [
     path: "/guides/startup-idea-validation",
     kind: "guide",
     ...dates,
+    updated: "2026-11-10",
     title: t(
       "Validate a startup idea before building",
       "开发前如何验证创业想法",
@@ -225,6 +226,38 @@ export const articles: Article[] = [
       "有用的验证计划会问：哪些证据能改变决定？模拟帮助整理假设，不能证明有人购买。",
     ),
     sections: [
+      {
+        title: t(
+          "What simulation can and cannot validate",
+          "模拟能验证什么，不能验证什么",
+        ),
+        body: t(
+          "A startup simulator can expose how assumptions interact; it cannot establish that customers want a product. Use it before an interview, prototype or clearly described offer to decide what evidence to collect. The following invented cases use the public engine, not customer observations. All cover simulated Day 0 to Day 5 (1/6 month); real use of the six-stage simulator takes about 15 minutes. Day 0 preserves setup cash and zero customers. Every case uses one part-time founder, 10% signup, 10% paid conversion, 10% monthly churn, $10 monthly price, $1,500 monthly cost and zero morale change. There are initially no customers to retain. Visits are totals for the five-day interval. Money is calculated in cents with JavaScript Math.round; the displayed balances are rounded to two dollar decimals.",
+          "创业模拟能揭示假设之间的关系，不能证明客户需要产品。用它为访谈、原型或透明报价选择要收集的证据。以下是假设案例，使用公开引擎，不是用户观察。全部从模拟内第 0 天到第 5 天（1/6 个月）；六阶段一次模拟真实只需约 15 分钟。第 0 天保留初始现金，客户为零。每例均为一名兼职创业者，注册率 10%、付费转化率 10%、月流失率 10%、月价格 $10、月成本 $1,500、士气变化为零。没有原客户需要留存；访问数是五天间隔总量。金额以美分计算并使用 JavaScript Math.round 舍入，美元余额显示两位小数。",
+        ),
+      },
+      {
+        title: t("Case 1: Weak demand", "案例 1：需求不足"),
+        body: t(
+          "Starting cash: $10,000. Interval visits: 100. One-time cost: $0. Paying customers: 1. Monthly revenue: $10. Cash after Day 5: $9,751.67. Calculation: floor(100 × 0.10 × 0.10) = 1 customer; 1,000,000 + round((1,000 − 150,000) / 6) = 975,167 cents. This is low acquisition under chosen assumptions, not proof of weak real demand. Next experiment: ask a narrowly defined customer group about a recent problem and its current workaround, then offer a transparent prototype or commitment request. Before starting, define the group, observation window, budget and decision threshold; record behavior and refusals. Replace conversion guesses with observed denominators.",
+          "初始现金 $10,000，间隔访问数 100，一次性支出 $0。付费客户：1。月收入 $10。第 5 天现金：$9,751.67。计算：向下取整（100 × 0.10 × 0.10）= 1 个客户；1,000,000 + Math.round((1,000 − 150,000) / 6) = 975,167 美分。低获客量来自所选假设，不证明真实需求不足。下一步：询问具体客户群近期问题及现有替代方式，再提出透明原型或承诺请求。事先明确人群、观察期、预算和决策阈值，记录实际行为和拒绝理由，用有分母的观察替换转化率猜测。",
+        ),
+      },
+      {
+        title: t("Case 2: Expensive acquisition", "案例 2：获客支出过高"),
+        body: t(
+          "Starting cash: $10,000. Interval visits: 1,000. One-time cost: $3,000, assumed entirely to be acquisition spending. Paying customers: 10. Monthly revenue: $100. Cash after Day 5: $6,766.67. Calculation: floor(1,000 × 0.10 × 0.10) = 10 customers; 1,000,000 + round((10,000 − 150,000) / 6) − 300,000 = 676,667 cents. Hypothetical acquisition cost is $3,000 / 10 = $300 per new paying customer. Price alone cannot establish payback or lifetime value: margin and retention still matter. Next experiment: measure one channel with a predefined spending ceiling and attribution window; distinguish visits, signups and new paying customers. Include labor and other acquisition costs in the real calculation rather than treating every signup as a sale.",
+          "初始现金 $10,000，间隔访问数 1,000，一次性支出 $3,000，假设全部属于获客投入。付费客户：10。月收入 $100。第 5 天现金：$6,766.67。计算：向下取整（1,000 × 0.10 × 0.10）= 10 个客户；1,000,000 + Math.round((10,000 − 150,000) / 6) − 300,000 = 676,667 美分。假设获客成本为 $3,000 / 10 = 每位新付费客户 $300。只看售价不能判断回本或终身价值，还需要毛利与留存。下一步：对单一渠道设定支出上限和归因窗口，分别记录访问、注册和新付费客户；现实计算应包括人工等获客成本，不把每个注册当成成交。",
+        ),
+      },
+      {
+        title: t("Case 3: Cash exhausted early", "案例 3：现金提前耗尽"),
+        body: t(
+          "Starting cash: $100. Interval visits: 0. One-time cost: $0. Paying customers: 0. Monthly revenue: $0. Cash after Day 5: $0.00. Calculation: max(0, 10,000 + round((0 − 150,000) / 6)) = 0 cents. The engine completes the scenario at the Day 5 checkpoint and does not simulate a precise insolvency date within that interval. No later stage is reached. This is not a real financial forecast. Next experiment: list dated cash obligations and verified available cash, test a lower-cost prototype, and define a stop condition before committing funds. Add taxes, payment delays, personal obligations and other omitted items to a real budget; do not assume simulated funding exists.",
+          "初始现金 $100，间隔访问数 0，一次性支出 $0。付费客户：0。月收入 $0。第 5 天现金：$0.00。计算：max(0, 10,000 + Math.round((0 − 150,000) / 6)) = 0 美分。引擎在第 5 天检查点结束场景，不模拟间隔内精确的资不抵债日期，也不会进入后续阶段。这不是现实财务预测。下一步：列出有日期的现金义务及已核实可用现金，尝试成本更低的原型，承诺资金前明确停止条件。真实预算应补充税费、回款延迟、个人义务等遗漏项，不假定模拟中的融资真实存在。",
+        ),
+      },
+
       {
         title: t(
           "Define customer, problem and alternative",
@@ -260,7 +293,14 @@ export const articles: Article[] = [
         ),
       },
     ],
-    sources: [sba],
+    sources: [
+      sba,
+      {
+        title:
+          "Goodbye Startup: versioned calculation rules (hypothetical examples)",
+        url: "https://github.com/liuyewang/goodbye-startup/blob/d07cd6e19a38dd54728af6a5b3a69269b89e2a07/src/domain/simulation/engine.ts",
+      },
+    ],
   },
   {
     path: "/guides/startup-cost-benchmarks",

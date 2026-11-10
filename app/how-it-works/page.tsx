@@ -79,6 +79,15 @@ export default function HowItWorksPage() {
               </div>
             ))}
           </dl>
+          <p className="mt-8 text-sm text-dark-600">
+            {t.howItWorks.detail.reviewed}
+          </p>
+          <a
+            className="mt-3 inline-block text-primary-700 underline"
+            href={t.howItWorks.detail.sourceUrl}
+          >
+            {t.howItWorks.detail.sourceLabel}
+          </a>
           <p className="text-dark-500 mt-10">{t.howItWorks.detail.closing}</p>
         </div>
       </section>

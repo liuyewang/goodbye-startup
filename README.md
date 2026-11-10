@@ -8,6 +8,20 @@ A bilingual educational startup simulator. Six stages cover 180 **simulated** da
 - Production source branch: `main`; [refactor PR #1](https://github.com/liuyewang/goodbye-startup/pull/1) was merged. Production cutover is tracked in [the release report](docs/production-release-2026-11-09.md).
 - Isolated [Workers/D1 preview](https://goodbye-startup-preview.indie-utility-lab.workers.dev) is deployed. Its 20-request evaluation is complete and AI calls are paused at budget zero. See [preview validation](docs/preview-validation-2026-11-09.md). The formal site now runs the refactored production Worker with isolated D1 and a daily cap of 300 attempted model calls; the legacy Pages artifact is retained privately for controlled recovery. See [infrastructure cleanup](docs/configuration-cleanup-2026-11-09.md).
 
+## Try it and inspect the method
+
+Goodbye Startup is for aspiring founders practicing cash, pricing and retention decisions. One anonymous free simulation takes about 15 minutes, covering 180 simulated days without an account. Paid plans are unavailable. AI proposes assumptions; deterministic code calculates outcomes. It does not validate real demand, retrieve live market research or predict business success.
+
+- [Try the simulator](https://goodbye.help/simulator)
+- [Calculation method, initialization and limits](https://goodbye.help/how-it-works)
+- [Idea validation and three hypothetical worked cases](https://goodbye.help/guides/startup-idea-validation)
+- [Implementation of the calculation rules](src/domain/simulation/engine.ts)
+- [Report a calculation, copy or usability issue](https://github.com/liuyewang/goodbye-startup/issues)
+
+面向准备创业的人：用一次约15分钟的模拟练习现金、定价与留存决策。天数是模拟内的；假设案例不是用户实绩，也不能验证真实需求。无需账户，可使用一次匿名免费模拟。欢迎通过问题区反馈计算说明、假设或使用体验的问题；请勿提交真实创业想法、个人数据或密钥。
+
+The public method and validation guide document hypothetical examples and versioned calculation rules. No external review or endorsement is claimed. Release evidence is recorded in docs/superpowers/plans/2026-11-10-chatgpt-visibility.md.
+
 ## Start locally without paid inference
 
 Use Node 26 (the installed and verified runtime is 26.5.0), npm and the committed lockfile.

@@ -49,6 +49,21 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <section className="section-padding">
+        <div className="container-custom max-w-3xl">
+          <h2 className="heading-md mb-4">{t.about.editorial.heading}</h2>
+          <p className="text-dark-600 leading-relaxed">
+            {t.about.editorial.body}
+          </p>
+          <a
+            className="mt-4 inline-block text-primary-700 underline"
+            href={t.about.editorial.url}
+          >
+            {t.about.editorial.label}
+          </a>
+        </div>
+      </section>
+
       {/* Values */}
       <section className="section-padding">
         <div className="container-custom">

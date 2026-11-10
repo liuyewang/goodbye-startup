@@ -44,7 +44,7 @@ export const en = {
     title: "Say goodbye to your 9-5.",
     titleHighlight: "Start your startup journey.",
     subtitle:
-      "Explore 180 simulated days in about 15 real minutes. Test cash, pricing and retention assumptions before choosing your next real-world experiment.",
+      "For aspiring founders: practice cash, pricing and retention decisions across 180 simulated days in about 15 minutes. One free run, no account. Scenarios are not market research.",
     ctaPrimary: "Simulate 180 Days in 15 Min — Free",
     ctaSecondary: "How It Works",
     stats: {
@@ -179,18 +179,35 @@ export const en = {
         "AI proposes assumptions; code controls settlement and termination.",
       items: [
         {
-          title: "Cash and revenue",
-          body: "Paying customers times price gives monthly revenue. Interval net income and one-time costs update cash, which cannot fall below zero.",
+          title: "Time and initialization",
+          body: "Stages are simulated Days 0, 5, 90, 120, 150 and 180; real use takes about 15 minutes. The first successful AI reply initializes Day 0 without charging costs or acquiring customers. Later interval months = (new day − previous day) / 30.",
         },
         {
-          title: "Runway",
-          body: "Cash divided by monthly net burn. If costs do not exceed revenue, the interface shows no net burn.",
+          title: "Paying customers and retention",
+          body: "Retained customers = floor(previous customers × (1 − monthly churn)^interval months). New paying customers = floor(interval visits × signup rate × paid conversion rate). Add these two integers; visits are an interval total, not a monthly rate.",
         },
         {
-          title: "Model limits",
-          body: "The model omits taxes, receivables, financing and live market research. Team and commitment provide context rather than directly changing arithmetic.",
+          title: "Revenue and cash, in integer cents",
+          body: "Monthly revenue = paying customers × price per month. Cash = clamp(previous cash + Math.round((monthly revenue − monthly cost) × interval months) − one-time cost, 0, 1,000,000,000 cents). Retention is applied first; the new monthly revenue is treated as constant across the whole interval. This is a simplification, not accounting.",
+        },
+        {
+          title: "Runway and scenario outcome",
+          body: "Runway months = cash / (monthly cost − monthly revenue) when net burn is positive; otherwise the UI shows no net burn. Cash reaching zero ends the simulation early. At Day 180, positive cash with revenue covering cost is viable within the model; positive cash below break-even means revise. Zero cash means abandon the simulated scenario, not a recommendation about a real business.",
+        },
+        {
+          title: "A reproducible Day 5 example",
+          body: "Hypothetical inputs: $10,000 starting cash, $1,500 monthly cost, zero customers; after Day 0 use 1,000 interval visits, 10% signup, 10% paid conversion, 10% monthly churn, $10 monthly price and no one-time cost. The five-day interval is 1/6 month. Paying customers = 10; monthly revenue = $100; cash = $9,766.67; runway is about 6.98 months. The calculation uses JavaScript Math.round for integer cents (exact half-cent ties round toward positive infinity). These are invented inputs, not observed conversion benchmarks.",
+        },
+        {
+          title: "Scope and limitations",
+          body: "AI proposes assumptions; validated code settles them. The model omits taxes, receivables, financing, uncertainty distributions and live market research. It approximates interval revenue and retention, and does not simulate customer-by-customer billing. Team size and commitment provide AI context rather than directly changing arithmetic. Test demand outside the simulator.",
         },
       ],
+      sourceLabel: "Calculation source and revision",
+      sourceUrl:
+        "https://github.com/liuyewang/goodbye-startup/blob/d07cd6e19a38dd54728af6a5b3a69269b89e2a07/src/domain/simulation/engine.ts",
+      reviewed:
+        "Method reviewed: 2026-11-10. Worked examples are hypothetical, not customer results.",
       closing:
         "Turn the scenario’s critical assumptions into real-world tests before committing resources.",
     },
@@ -433,6 +450,12 @@ export const en = {
       title: "Why We Built This",
       description:
         "A seemingly complete idea often hides untested conditions. A limited model makes those conditions visible so feedback can be discussed and tested.",
+    },
+    editorial: {
+      heading: "Who this is for and how to check it",
+      body: "Goodbye Startup is an educational decision rehearsal for aspiring founders, not a demand-validation service or an investment forecast. One anonymous free simulation is available without an account; paid plans are unavailable. The public repository records implementation changes. Report unclear calculations or misleading copy through its issue tracker; no independent certification or customer outcome is implied.",
+      label: "Project history and corrections",
+      url: "https://github.com/liuyewang/goodbye-startup/issues",
     },
     values: {
       title: "Our Values",
