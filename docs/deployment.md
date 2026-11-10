@@ -61,6 +61,10 @@ Official references: [Workers deployment](https://developers.cloudflare.com/work
 
 The previous manual Pages deployment included nine uncommitted UI changes. A Pages retry rebuilt clean `a47c007` and temporarily omitted them; verification caught this and the original local artifact was redeployed. For future credential-only refreshes, preserve and verify the deployed artifact or use source baseline `ee0d2f0`, not just the old deployment metadata SHA. See the preview report for deployment IDs and recovery evidence. Do not rebuild the legacy app from the refactor branch.
 
+## Routine deployment authorization
+
+The user granted standing authorization on 2026-11-10; AGENTS.md owns the current rule. Routine releases within this project's existing Cloudflare environment and production domain proceed after checks and code review, including necessary normal Git integration and actual production readback. Do not pause for another approval. Historical per-release approval notes do not revoke this standing instruction. Separate existing boundaries for paid resources/evaluations, destructive operations, domain changes and unrelated services remain in force.
+
 ## Production releases via local Wrangler
 
 GitHub stores code only. Repository Actions are disabled and all workflow files have been removed: no GitHub test runner, build or deployment is used. Legacy Pages Git builds are also disabled. Run testing, building and publishing locally; pushing main does not deploy. Use the existing authorized local Cloudflare token; no new CI token or Actions secret is needed. Its allowed IPv4 path is selected with `NODE_OPTIONS='--dns-result-order=ipv4first --no-network-family-autoselection'`; do not remove IP restrictions or broaden scopes to make a deployment work.
