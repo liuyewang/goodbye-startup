@@ -31,6 +31,8 @@ import {
 } from "./persistence";
 import { simulatorCopy } from "./copy";
 import Dashboard from "./Dashboard";
+import Review from "./Review";
+import { reviewCopy } from "./reviewCopy";
 
 const inputClass =
   "mt-2 w-full rounded-xl border border-dark-200 bg-white px-4 py-3 text-dark-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200 disabled:opacity-60";
@@ -276,7 +278,9 @@ export default function Simulator(): React.JSX.Element {
       setBusy(false);
     }
   }
-  const latest = record?.turns.at(-1)?.proposal;
+  const latestTurn = record?.turns.at(-1);
+  const latest =
+    latestTurn?.version === run?.state.version ? latestTurn?.proposal : null;
   const missing =
     !!run && run.state.version > (record?.turns.at(-1)?.version ?? 0);
   const blocked =
@@ -465,7 +469,16 @@ export default function Simulator(): React.JSX.Element {
                 <p className="text-sm text-dark-500">{c.pending}</p>
               )}
               {latest && (
-                <section className="rounded-2xl border border-dark-200 bg-white p-5 sm:p-7">
+                <details
+                  open={!terminal}
+                  className="rounded-2xl border border-dark-200 bg-white p-5 sm:p-7"
+                >
+                  <summary className="cursor-pointer font-semibold">
+                    {reviewCopy[language].context}
+                  </summary>
+                  <p className="my-3 text-sm text-dark-600">
+                    {reviewCopy[language].contextNote}
+                  </p>
                   <h2 className="mb-3 text-sm font-semibold text-primary-700">
                     {c.assumptions}
                   </h2>
@@ -499,26 +512,31 @@ export default function Simulator(): React.JSX.Element {
                       ))}
                     </dl>
                   </details>
-                </section>
+                </details>
               )}
               {terminal ? (
-                <section className="rounded-2xl bg-dark-900 p-6 text-white">
-                  <h2 className="text-xl font-bold">{c.complete}</h2>
-                  <p className="mt-3 text-lg">{verdict ? c[verdict] : ""}</p>
-                  <p className="mt-3 text-sm text-dark-300">{c.verdictNote}</p>
-                  <button
-                    onClick={() => setShowQuota(true)}
-                    className="mt-5 rounded-lg bg-white px-4 py-2 font-semibold text-dark-900"
-                  >
-                    {c.another}
-                  </button>
-                  {showQuota && (
-                    <div className="mt-4">
-                      <p>{c.used}</p>
-                      <p className="mt-2 text-sm text-dark-300">{c.paid}</p>
-                    </div>
-                  )}
-                </section>
+                <>
+                  <section className="rounded-2xl bg-dark-900 p-6 text-white">
+                    <h2 className="text-xl font-bold">{c.complete}</h2>
+                    <p className="mt-3 text-lg">{verdict ? c[verdict] : ""}</p>
+                    <p className="mt-3 text-sm text-dark-300">
+                      {c.verdictNote}
+                    </p>
+                    <button
+                      onClick={() => setShowQuota(true)}
+                      className="mt-5 rounded-lg bg-white px-4 py-2 font-semibold text-dark-900"
+                    >
+                      {c.another}
+                    </button>
+                    {showQuota && (
+                      <div className="mt-4">
+                        <p>{c.used}</p>
+                        <p className="mt-2 text-sm text-dark-300">{c.paid}</p>
+                      </div>
+                    )}
+                  </section>
+                  <Review key={run.id} state={run.state} />
+                </>
               ) : (
                 <form
                   onSubmit={(e) => {
@@ -607,6 +625,9 @@ export default function Simulator(): React.JSX.Element {
                         </p>
                         <p className="mt-1 break-words text-sm text-dark-600">
                           {turn.decision}
+                        </p>
+                        <p className="mt-1 text-xs text-primary-700">
+                          {reviewCopy[language].context}
                         </p>
                         <p className="mt-1 break-words text-sm text-dark-500">
                           {turn.proposal?.scenario}

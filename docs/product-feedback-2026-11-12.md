@@ -1,0 +1,22 @@
+# Product feedback loop — 2026-11-12
+
+Goal: restore numerical trust, demonstrate concrete product value and make a completed run actionable. User explicitly requested autonomous bounded optimization; routine publication is authorized. No additional real inference, accounts, pricing entitlements, telemetry service or payment integration.
+
+First principles: server settlement is authoritative; AI prose was generated from the prior state and cannot serve as a final numerical recap. Separate pre-decision context from settled results. Generate the final one-page report from numerical state, disclose unavailable price when no reliable implied price exists, and offer a local one-variable sensitivity model with fixed customers. This is not another simulation and does not spend/refund eligibility. Preserve original JSON export and local text recovery.
+
+Adversarial verdict: **存活** for deterministic report, clearer labels, honest hero example and local comparison. **应放弃** for blindly adding subscriptions, silently granting reruns, treating an external review as verified analytics, or claiming the calculator predicts price elasticity. No model prompt/provider changes without a separately bounded real-model evaluation.
+
+- [x] Inspect code and identify pre-state prose/settlement mismatch and unsupported failure-rate copy.
+- [x] Add explicit before/after boundaries, deterministic recap/action plan and local sensitivity comparison/export.
+- [x] Add clearly hypothetical first-screen example; remove unsupported claims in both languages.
+- [ ] Verify arithmetic edge cases, full local regression, bilingual mobile browser and live publication.
+
+## Implementation and review
+
+Server settlement, provider prompt, eligibility, leases, attempts and stored schema are unchanged. Current matching-version prose is labeled as a pre-settlement draft, collapsed after completion; stale/missing-version prose is not shown as the current proposal. The dashboard shows settled values (currency cents retained) and a separate previous-state disclosure. The final recap derives unit price from authoritative revenue/customers when possible, otherwise explicitly reports unknown pricing; zero costs and zero prices are distinguished. It includes exact settled cash/customers/revenue/cost/runway, break-even target/gap, a concrete five-customer paid-offer test and local text download.
+
+Local comparison changes either price or monthly cost while holding customer count fixed; a three-month arithmetic cash plot/table comparison is disclosed as non-predictive and excludes acquisition/churn/elasticity/taxes/funding. It does not submit a request, grant another run or mutate stored state. Amounts are bounded to existing monetary ranges and two decimal places. Original JSON export remains. Zero-customer, free-price and zero-cost UI/download cases are covered.
+
+Homepage now emphasizes break-even economics, with a clearly hypothetical $10 price/22 customers/$1,500 cost/$220 revenue/$1,280 gap/150 target/128 shortfall example next to the CTA. Unsupported 90%/foreseeability copy is removed in both languages; the simulator's indexable guide reflects recap/local comparison. External popularity and willingness-to-pay claims were not re-audited or used as established product facts. No telemetry, paywall, paid comparison or future entitlement was added.
+
+Independent read-only reviewer found no Critical/Important issues and recommended extra zero-value E2E cases, which were added and passed. 46 core tests pass. Initial new E2E failure was a duplicate-text selector between summary and table header; the selector is scoped to summary and the metric-column label clarified, without weakening product checks. A temporary local Chrome connection-refused result was caused by the test runner automatically stopping its server; manual inspection switched to a dedicated preview rather than treating the browser error page as acceptance. Final full regression passed: 46 core tests, 48 browser scenarios, lint/types/format/build/secret scan and built-runtime 15-page audit. Independent Chrome verified the full English teaching example fits within 390x844 (bottom 835px); a fixed synthetic completed-state fixture verified exact 22 customers/$220 revenue/$1,617 cash/1.3 months/150 target/128 gap, collapsed stale AI draft, and 320px Chinese comparison without document overflow. These fixture checks are not a new real-model evaluation. Publication/readback pending.

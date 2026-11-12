@@ -42,10 +42,10 @@ export const en = {
   },
   hero: {
     badge: "AI-Powered Startup Simulator",
-    title: "Say goodbye to your 9-5.",
-    titleHighlight: "Start your startup journey.",
+    title: "Can your idea break even?",
+    titleHighlight: "Find the gap first.",
     subtitle:
-      "For aspiring founders: practice cash, pricing and retention decisions across 180 simulated days in about 15 minutes. One free run, no account. Scenarios are not market research.",
+      "Practice pricing, costs and customer decisions before you build. AI proposes assumptions; code calculates the outcome.",
     ctaPrimary: "Simulate 180 Days in 15 Min — Free",
     ctaSecondary: "How It Works",
     stats: {
@@ -84,7 +84,7 @@ export const en = {
   features: {
     title: "Why Goodbye Startup?",
     subtitle:
-      "Because 90% of startups fail — and most of them could have seen it coming.",
+      "Practice the trade-offs before committing money. A simulation reveals assumptions; real experiments test them.",
     items: [
       {
         icon: "📊",

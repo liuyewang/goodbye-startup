@@ -64,7 +64,7 @@ const en = {
   empty: "No saved simulation.",
   guide: "What this simulation does",
   guideText:
-    "Set your cash, operating cost, team and commitment. Make choices at simulated Day 0, 5, 90, 120, 150 and 180; real use takes about 15 minutes. AI proposes assumptions, while code calculates cash, customers, revenue, morale and runway. Bankruptcy can end the scenario early. There is no live market research.",
+    "Set your cash, operating cost, team and commitment. Make choices at simulated Day 0, 5, 90, 120, 150 and 180; real use takes about 15 minutes. AI proposes assumptions, while code calculates cash, customers, revenue, morale and runway. Bankruptcy can end the scenario early. There is no live market research. After completion, download a one-page review and compare one fixed-customer assumption locally, without another AI call.",
   assumptionsLabel: "Assumptions for this interval",
   visits: "Visits",
   signup: "Signup rate",
@@ -170,7 +170,7 @@ const zh: Copy = {
   empty: "暂无模拟存档。",
   guide: "模拟如何进行",
   guideText:
-    "设置现金、运营成本、团队与投入方式。依次在模拟内第 0、5、90、120、150、180 天决策，真实只需约 15 分钟。AI 提出假设，程序计算现金、用户、收入、士气和资金期限。破产会提前结束情景。模拟不进行实时市场检索。",
+    "设置现金、运营成本、团队与投入方式。依次在模拟内第 0、5、90、120、150、180 天决策，真实只需约 15 分钟。AI 提出假设，程序计算现金、用户、收入、士气和资金期限。破产会提前结束情景。模拟不进行实时市场检索。完成后可下载一页复盘，在本地固定客户数比较一个假设，不额外调用 AI。",
   assumptionsLabel: "本阶段的假设参数",
   visits: "访问量",
   signup: "注册率",

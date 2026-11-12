@@ -42,10 +42,9 @@ export const zh: Translations = {
   },
   hero: {
     badge: "AI 驱动的创业模拟器",
-    title: "告别朝九晚五，",
-    titleHighlight: "开启你的创业之旅。",
-    subtitle:
-      "面向准备创业的人：用约 15 分钟练习模拟内 180 天的现金、定价与留存决策。一次免费模拟，无需账户。场景不代表市场调查。",
+    title: "先算清一门小生意，",
+    titleHighlight: "再决定下一步。",
+    subtitle: "在动手前练习定价、成本与客户决策。AI 提出假设，程序计算结果。",
     ctaPrimary: "15 分钟模拟 180 天 — 免费",
     ctaSecondary: "了解工作原理",
     stats: {
@@ -83,7 +82,8 @@ export const zh: Translations = {
   },
   features: {
     title: "为什么选择再见创业？",
-    subtitle: "因为 90% 的创业都会失败——而其中大多数本可以提前预见。",
+    subtitle:
+      "在投入资金前练习取舍。模拟帮助你识别假设，现实实验才能检验假设。",
     items: [
       {
         icon: "📊",

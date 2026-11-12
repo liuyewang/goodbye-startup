@@ -2,6 +2,7 @@
 
 import { useI18n } from "@/src/i18n";
 import Link from "next/link";
+import { reviewCopy } from "@/src/features/simulator/reviewCopy";
 import PricingPlans from "@/src/content/PricingPlans";
 import { articles, safeJsonLd } from "@/src/content/registry";
 
@@ -11,7 +12,7 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero */}
-      <section className="relative py-14 sm:py-20 lg:py-32 overflow-hidden bg-gradient-to-b from-primary-50/50 to-white">
+      <section className="relative py-10 sm:py-20 lg:py-32 overflow-hidden bg-gradient-to-b from-primary-50/50 to-white">
         {/* Background grid */}
         <div className="absolute inset-0 bg-grid-pattern opacity-40" />
 
@@ -26,13 +27,13 @@ export default function Home() {
               {t.hero.badge}
             </div>
 
-            <h1 className="heading-xl mb-6 text-balance">
+            <h1 className="mb-6 text-3xl font-bold leading-tight text-balance sm:text-5xl lg:text-6xl">
               {t.hero.title}
               <br />
               <span className="gradient-text">{t.hero.titleHighlight}</span>
             </h1>
 
-            <p className="subtitle max-w-2xl mx-auto mb-10 text-balance">
+            <p className="subtitle max-w-2xl mx-auto mb-6 text-balance">
               {t.hero.subtitle}
             </p>
 
@@ -63,6 +64,17 @@ export default function Home() {
                 {t.hero.ctaSecondary}
               </Link>
             </div>
+            <aside className="mt-6 rounded-2xl border border-primary-200 bg-white/90 p-4 text-left">
+              <h2 className="font-semibold text-dark-900">
+                {reviewCopy[language].exampleTitle}
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-dark-700">
+                {reviewCopy[language].example}
+              </p>
+              <p className="mt-2 text-xs leading-relaxed text-dark-500">
+                {reviewCopy[language].exampleNote}
+              </p>
+            </aside>
           </div>
 
           {/* Stats */}

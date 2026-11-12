@@ -5,11 +5,11 @@ Updated: 2026-11-10
 
 AI-Powered Startup Simulator
 
-Say goodbye to your 9-5.
+Can your idea break even?
 
-Start your startup journey.
+Find the gap first.
 
-For aspiring founders: practice cash, pricing and retention decisions across 180 simulated days in about 15 minutes. One free run, no account. Scenarios are not market research.
+Practice pricing, costs and customer decisions before you build. AI proposes assumptions; code calculates the outcome.
 
 Simulate 180 Days in 15 Min — Free
 
@@ -29,7 +29,7 @@ No account required
 
 Why Goodbye Startup?
 
-Because 90% of startups fail — and most of them could have seen it coming.
+Practice the trade-offs before committing money. A simulation reveals assumptions; real experiments test them.
 
 📊
 

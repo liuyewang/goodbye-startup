@@ -1,6 +1,8 @@
 "use client";
 import { useI18n } from "../../i18n";
 import type { SimulationState } from "../../domain/simulation/schema";
+import { createSimulation } from "../../domain/simulation/engine";
+import { reviewCopy } from "./reviewCopy";
 import { simulatorCopy } from "./copy";
 /** Renders only server-calculated metrics, never totals asserted by the model. */
 export default function Dashboard({
@@ -14,8 +16,10 @@ export default function Dashboard({
     new Intl.NumberFormat(language === "zh" ? "zh-CN" : "en-US", {
       style: "currency",
       currency: "USD",
-      maximumFractionDigits: 0,
+      maximumFractionDigits: 2,
     }).format(n / 100);
+  const previous = state.history.at(-2) ?? createSimulation(state.setup);
+  const r = reviewCopy[language];
   const entries = [
     [c.cashLabel, money(state.cashCents)],
     [c.customers, state.customers.toLocaleString()],
@@ -33,7 +37,7 @@ export default function Dashboard({
       className="rounded-2xl border border-primary-200 bg-primary-50 p-5"
     >
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <h2 className="font-semibold text-dark-800">{c.metrics}</h2>
+        <h2 className="font-semibold text-dark-800">{r.settled}</h2>
         <span
           data-testid="sim-day"
           className="rounded-full bg-white px-4 py-1 text-sm font-semibold text-primary-700"
@@ -51,6 +55,15 @@ export default function Dashboard({
           </div>
         ))}
       </dl>
+      <details className="mt-5 text-sm text-dark-600">
+        <summary className="cursor-pointer">
+          {r.before} · {c.day} {previous.day}
+        </summary>
+        <p className="mt-2">
+          {c.cashLabel}: {money(previous.cashCents)} · {c.customers}:{" "}
+          {previous.customers} · {c.revenue}: {money(previous.revenueCents)}
+        </p>
+      </details>
       <progress
         aria-label={c.history}
         value={state.day}
