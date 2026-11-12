@@ -27,13 +27,13 @@ export default function Home() {
               {t.hero.badge}
             </div>
 
-            <h1 className="mb-6 text-3xl font-bold leading-tight text-balance sm:text-5xl lg:text-6xl">
+            <h1 className="mb-6 min-h-[3lh] text-3xl font-bold leading-tight text-balance sm:min-h-0 sm:text-5xl lg:text-6xl">
               {t.hero.title}
               <br />
               <span className="gradient-text">{t.hero.titleHighlight}</span>
             </h1>
 
-            <p className="subtitle max-w-2xl mx-auto mb-6 text-balance">
+            <p className="subtitle min-h-[4lh] max-w-2xl mx-auto mb-6 text-balance sm:min-h-0">
               {t.hero.subtitle}
             </p>
 
