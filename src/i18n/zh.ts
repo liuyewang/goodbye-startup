@@ -1,6 +1,7 @@
 import type { Translations } from "./en";
 export const zh: Translations = {
   common: {
+    backToTop: "回到顶部",
     startFree: "免费开始",
     getStarted: "立即开始",
     learnMore: "了解更多",

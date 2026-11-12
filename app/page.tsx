@@ -66,25 +66,28 @@ export default function Home() {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto mt-20">
-            <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-bold text-dark-900 mb-1">
+          <div
+            data-testid="hero-stats"
+            className="grid grid-cols-1 gap-4 max-w-2xl mx-auto mt-12 sm:grid-cols-3 sm:gap-6 sm:mt-20"
+          >
+            <div className="min-w-0 rounded-2xl border border-dark-200 bg-white/80 p-4 text-center">
+              <div className="break-words text-xl leading-snug sm:text-2xl font-bold text-dark-900 mb-1">
                 {t.hero.stats.days}
               </div>
               <div className="text-sm text-dark-500">
                 {t.hero.stats.daysDesc}
               </div>
             </div>
-            <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-bold text-dark-900 mb-1">
+            <div className="min-w-0 rounded-2xl border border-dark-200 bg-white/80 p-4 text-center">
+              <div className="break-words text-xl leading-snug sm:text-2xl font-bold text-dark-900 mb-1">
                 {t.hero.stats.accuracy}
               </div>
               <div className="text-sm text-dark-500">
                 {t.hero.stats.accuracyDesc}
               </div>
             </div>
-            <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-bold text-dark-900 mb-1">
+            <div className="min-w-0 rounded-2xl border border-dark-200 bg-white/80 p-4 text-center">
+              <div className="break-words text-xl leading-snug sm:text-2xl font-bold text-dark-900 mb-1">
                 {t.hero.stats.free}
               </div>
               <div className="text-sm text-dark-500">

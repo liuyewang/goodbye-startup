@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
+import BackToTop from "@/components/layout/BackToTop";
 import Footer from "@/components/layout/Footer";
 import LanguageProvider from "@/src/i18n";
 import { metadataFor, safeJsonLd, SITE_URL } from "@/src/content/registry";
@@ -59,10 +60,11 @@ export default function RootLayout({
         ))}
         <LanguageProvider>
           <Navbar />
-          <main id="main-content" className="flex-1 pt-16">
+          <main tabIndex={-1} id="main-content" className="flex-1 pt-16">
             {children}
           </main>
           <Footer />
+          <BackToTop />
         </LanguageProvider>
       </body>
     </html>

@@ -1,5 +1,6 @@
 export const en = {
   common: {
+    backToTop: "Back to top",
     startFree: "Start Free",
     getStarted: "Get Started",
     learnMore: "Learn More",
