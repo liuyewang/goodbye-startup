@@ -44,7 +44,8 @@ export const zh: Translations = {
     badge: "AI 驱动的创业模拟器",
     title: "先算清一门小生意，",
     titleHighlight: "再决定下一步。",
-    subtitle: "在动手前练习定价、成本与客户决策。AI 提出假设，程序计算结果。",
+    subtitle:
+      "有人付钱，为什么还是撑不下去？练习定价与成本决策，找出回本差距。AI 提出假设，程序结算数字。",
     ctaPrimary: "15 分钟模拟 180 天 — 免费",
     ctaSecondary: "了解工作原理",
     stats: {

@@ -45,7 +45,7 @@ export const en = {
     title: "Can your idea break even?",
     titleHighlight: "Find the gap first.",
     subtitle:
-      "Practice pricing, costs and customer decisions before you build. AI proposes assumptions; code calculates the outcome.",
+      "Paying customers, but still running out of cash? Test pricing and costs. AI proposes assumptions; code settles the numbers.",
     ctaPrimary: "Simulate 180 Days in 15 Min — Free",
     ctaSecondary: "How It Works",
     stats: {

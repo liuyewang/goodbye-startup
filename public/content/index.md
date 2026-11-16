@@ -9,7 +9,7 @@ Can your idea break even?
 
 Find the gap first.
 
-Practice pricing, costs and customer decisions before you build. AI proposes assumptions; code calculates the outcome.
+Paying customers, but still running out of cash? Test pricing and costs. AI proposes assumptions; code settles the numbers.
 
 Simulate 180 Days in 15 Min — Free
 

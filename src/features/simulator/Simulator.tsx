@@ -32,6 +32,7 @@ import {
 import { simulatorCopy } from "./copy";
 import Dashboard from "./Dashboard";
 import Review from "./Review";
+import History from "./History";
 import { reviewCopy } from "./reviewCopy";
 
 const inputClass =
@@ -607,6 +608,10 @@ export default function Simulator(): React.JSX.Element {
                   </p>
                 </form>
               )}
+              <History
+                state={run.state}
+                record={record?.runId === run.id ? record : null}
+              />
               {record && record.turns.length > 0 && (
                 <details className="rounded-xl border border-dark-200 p-4">
                   <summary className="cursor-pointer font-semibold">
