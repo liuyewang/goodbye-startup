@@ -170,6 +170,50 @@ for (const variant of [
     await expect(
       history.getByRole("heading", { name: "这次模拟的现金与决策" }),
     ).toBeVisible();
+    const axis = history.getByText("第 0 天", { exact: true });
+    await expect(axis).toBeVisible();
+    const fontSize = await axis.evaluate((el) => {
+      const scale =
+        el instanceof SVGGraphicsElement
+          ? Math.abs(el.getScreenCTM()?.a ?? 1)
+          : 1;
+      return parseFloat(getComputedStyle(el).fontSize) * scale;
+    });
+    const summary = history
+      .getByTestId("history-stage")
+      .first()
+      .locator("summary");
+    const targetHeight = await summary.evaluate(
+      (el) => el.getBoundingClientRect().height,
+    );
+    console.log({ variant, width: 320, fontSize, targetHeight });
+    expect.soft(fontSize).toBeGreaterThanOrEqual(12);
+    expect.soft(targetHeight).toBeGreaterThanOrEqual(44);
+    await summary.focus();
+    await summary.press("Enter");
+    expect(
+      await summary.evaluate(
+        (el) => (el.parentElement as HTMLDetailsElement).open,
+      ),
+    ).toBe(true);
+    await summary.click({ position: { x: 2, y: 2 } });
+    expect(
+      await summary.evaluate(
+        (el) => (el.parentElement as HTMLDetailsElement).open,
+      ),
+    ).toBe(false);
+    if (variant === "full" || variant === "extreme") {
+      await page.addStyleTag({
+        content:
+          '[data-testid="historical-review"] figcaption, [data-testid="historical-review"] figure > div { font-size: 24px; line-height: 32px; }',
+      });
+      expect(
+        await axis.evaluate((el) => parseFloat(getComputedStyle(el).fontSize)),
+      ).toBe(24);
+      expect(
+        await history.evaluate((el) => el.scrollWidth <= el.clientWidth),
+      ).toBe(true);
+    }
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth,

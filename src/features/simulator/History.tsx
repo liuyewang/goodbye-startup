@@ -40,45 +40,47 @@ export default function History({
         <p className="text-sm">{c.empty}</p>
       ) : (
         <>
-          <svg
-            role="img"
-            aria-label={c.chart}
-            viewBox="0 0 600 230"
-            className="w-full"
-          >
-            <desc>
-              {state.history
-                .map((s) => `${day(s.day)}: ${money(s.cashCents)}`)
-                .join("; ")}
-            </desc>
-            <line x1="48" y1="180" x2="552" y2="180" stroke="#64748b" />
-            <text x="48" y="26" fontSize="20" fill="#334155">
-              {money(maxCash)}
-            </text>
-            <text x="48" y="210" fontSize="20" fill="#334155">
-              {day(0)}
-            </text>
-            <text x="552" y="210" fontSize="20" textAnchor="end" fill="#334155">
-              {day(180)}
-            </text>
-            <text x="552" y="173" fontSize="20" textAnchor="end" fill="#334155">
-              {money(0)}
-            </text>
-            {state.history.map((s) => (
-              <circle
-                key={s.day}
-                data-day={s.day}
-                cx={48 + (s.day / 180) * 504}
-                cy={180 - (s.cashCents / maxCash) * 140}
-                r="6"
-                fill={s.cashCents === 0 ? "#b91c1c" : "#4f46e5"}
-              >
-                <title>
-                  {day(s.day)} · {c.cash}: {money(s.cashCents)}
-                </title>
-              </circle>
-            ))}
-          </svg>
+          <figure className="space-y-2">
+            <figcaption className="flex flex-wrap justify-between gap-x-4 gap-y-1 text-xs text-dark-700">
+              <span>
+                {c.maximum}: {money(maxCash)}
+              </span>
+              <span>
+                {c.baseline}: {money(0)}
+              </span>
+            </figcaption>
+            <svg
+              role="img"
+              aria-label={c.chart}
+              viewBox="0 0 600 200"
+              className="w-full"
+            >
+              <desc>
+                {state.history
+                  .map((s) => `${day(s.day)}: ${money(s.cashCents)}`)
+                  .join("; ")}
+              </desc>
+              <line x1="48" y1="180" x2="552" y2="180" stroke="#64748b" />
+              {state.history.map((s) => (
+                <circle
+                  key={s.day}
+                  data-day={s.day}
+                  cx={48 + (s.day / 180) * 504}
+                  cy={180 - (s.cashCents / maxCash) * 140}
+                  r="6"
+                  fill={s.cashCents === 0 ? "#b91c1c" : "#4f46e5"}
+                >
+                  <title>
+                    {day(s.day)} · {c.cash}: {money(s.cashCents)}
+                  </title>
+                </circle>
+              ))}
+            </svg>
+            <div className="flex justify-between gap-4 px-[8%] text-xs text-dark-700">
+              <span>{day(0)}</span>
+              <span>{day(180)}</span>
+            </div>
+          </figure>
           {zero && (
             <p className="text-sm font-medium text-red-800">
               {c.zero} {zero.day}
@@ -114,14 +116,14 @@ export default function History({
                 <li
                   key={s.day}
                   data-testid="history-stage"
-                  className="min-w-0 rounded-xl border border-dark-200 p-4"
+                  className="min-w-0 rounded-xl border border-dark-200"
                 >
                   <details>
-                    <summary className="cursor-pointer break-words text-sm font-semibold tabular-nums">
+                    <summary className="min-h-11 cursor-pointer break-words px-4 py-3 text-sm font-semibold tabular-nums focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">
                       {day(s.day)} · {c.cash}: {money(s.cashCents)}
                     </summary>
                     {turn ? (
-                      <div className="mt-4 space-y-3 text-sm">
+                      <div className="mt-4 space-y-3 px-4 pb-4 text-sm">
                         <h3 className="font-semibold">{c.decision}</h3>
                         <p className="whitespace-pre-wrap break-words">
                           {turn.decision}
@@ -149,7 +151,9 @@ export default function History({
                         )}
                       </div>
                     ) : (
-                      <p className="mt-4 text-sm text-dark-500">{c.missing}</p>
+                      <p className="mt-4 px-4 pb-4 text-sm text-dark-500">
+                        {c.missing}
+                      </p>
                     )}
                   </details>
                 </li>
