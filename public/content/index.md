@@ -1,7 +1,7 @@
 # AI Startup Simulator
 
 Canonical: https://goodbye.help/
-Updated: 2026-11-10
+Updated: 2026-11-19
 
 AI-Powered Startup Simulator
 
@@ -116,3 +116,7 @@ No. Deletion, abandonment or expiry does not refund used eligibility.
 Are results reliable predictions?
 
 They are assumption-based educational scenarios, not market research or success predictions.
+
+Explore career, life, health and financial trade-offs in Dean Chen’s original Silicon Valley game. The original game is primarily in Chinese.
+
+External experience, separate from the 180-day startup simulation. Fictional career, investment and immigration scenarios are not professional advice.

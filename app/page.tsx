@@ -3,6 +3,7 @@
 import { useI18n } from "@/src/i18n";
 import Link from "next/link";
 import { reviewCopy } from "@/src/features/simulator/reviewCopy";
+import LifeTeaser from "@/src/features/life/LifeTeaser";
 import PricingPlans from "@/src/content/PricingPlans";
 import { articles, safeJsonLd } from "@/src/content/registry";
 
@@ -444,6 +445,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <LifeTeaser />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import Simulator from "@/src/features/simulator/Simulator";
+import SimulatorHub from "@/src/features/life/SimulatorHub";
 export default function SimulatorPage(): React.JSX.Element {
-  return <Simulator />;
+  return <SimulatorHub />;
 }

@@ -1,11 +1,11 @@
 # Privacy
 
 Canonical: https://goodbye.help/privacy
-Updated: 2026-11-09
+Updated: 2026-11-19
 
 Privacy Policy
 
-Updated: November 9, 2026
+Updated: November 19, 2026
 
 Text in your browser
 
@@ -26,6 +26,10 @@ An HttpOnly, SameSite=Lax cookie identifies an anonymous allocation, with Secure
 Deletion and recovery
 
 The delete control removes the server numerical save and operation records; quota remains until expiry. Clear browser storage separately to remove local text. Expiry, deletion or abandonment does not refund used eligibility. Local text cannot restore authoritative server state.
+
+Optional external game
+
+Silicon Valley Life Reboot loads deanchen.me only when you request it. That third-party site controls its code, connection logs and storage. Browser privacy settings may affect saves. We do not pass it your startup idea, decisions or save. Our deletion control does not manage external-site data. Use the original site and its own controls for that experience.
 
 Public content and contact
 

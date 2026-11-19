@@ -1,3 +1,4 @@
+import { lifeCopy, LIFE_URL, LIFE_SOURCE } from "../features/life/copy.ts";
 import type { Metadata } from "next";
 import { articles } from "./articles.ts";
 import { en } from "../i18n/en.ts";
@@ -17,14 +18,16 @@ const page = (
   path,
   title,
   description,
-  updated: [
-    "/",
-    "/about",
-    "/how-it-works",
-    "/guides/startup-idea-validation",
-  ].includes(path)
-    ? "2026-11-10"
-    : "2026-11-09",
+  updated: ["/", "/simulator", "/privacy"].includes(path)
+    ? "2026-11-19"
+    : [
+          "/",
+          "/about",
+          "/how-it-works",
+          "/guides/startup-idea-validation",
+        ].includes(path)
+      ? "2026-11-10"
+      : "2026-11-09",
 });
 export const pages: PublicPage[] = [
   page(
@@ -138,7 +141,14 @@ export function publicMarkdown(path: string): string {
   const a = articles.find((a) => a.path === path);
   const section =
     path === "/"
-      ? [en.hero, en.features, en.examples, en.faq]
+      ? [
+          en.hero,
+          en.features,
+          en.examples,
+          en.faq,
+          lifeCopy.en.description,
+          lifeCopy.en.boundary,
+        ]
       : path === "/pricing"
         ? en.pricing
         : path === "/privacy"
@@ -161,6 +171,10 @@ export function publicMarkdown(path: string): string {
         ? [
             "Set your cash, monthly cost, team and commitment. AI proposes assumptions; code calculates outcomes. Stages: simulated Days 0, 5, 90, 120, 150, 180. All days are simulated; real use takes about 15 minutes.",
             "Text stays in your browser. Anonymous numerical state expires after 30 days; used eligibility after 180 days. There is no live research or paid checkout.",
+            lifeCopy.en.description,
+            lifeCopy.en.boundary,
+            lifeCopy.en.privacy,
+            `Original external game: ${LIFE_URL} — Source: ${LIFE_SOURCE}`,
           ]
         : articles
             .filter((a) => a.kind === (path === "/blog" ? "blog" : "guide"))

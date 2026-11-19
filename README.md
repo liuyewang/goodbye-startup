@@ -8,6 +8,10 @@ A bilingual educational startup simulator. Six stages cover 180 **simulated** da
 - Production source branch: `main`; [refactor PR #1](https://github.com/liuyewang/goodbye-startup/pull/1) was merged. Production cutover is tracked in [the release report](docs/production-release-2026-11-09.md).
 - Isolated [Workers/D1 preview](https://goodbye-startup-preview.indie-utility-lab.workers.dev) is deployed. Its 20-request evaluation is complete and AI calls are paused at budget zero. See [preview validation](docs/preview-validation-2026-11-09.md). The formal site now runs the refactored production Worker with isolated D1 and a daily cap of 300 attempted model calls; the legacy Pages artifact is retained privately for controlled recovery. See [infrastructure cleanup](docs/configuration-cleanup-2026-11-09.md).
 
+## Optional Silicon Valley Life module
+
+The simulator now has two selectable modules. [Silicon Valley Life](https://goodbye.help/simulator#silicon-valley) is an opt-in, sandboxed embed of [Dean Chen’s original game](https://deanchen.me/sv-life-reboot/), with [MIT-licensed source](https://github.com/DeanChensj/sv-life-reboot). This is external integration, not a locally hosted fork: the original is primarily Chinese, its availability/code/storage are controlled by its author, and browser privacy restrictions may affect saves. No request to that site is made until the user loads it or opens the original link. Startup inputs remain mounted while switching modules; leaving the external game unloads it and may lose unsaved progress. No startup data, eligibility or model budget is passed to the frame. No original source code or assets are copied in this integration.
+
 ## Try it and inspect the method
 
 Goodbye Startup is for aspiring founders practicing cash, pricing and retention decisions. One anonymous free simulation takes about 15 minutes, covering 180 simulated days without an account. Paid plans are unavailable. AI proposes assumptions; deterministic code calculates outcomes. It does not validate real demand, retrieve live market research or predict business success.
