@@ -11,7 +11,11 @@ export default function SimulatorHub(): React.JSX.Element {
   const c = lifeCopy[language];
   const [life, setLife] = useState(false);
   useEffect(() => {
-    const sync = (): void => setLife(location.hash === "#silicon-valley");
+    const sync = (): void => {
+      if (location.hash === "#silicon-valley") setLife(true);
+      else if (location.hash === "") setLife(false);
+      // In-page accessibility anchors must not unload the active module.
+    };
     sync();
     window.addEventListener("hashchange", sync);
     return () => window.removeEventListener("hashchange", sync);

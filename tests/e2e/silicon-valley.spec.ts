@@ -60,6 +60,10 @@ test("direct module link is bilingual and never auto-loads the external game", a
   await page.getByRole("combobox").first().selectOption("en");
   const load = page.getByRole("button", { name: "Load original game" });
   await expect(load).toBeVisible();
+  const skip = page.getByRole("link", { name: "Skip to content", exact: true });
+  await skip.focus();
+  await skip.press("Enter");
+  await expect(load).toBeVisible();
   expect((await load.boundingBox())!.height).toBeGreaterThanOrEqual(44);
   await expect(page.locator("iframe")).toHaveCount(0);
   await expect(
