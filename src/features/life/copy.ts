@@ -10,6 +10,11 @@ const en = {
   privacy:
     "Loading connects directly to deanchen.me. The original site controls its own code and storage; browser privacy settings may affect its saves. We do not transfer your startup idea, decisions, save or free eligibility to it. It does not use our DeepSeek quota.",
   load: "Load original game",
+  gameRegion: "Original game area",
+  loading: "Loading the original game…",
+  loadingNote:
+    "The original page is still loading. You can use any content already visible below, or open the original in a new tab.",
+  slow: "Taking longer than expected. You can keep waiting or open the original in a new tab. We cannot confirm whether the game is ready.",
   close: "Close external game",
   leave:
     "Switching modules or closing the game unloads it. Unsaved progress may be lost; this site cannot recover or manage its save.",
@@ -35,6 +40,11 @@ const zh: Copy = {
   privacy:
     "加载后浏览器会直接连接 deanchen.me。原站管理自己的代码和存储，浏览器隐私设置可能影响其存档。我们不会向它传递你的创业想法、决策、存档或免费资格，也不占用本站 DeepSeek 额度。",
   load: "加载原版游戏",
+  gameRegion: "原版游戏区域",
+  loading: "正在加载原版游戏…",
+  loadingNote:
+    "原站资源仍在加载。你可以直接操作下方已显示的游戏，也可在新标签页打开原版。",
+  slow: "加载时间较长，你可以继续等待或在新标签页打开原版。本站无法确认游戏是否已就绪。",
   close: "关闭外部游戏",
   leave:
     "切换模块或关闭游戏会卸载它，未保存的进度可能丢失；本站无法恢复或管理原站存档。",
