@@ -66,9 +66,11 @@ export async function handle(
       !!env.DB &&
       !!env.SESSION_SECRET &&
       env.SESSION_SECRET.length >= 32 &&
+      Number.isSafeInteger(limit) &&
       limit > 0 &&
+      (local || !!env.AI_RATE_LIMITER) &&
       ((local && config.mode === "mock") ||
-        (config.mode === "deepseek" && !!config.apiKey));
+        (config.mode === "deepseek" && !!config.apiKey && !!config.model));
     if (action === "health")
       return Response.json(
         {
@@ -113,7 +115,6 @@ export async function handle(
       if (!ready) throw new Error("SERVICE_UNAVAILABLE");
       // Local mock tests are exempt; production requires the edge limiter binding.
       if (!local) {
-        if (!env.AI_RATE_LIMITER) throw new Error("SERVICE_UNAVAILABLE");
         const key = await hashIdentifier(
           `ip:${action}:${request.headers.get("CF-Connecting-IP") ?? "unknown"}`,
           env.SESSION_SECRET,

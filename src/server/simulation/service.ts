@@ -20,17 +20,33 @@ export async function submitTurn(
     now,
     limit,
   );
-  const run = await repo.getRun(hash, id, Date.now());
-  if (op.replay) return { run, proposal: null, replayed: true };
+  if (op.replay)
+    return {
+      run: await repo.getRun(hash, id, Date.now()),
+      proposal: null,
+      replayed: true,
+    };
   try {
+    const run = await repo.getRun(hash, id, Date.now());
     const result = await generateProposal(
-      { ...input, state: run.state },
+      {
+        idea: input.idea,
+        decision: input.decision,
+        history: input.history,
+        language: input.language,
+        state: run.state,
+      },
       config,
     );
     const state = settleTurn(run.state, result.proposal);
-    await repo.commitTurn(op, state, Date.now(), result.usage);
+    const committed = await repo.commitTurn(
+      op,
+      state,
+      Date.now(),
+      result.usage,
+    );
     return {
-      run: await repo.getRun(hash, id, Date.now()),
+      run: committed,
       proposal: result.proposal,
       replayed: false,
     };

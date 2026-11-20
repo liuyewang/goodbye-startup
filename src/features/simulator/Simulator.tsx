@@ -22,6 +22,7 @@ import {
 } from "./api";
 import {
   downloadRecord,
+  downloadLegacy,
   loadTranscript,
   readLegacy,
   readLastRun,
@@ -96,7 +97,7 @@ export default function Simulator(): React.JSX.Element {
     }
     downloadRecord(
       {
-        record: current,
+        record: run && current?.runId !== run.id ? null : current,
         state: run?.state ?? null,
         exportedAt: new Date().toISOString(),
       },
@@ -191,23 +192,26 @@ export default function Simulator(): React.JSX.Element {
         fitTurnHistory({ ...pending, idea, language, history }),
       );
       setRun(result.run);
-      persist({
-        ...next,
-        pending: null,
-        turns: result.proposal
-          ? [
-              ...base.turns.filter(
-                (t) => t.version !== result.run.state.version,
-              ),
-              {
-                version: result.run.state.version,
-                day: result.run.state.day,
-                decision: pending.decision,
-                proposal: result.proposal,
-              },
-            ].slice(-6)
-          : base.turns,
-      });
+      persist(
+        {
+          ...next,
+          pending: null,
+          turns: result.proposal
+            ? [
+                ...base.turns.filter(
+                  (t) => t.version !== result.run.state.version,
+                ),
+                {
+                  version: result.run.state.version,
+                  day: result.run.state.day,
+                  decision: pending.decision,
+                  proposal: result.proposal,
+                },
+              ].slice(-6)
+            : base.turns,
+        },
+        pending.requestId,
+      );
       setDecision("");
       setBootstrap((prev) =>
         prev ? { ...prev, session: { ...prev.session, used: true } } : prev,
@@ -312,7 +316,10 @@ export default function Simulator(): React.JSX.Element {
       {legacy && (
         <div className="mb-5 flex flex-wrap items-center gap-3 rounded-lg border border-dark-200 p-3 text-sm">
           <p>{c.legacy}</p>
-          <button className={secondaryClass} onClick={exportCurrent}>
+          <button
+            className={secondaryClass}
+            onClick={() => downloadLegacy(legacy)}
+          >
             {c.legacyExport}
           </button>
         </div>
@@ -561,10 +568,10 @@ export default function Simulator(): React.JSX.Element {
                   )}
                   {latest && (
                     <div className="mb-5 grid gap-2 sm:grid-cols-3">
-                      {latest.choices.map((choice) => (
+                      {latest.choices.map((choice, index) => (
                         <button
                           type="button"
-                          key={choice}
+                          key={index}
                           className={secondaryClass + " text-left"}
                           disabled={busy}
                           onClick={() => void submit(run, choice)}
@@ -648,19 +655,7 @@ export default function Simulator(): React.JSX.Element {
       )}
       {(record || run) && (
         <div className="mt-6 flex flex-wrap gap-3">
-          <button
-            className={secondaryClass}
-            onClick={() =>
-              downloadRecord(
-                {
-                  record,
-                  state: run?.state ?? null,
-                  exportedAt: new Date().toISOString(),
-                },
-                "goodbye-simulation.json",
-              )
-            }
-          >
+          <button className={secondaryClass} onClick={exportCurrent}>
             {c.export}
           </button>
           {run && (

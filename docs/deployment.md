@@ -6,7 +6,7 @@ The refactored application is live at `https://goodbye.help` on Worker `goodbye-
 
 ## Isolated preview configuration
 
-`env.preview` names `goodbye-startup-preview` with its own D1, rate-limit namespace and workers.dev origin. It has no production routes, uses `X-Robots-Tag: noindex, nofollow` for HTML and preview static assets, and leaves AI budget at zero. The preview D1 was created under the authorized scope; the top-level default database ID remains a nondeployable placeholder. The explicit `production` environment has its own real D1 binding and a 300-call daily cap.
+`env.preview` names `goodbye-startup-preview` with its own D1, rate-limit namespace and workers.dev origin. Both public preview endpoints are disabled. The preview origin is retained for configuration and history. It has no production routes, uses `X-Robots-Tag: noindex, nofollow` for HTML and preview static assets, and leaves AI budget at zero. The preview D1 was created under the authorized scope; the top-level default database ID remains a nondeployable placeholder. The explicit `production` environment has its own real D1 binding and a 300-call daily cap.
 
 Select the environment at **build time**, then deploy the generated config; passing `--env` after building the default app does not select the right Vite environment:
 

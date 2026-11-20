@@ -142,9 +142,22 @@ export function readLegacy(storage: StoragePort): string | null {
 }
 /** Download locally without uploading the transcript. */
 export function downloadRecord(value: unknown, name: string): void {
-  const url = URL.createObjectURL(
+  downloadFile(
     new Blob([JSON.stringify(value, null, 2)], { type: "application/json" }),
+    name,
   );
+}
+
+/** Legacy text may be malformed JSON. Preserve it byte-for-byte for recovery. */
+export function downloadLegacy(raw: string): void {
+  downloadFile(
+    new Blob([raw], { type: "text/plain;charset=utf-8" }),
+    "goodbye-legacy-save.txt",
+  );
+}
+
+function downloadFile(file: Blob, name: string): void {
+  const url = URL.createObjectURL(file);
   const a = document.createElement("a");
   a.href = url;
   a.download = name;

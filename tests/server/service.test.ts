@@ -28,10 +28,11 @@ it("reads the authoritative snapshot after acquiring the reservation", async () 
   const state = settleTurn(baseline, p);
   let reserved = false;
   let committed = 0;
+  const concurrentNext = settleTurn(settleTurn(state, p), p);
   const repo = {
     getRun: async () => ({
       id: "run",
-      state: reserved ? state : baseline,
+      state: committed ? concurrentNext : reserved ? state : baseline,
       expiresAt: Date.now() + 100000,
     }),
     reserveTurn: async () => {
@@ -44,13 +45,14 @@ it("reads the authoritative snapshot after acquiring the reservation", async () 
         expectedVersion: 1,
       };
     },
-    commitTurn: async (op: Reservation, s: typeof state) => {
+    commitTurn: async (op: Reservation, s: typeof state, now: number) => {
       expect(s.version).toBe(op.expectedVersion + 1);
       committed++;
+      return { id: op.runId, state: s, expiresAt: now + 30 * 86_400_000 };
     },
     failTurn: async () => {},
   } as unknown as Repository;
-  await submitTurn(
+  const result = await submitTurn(
     repo,
     "owner",
     "run",
@@ -59,4 +61,8 @@ it("reads the authoritative snapshot after acquiring the reservation", async () 
     100,
   );
   expect(committed).toBe(1);
+  expect(result).toMatchObject({
+    run: { state: { version: 2, day: 5 } },
+    replayed: false,
+  });
 });

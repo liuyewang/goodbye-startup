@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { readFile } from "node:fs/promises";
 test("complete simulation, recovery, export and used quota", async ({
   page,
 }) => {
@@ -62,6 +63,12 @@ test("language switch preserves setup, corrupted storage is recoverable, IME doe
     localStorage.setItem("gs_game_state", "{broken"),
   );
   await page.goto("/simulator");
+  const legacyDownload = page.waitForEvent("download");
+  await page
+    .getByRole("button", { name: "Export previous save", exact: true })
+    .click();
+  const legacy = await legacyDownload;
+  expect(await readFile(await legacy.path(), "utf8")).toBe("{broken");
   await expect(
     page.getByText("A previous local save is available for export.", {
       exact: true,
@@ -288,4 +295,14 @@ test("a lost successful response replays state without another AI attempt", asyn
   const data = await session.json();
   expect(data.data.session.attempts).toBe(1);
   expect(data.data.run.state.version).toBe(1);
+  await page
+    .getByRole("textbox", { name: "Your decision", exact: true })
+    .fill("Interview three store owners.");
+  await page
+    .getByRole("button", { name: "Submit decision", exact: true })
+    .click();
+  await expect(page.getByTestId("sim-day")).toHaveText("Day 5");
+  const next = await (await page.request.get("/api/session")).json();
+  expect(next.data.session.attempts).toBe(2);
+  expect(next.data.run.state.version).toBe(2);
 });

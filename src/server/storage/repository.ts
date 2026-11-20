@@ -77,6 +77,9 @@ export class Repository {
   }
   async getSession(hash: string, now: number): Promise<Session> {
     await this.cleanup(now);
+    return this.readSession(hash, now);
+  }
+  private async readSession(hash: string, now: number): Promise<Session> {
     const s = await this.q(
       "SELECT used_at, attempts, expires_at FROM sessions WHERE session_hash = ?",
       hash,
@@ -105,7 +108,7 @@ export class Repository {
       now,
       now + SESSION_TTL,
     ).run();
-    const session = await this.getSession(hash, now);
+    const session = await this.readSession(hash, now);
     if (session.runId && !session.expired)
       return this.getRun(hash, session.runId, now);
     if (session.used) throw new Error("FREE_LIMIT");
@@ -126,7 +129,7 @@ export class Repository {
       hash,
     ).first<Row>();
     if (!row) throw new Error("SERVICE_UNAVAILABLE");
-    return this.getRun(hash, row.id, now);
+    return this.decodeRun(row, now);
   }
   async getRun(hash: string, id: string, now: number): Promise<Run> {
     const r = await this.q(
@@ -135,6 +138,9 @@ export class Repository {
       hash,
     ).first<Row>();
     if (!r) throw new Error("RUN_NOT_FOUND");
+    return this.decodeRun(r, now);
+  }
+  private decodeRun(r: Row, now: number): Run {
     if (r.expires_at <= now || !r.state_json) throw new Error("RUN_EXPIRED");
     return {
       id: r.id,
@@ -254,7 +260,7 @@ export class Repository {
     state: SimulationState,
     now: number,
     usage?: Usage,
-  ): Promise<void> {
+  ): Promise<Run> {
     const parsed = SimulationStateSchema.parse(state);
     if (parsed.version !== op.expectedVersion + 1)
       throw new Error("VERSION_CONFLICT");
@@ -294,6 +300,7 @@ export class Repository {
       ),
     ]);
     if (result[0].meta.changes !== 1) throw new Error("STALE_REQUEST");
+    return { id: op.runId, state: parsed, expiresAt: now + RUN_TTL };
   }
   async failTurn(op: Reservation, code: string): Promise<void> {
     await this.q(

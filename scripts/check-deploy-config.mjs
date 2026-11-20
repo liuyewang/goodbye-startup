@@ -18,18 +18,13 @@ assert.equal(config.compatibility_date, "2025-09-01");
 assert.ok(config.compatibility_flags.includes("nodejs_compat"));
 assert.deepEqual(config.triggers.crons, ["0 3 * * *"]);
 assert.ok(
-  config.routes.length === 0 ||
-    (config.routes.length === 1 &&
-      config.routes[0].pattern === "goodbye.help" &&
-      config.routes[0].custom_domain === true),
+  config.routes.length === 1 &&
+    config.routes[0].pattern === "goodbye.help" &&
+    config.routes[0].custom_domain === true,
   "Production may only bind the approved apex domain",
 );
 assert.equal(config.preview_urls, false);
-assert.equal(
-  config.workers_dev,
-  config.routes.length === 0,
-  "Close the temporary endpoint when the canonical domain is bound",
-);
+assert.equal(config.workers_dev, false, "Keep the temporary endpoint closed");
 for (const key of ["DEEPSEEK_API_KEY", "SESSION_SECRET"])
   assert.ok(!(key in config.vars), `${key} must remain a runtime secret`);
 console.log("Production artifact uses the approved environment and database.");
