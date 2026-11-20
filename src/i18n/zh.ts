@@ -201,41 +201,20 @@ export const zh: Translations = {
   },
   pricing: {
     title: "简单诚实的定价",
-    subtitle: "当前提供一次免费模拟；付费方案尚未开放。",
-    plans: [
-      {
-        name: "免费",
-        price: "$0",
-        period: "匿名浏览器配额",
-        description: "先体验一次完整模拟",
-        features: [
-          "最多 180 个模拟内天数，真实约 15 分钟",
-          "六阶段，可能提前破产结束",
-          "最多 10 次模型尝试",
-          "本地记录与 JSON 导出",
-        ],
-        cta: "开始免费模拟",
-        popular: false,
-      },
-      {
-        name: "Pro",
-        price: "待定",
-        period: "未来方案",
-        description: "尚未销售，不收取费用",
-        features: ["功能与价格尚未确定", "暂无结账或订阅"],
-        cta: "尚未开放",
-        popular: false,
-      },
-      {
-        name: "Lifetime",
-        price: "待定",
-        period: "未来方案",
-        description: "尚未销售，不收取费用",
-        features: ["功能与价格尚未确定", "暂无结账或订阅"],
-        cta: "尚未开放",
-        popular: false,
-      },
-    ],
+    subtitle: "无需注册，即可体验一次免费模拟。",
+    free: {
+      name: "免费模拟",
+      price: "$0",
+      period: "每个匿名浏览器配额可用一次",
+      description: "练习定价和现金决策，完成后查看复盘。",
+      features: [
+        "最多体验模拟内的 180 天，真实约 15 分钟",
+        "六阶段，可能因破产提前结束",
+        "最多 10 次模型尝试",
+        "本地记录与 JSON 导出",
+      ],
+      cta: "开始免费模拟",
+    },
     guarantee: "当前没有付款、订阅或退款流程。",
     valueComparison: {
       title: "把模拟用在正确的地方",
@@ -269,7 +248,7 @@ export const zh: Translations = {
         },
         {
           q: "可以购买更多次数吗？",
-          a: "暂时不可以。Pro 和 Lifetime 是未来方向，功能和价格尚未确认。",
+          a: "当前每个匿名浏览器配额可免费模拟一次，暂无额外次数可购买。",
         },
         {
           q: "删除会重置资格吗？",
@@ -329,7 +308,7 @@ export const zh: Translations = {
       },
       {
         q: "可以购买更多次数吗？",
-        a: "暂时不可以。Pro 和 Lifetime 是未来方向，功能和价格尚未确认。",
+        a: "当前每个匿名浏览器配额可免费模拟一次，暂无额外次数可购买。",
       },
       {
         q: "删除会重置资格吗？",

@@ -215,48 +215,21 @@ export const en = {
   },
   pricing: {
     title: "Simple, Honest Pricing",
-    subtitle:
-      "One free simulation is available. Paid plans are not available yet.",
-    plans: [
-      {
-        name: "Free",
-        price: "$0",
-        period: "anonymous browser allocation",
-        description: "Explore one complete simulation",
-        features: [
-          "Up to 180 simulated days, about 15 real minutes",
-          "Six stages, with possible early bankruptcy",
-          "At most 10 provider attempts",
-          "Local record and JSON export",
-        ],
-        cta: "Start Free",
-        popular: false,
-      },
-      {
-        name: "Pro",
-        price: "TBD",
-        period: "future plan",
-        description: "Not sold; no payment is collected",
-        features: [
-          "Features and price are not finalized",
-          "No checkout or subscription available",
-        ],
-        cta: "Not available yet",
-        popular: false,
-      },
-      {
-        name: "Lifetime",
-        price: "TBD",
-        period: "future plan",
-        description: "Not sold; no payment is collected",
-        features: [
-          "Features and price are not finalized",
-          "No checkout or subscription available",
-        ],
-        cta: "Not available yet",
-        popular: false,
-      },
-    ],
+    subtitle: "Run one free simulation without creating an account.",
+    free: {
+      name: "Free simulation",
+      price: "$0",
+      period: "One per anonymous browser allocation",
+      description:
+        "Practice pricing and cash decisions, then review the results.",
+      features: [
+        "Up to 180 simulated days in about 15 real minutes",
+        "Six stages, with possible early bankruptcy",
+        "At most 10 model attempts",
+        "Local record and JSON export",
+      ],
+      cta: "Start free simulation",
+    },
     guarantee:
       "There is currently no payment, subscription or refund workflow.",
     valueComparison: {
@@ -292,7 +265,7 @@ export const en = {
         },
         {
           q: "Can I buy more simulations?",
-          a: "Not yet. Pro and Lifetime are future directions; their features and prices are unconfirmed.",
+          a: "One free simulation is currently available per anonymous browser allocation. Additional simulations are unavailable.",
         },
         {
           q: "Does deletion reset eligibility?",
@@ -354,7 +327,7 @@ export const en = {
       },
       {
         q: "Can I buy more simulations?",
-        a: "Not yet. Pro and Lifetime are future directions; their features and prices are unconfirmed.",
+        a: "One free simulation is currently available per anonymous browser allocation. Additional simulations are unavailable.",
       },
       {
         q: "Does deletion reset eligibility?",

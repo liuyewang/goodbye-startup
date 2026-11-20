@@ -42,6 +42,7 @@ const buttonClass =
   "rounded-xl bg-primary-600 px-5 py-3 font-semibold text-white transition-colors hover:bg-primary-700 disabled:cursor-wait disabled:opacity-50";
 const secondaryClass =
   "rounded-xl border border-dark-200 bg-white px-4 py-2 text-sm font-medium text-dark-700 hover:bg-dark-50 disabled:opacity-50";
+const draftKey = (runId: string) => `gs_decision_draft_${runId}`;
 /** Coordinates server authority and browser-only narrative with explicit recovery states. */
 export default function Simulator(): React.JSX.Element {
   const { language } = useI18n();
@@ -58,6 +59,7 @@ export default function Simulator(): React.JSX.Element {
     "part-time",
   );
   const [decision, setDecision] = useState("");
+  const draftRef = useRef<{ runId: string; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -65,6 +67,16 @@ export default function Simulator(): React.JSX.Element {
   const [legacy, setLegacy] = useState<string | null>(null);
   const [showQuota, setShowQuota] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  function storeDraft(runId: string, text: string): void {
+    draftRef.current = { runId, text };
+    setDecision(text);
+    try {
+      if (text) sessionStorage.setItem(draftKey(runId), text);
+      else sessionStorage.removeItem(draftKey(runId));
+    } catch {
+      setStorageWarning(true);
+    }
+  }
   function applyRecord(data: Transcript | null): void {
     recordRef.current = data;
     setRecord(data);
@@ -127,11 +139,16 @@ export default function Simulator(): React.JSX.Element {
             : saved.data;
           applyRecord(recovered);
           setStorageWarning(saved.warning);
-          if (recovered) {
-            setIdea(recovered.idea);
-            setDecision(recovered.pending?.decision ?? "");
-          }
+          if (recovered) setIdea(recovered.idea);
         }
+        const runId = result.run?.id;
+        setDecision(
+          !runId
+            ? ""
+            : draftRef.current?.runId === runId
+              ? draftRef.current.text
+              : (sessionStorage.getItem(draftKey(runId)) ?? "").slice(0, 2000),
+        );
       } catch {
         setStorageWarning(true);
       }
@@ -148,8 +165,9 @@ export default function Simulator(): React.JSX.Element {
     target: Run,
     text: string,
     prior: Transcript | null = record,
+    retry?: NonNullable<Transcript["pending"]>,
   ): Promise<void> {
-    if (busy) return;
+    if (busy || (prior?.runId === target.id && prior.pending && !retry)) return;
     if (
       !idea.trim() ||
       !text.trim() ||
@@ -159,23 +177,45 @@ export default function Simulator(): React.JSX.Element {
       setError("INVALID_INPUT");
       return;
     }
+    let base: Transcript =
+      prior?.runId === target.id
+        ? prior
+        : {
+            schemaVersion: 1,
+            runId: target.id,
+            idea,
+            turns: [],
+            pending: null,
+          };
+    if (!retry) {
+      try {
+        const saved = loadTranscript(target.id, localStorage);
+        base = mergeTranscripts(saved.data, base);
+        if (saved.warning) setStorageWarning(true);
+        if (base.pending && saved.data?.idea) {
+          base = { ...base, idea: saved.data.idea };
+          setIdea(base.idea);
+        }
+      } catch {
+        setStorageWarning(true);
+      }
+      if (base.pending) {
+        applyRecord(base);
+        return;
+      }
+    }
     setBusy(true);
     setError(null);
-    setDecision(text);
-    const base: Transcript = prior ?? {
-      schemaVersion: 1,
-      runId: target.id,
-      idea,
-      turns: [],
-      pending: null,
-    };
-    const pending = base.pending ?? {
+    const pending = retry ?? {
       requestId: crypto.randomUUID(),
       expectedVersion: target.state.version,
       decision: text,
     };
     const next = { ...base, idea, pending };
-    persist(next);
+    if (!retry) {
+      persist(next);
+      storeDraft(target.id, "");
+    }
     const history = base.turns
       .flatMap((turn) => [
         { role: "user" as const, content: turn.decision },
@@ -212,15 +252,26 @@ export default function Simulator(): React.JSX.Element {
         },
         pending.requestId,
       );
-      setDecision("");
       setBootstrap((prev) =>
         prev ? { ...prev, session: { ...prev.session, used: true } } : prev,
       );
     } catch (e) {
       const code = e instanceof ApiError ? e.code : "NETWORK";
       setError(code);
-      if (!["NETWORK", "REQUEST_PENDING", "REQUEST_CONFLICT"].includes(code))
+      // A preflight rejection does not tell us whether an earlier attempt committed.
+      const unresolved =
+        ["NETWORK", "REQUEST_PENDING", "REQUEST_CONFLICT"].includes(code) ||
+        (retry &&
+          [
+            "RATE_LIMIT",
+            "SERVICE_UNAVAILABLE",
+            "SESSION_REQUIRED",
+            "FORBIDDEN_ORIGIN",
+          ].includes(code));
+      if (!unresolved) {
         persist({ ...next, pending: null }, pending.requestId);
+        if (!retry || !decision) storeDraft(target.id, pending.decision);
+      }
     } finally {
       setBusy(false);
     }
@@ -254,6 +305,10 @@ export default function Simulator(): React.JSX.Element {
       return;
     }
     setBusy(false);
+    if (created.state.version > 0) {
+      await refresh();
+      return;
+    }
     const initial: Transcript = {
       schemaVersion: 1,
       runId: created.id,
@@ -261,7 +316,6 @@ export default function Simulator(): React.JSX.Element {
       turns: [],
       pending: null,
     };
-    persist(initial);
     // Pass the created run directly; React's next render has not happened yet.
     await submit(created, c.startDecision, initial);
   }
@@ -291,6 +345,7 @@ export default function Simulator(): React.JSX.Element {
   const blocked =
     !!bootstrap && (bootstrap.session.used || bootstrap.session.attempts >= 10);
   const terminal = run?.state.status === "completed";
+  const pendingDecision = record?.runId === run?.id ? record?.pending : null;
   const verdict = run ? getVerdict(run.state) : null;
   const errorText = error
     ? Object.hasOwn(c.errors, error)
@@ -339,24 +394,6 @@ export default function Simulator(): React.JSX.Element {
         >
           <p>{errorText}</p>
           <div className="mt-3 flex flex-wrap gap-2">
-            {run &&
-              !terminal &&
-              ![
-                "ATTEMPTS_EXHAUSTED",
-                "FREE_LIMIT",
-                "RUN_EXPIRED",
-                "RUN_NOT_FOUND",
-              ].includes(error!) && (
-                <button
-                  className={secondaryClass}
-                  disabled={busy}
-                  onClick={() =>
-                    void submit(run, record?.pending?.decision ?? decision)
-                  }
-                >
-                  {c.retry}
-                </button>
-              )}
             <button
               className={secondaryClass}
               disabled={busy}
@@ -473,9 +510,6 @@ export default function Simulator(): React.JSX.Element {
                   {c.missing}
                 </p>
               )}
-              {record?.pending && (
-                <p className="text-sm text-dark-500">{c.pending}</p>
-              )}
               {latest && (
                 <details
                   open={!terminal}
@@ -522,6 +556,31 @@ export default function Simulator(): React.JSX.Element {
                   </details>
                 </details>
               )}
+              {pendingDecision && (
+                <div className="mb-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-dark-900">
+                  <p className="font-semibold">{c.originalDecision}</p>
+                  <p className="my-2 whitespace-pre-wrap break-words">
+                    {pendingDecision.decision}
+                  </p>
+                  <p id="pending-decision-help">{c.pending}</p>
+                  <button
+                    type="button"
+                    className={secondaryClass + " mt-3 min-h-12"}
+                    aria-describedby="pending-decision-help"
+                    disabled={busy}
+                    onClick={() =>
+                      void submit(
+                        run,
+                        pendingDecision.decision,
+                        record,
+                        pendingDecision,
+                      )
+                    }
+                  >
+                    {c.retryOriginal}
+                  </button>
+                </div>
+              )}
               {terminal ? (
                 <>
                   <section className="rounded-2xl bg-dark-900 p-6 text-white">
@@ -543,6 +602,14 @@ export default function Simulator(): React.JSX.Element {
                       </div>
                     )}
                   </section>
+                  {decision && (
+                    <section className="rounded-xl border border-dark-200 p-4">
+                      <h2 className="font-semibold">{c.draft}</h2>
+                      <p className="mt-2 whitespace-pre-wrap break-words text-sm">
+                        {decision}
+                      </p>
+                    </section>
+                  )}
                   <Review key={run.id} state={run.state} />
                 </>
               ) : (
@@ -573,7 +640,7 @@ export default function Simulator(): React.JSX.Element {
                           type="button"
                           key={index}
                           className={secondaryClass + " text-left"}
-                          disabled={busy}
+                          disabled={busy || !!pendingDecision}
                           onClick={() => void submit(run, choice)}
                         >
                           {choice}
@@ -582,11 +649,15 @@ export default function Simulator(): React.JSX.Element {
                     </div>
                   )}
                   <label className="block text-sm font-semibold">
-                    {c.decision}
+                    {pendingDecision ? c.draft : c.decision}
                     <textarea
                       className={inputClass}
+                      name="decision"
+                      aria-describedby={
+                        pendingDecision ? "pending-decision-help" : undefined
+                      }
                       value={decision}
-                      onChange={(e) => setDecision(e.target.value)}
+                      onChange={(e) => storeDraft(run.id, e.target.value)}
                       rows={3}
                       maxLength={2000}
                       required
@@ -595,14 +666,16 @@ export default function Simulator(): React.JSX.Element {
                         if (e.nativeEvent.isComposing) return;
                         if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
                           e.preventDefault();
-                          void submit(run, decision);
+                          if (!pendingDecision)
+                            e.currentTarget.form?.requestSubmit();
                         }
                       }}
                     />
                   </label>
                   <button
+                    type="submit"
                     className={buttonClass + " mt-4"}
-                    disabled={busy || !decision.trim()}
+                    disabled={busy || !!pendingDecision || !decision.trim()}
                   >
                     {busy ? c.busy : c.send}
                   </button>

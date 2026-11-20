@@ -1,7 +1,7 @@
 # AI Startup Simulator
 
 Canonical: https://goodbye.help/
-Updated: 2026-11-19
+Updated: 2026-11-20
 
 AI-Powered Startup Simulator
 
@@ -89,6 +89,24 @@ Requires real-world validation
 
 Meal delivery: estimate ingredients, packaging and delivery separately; simulation cannot replace operational trials.
 
+Free simulation
+
+$0
+
+One per anonymous browser allocation
+
+Practice pricing and cash decisions, then review the results.
+
+Up to 180 simulated days in about 15 real minutes
+
+Six stages, with possible early bankruptcy
+
+At most 10 model attempts
+
+Local record and JSON export
+
+Start free simulation
+
 Frequently Asked Questions
 
 Straight answers before you spend a minute or a dollar.
@@ -107,7 +125,7 @@ Text stays in the browser and is sent to DeepSeek for inference. The server reta
 
 Can I buy more simulations?
 
-Not yet. Pro and Lifetime are future directions; their features and prices are unconfirmed.
+One free simulation is currently available per anonymous browser allocation. Additional simulations are unavailable.
 
 Does deletion reset eligibility?
 

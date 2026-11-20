@@ -114,7 +114,9 @@ test("failed inference preserves decision and allows explicit retry", async ({
   await expect(page.getByRole("alert")).toContainText(
     "temporarily unavailable",
   );
-  await page.getByRole("button", { name: "Try again", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Submit decision", exact: true })
+    .click();
   await expect(
     page.getByRole("button", {
       name: "Interview potential customers",
@@ -266,16 +268,23 @@ test("in-app refresh preserves memory when storage writes fail", async ({
 test("a lost successful response replays state without another AI attempt", async ({
   page,
 }) => {
+  const originalDecision = "Introduce the startup scenario";
+  const newDecision = "Interview three store owners.";
+  const requests: { requestId: string; decision: string }[] = [];
   await page.goto("/simulator");
   await page
     .getByLabel("Your startup idea")
     .fill("A small tool with an interrupted network response.");
   let interrupted = false;
   await page.route("**/api/simulations/*/turn", async (route) => {
+    const { requestId, decision } = route.request().postDataJSON();
+    requests.push({ requestId, decision });
     if (!interrupted) {
       interrupted = true;
       await route.fetch();
       await route.abort("failed");
+    } else if (requests.length === 2) {
+      await route.fulfill({ status: 429, json: { code: "RATE_LIMIT" } });
     } else await route.continue();
   });
   await page
@@ -284,20 +293,43 @@ test("a lost successful response replays state without another AI attempt", asyn
   await expect(page.getByRole("alert")).toContainText(
     "connection was interrupted",
   );
-  await page.getByRole("button", { name: "Try again", exact: true }).click();
+  const draft = page.getByRole("textbox", {
+    name: "Your unsent decision draft",
+  });
+  await draft.fill(newDecision);
+  await expect(page.getByText(originalDecision, { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Submit decision" }),
+  ).toBeDisabled();
+  await draft.press("Control+Enter");
+  await page.getByRole("button", { name: "Refresh saved state" }).click();
+  await expect(draft).toHaveValue(newDecision);
+  await page.reload();
+  await expect(draft).toHaveValue(newDecision);
+  expect(requests).toHaveLength(1);
+  await page.getByRole("button", { name: "Retry original decision" }).click();
+  await expect(page.getByRole("alert")).toContainText("Too many requests");
+  await expect(draft).toHaveValue(newDecision);
+  await expect(
+    page.getByRole("button", { name: "Submit decision" }),
+  ).toBeDisabled();
+  await page.getByRole("button", { name: "Retry original decision" }).click();
   await expect(
     page.getByText(
       "Some AI text is missing from this browser. The server has only the numerical record; no text can be recovered from it.",
       { exact: true },
     ),
   ).toBeVisible();
+  await expect(
+    page.getByRole("textbox", { name: "Your decision", exact: true }),
+  ).toHaveValue(newDecision);
   const session = await page.request.get("/api/session");
   const data = await session.json();
   expect(data.data.session.attempts).toBe(1);
   expect(data.data.run.state.version).toBe(1);
-  await page
-    .getByRole("textbox", { name: "Your decision", exact: true })
-    .fill("Interview three store owners.");
+  expect(requests[0].decision).toBe(originalDecision);
+  expect(requests[1]).toEqual(requests[0]);
+  expect(requests[2]).toEqual(requests[0]);
   await page
     .getByRole("button", { name: "Submit decision", exact: true })
     .click();
@@ -305,4 +337,50 @@ test("a lost successful response replays state without another AI attempt", asyn
   const next = await (await page.request.get("/api/session")).json();
   expect(next.data.session.attempts).toBe(2);
   expect(next.data.run.state.version).toBe(2);
+  expect(requests[3].decision).toBe(newDecision);
+  expect(requests[3].requestId).not.toBe(requests[0].requestId);
+});
+
+test("a second tab cannot overwrite a stored request awaiting confirmation", async ({
+  page,
+  context,
+}) => {
+  await page.goto("/simulator");
+  await page.getByLabel("Your startup idea").fill("A small workshop tool.");
+  await page.getByRole("button", { name: "Begin simulation" }).click();
+  await expect(page.getByTestId("sim-day")).toHaveText("Day 0");
+  const second = await context.newPage();
+  await second.goto("/simulator");
+  await expect(second.getByTestId("sim-day")).toHaveText("Day 0");
+  await page.route("**/api/simulations/*/turn", async (route) => {
+    await route.fetch();
+    await route.abort("failed");
+  });
+  await page
+    .getByRole("textbox", { name: "Your decision", exact: true })
+    .fill("Original workshop decision");
+  await page.getByRole("button", { name: "Submit decision" }).click();
+  await expect(page.getByRole("alert")).toContainText(
+    "connection was interrupted",
+  );
+
+  const decisions: string[] = [];
+  await second.route("**/api/simulations/*/turn", async (route) => {
+    decisions.push(route.request().postDataJSON().decision);
+    await route.continue();
+  });
+  await second
+    .getByRole("textbox", { name: "Your decision", exact: true })
+    .fill("Keep this second-tab draft");
+  await second.getByRole("button", { name: "Submit decision" }).click();
+  await expect(
+    second.getByText("Original workshop decision", { exact: true }),
+  ).toBeVisible();
+  expect(decisions).toEqual([]);
+  await second.getByRole("button", { name: "Retry original decision" }).click();
+  await expect(second.getByTestId("sim-day")).toHaveText("Day 5");
+  await expect(
+    second.getByRole("textbox", { name: "Your decision", exact: true }),
+  ).toHaveValue("Keep this second-tab draft");
+  expect(decisions).toEqual(["Original workshop decision"]);
 });

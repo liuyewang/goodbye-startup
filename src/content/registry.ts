@@ -18,16 +18,15 @@ const page = (
   path,
   title,
   description,
-  updated: ["/", "/simulator", "/privacy"].includes(path)
-    ? "2026-11-19"
-    : [
-          "/",
-          "/about",
-          "/how-it-works",
-          "/guides/startup-idea-validation",
-        ].includes(path)
-      ? "2026-11-10"
-      : "2026-11-09",
+  updated: ["/", "/pricing"].includes(path)
+    ? "2026-11-20"
+    : ["/simulator", "/privacy"].includes(path)
+      ? "2026-11-19"
+      : ["/about", "/how-it-works", "/guides/startup-idea-validation"].includes(
+            path,
+          )
+        ? "2026-11-10"
+        : "2026-11-09",
 });
 export const pages: PublicPage[] = [
   page(
@@ -48,7 +47,7 @@ export const pages: PublicPage[] = [
   page(
     "/pricing",
     "Pricing",
-    "One free simulation is available. Paid plans are not yet offered. Learn about anonymous eligibility, retries, local records and exports.",
+    "Run one free startup simulation without an account. See how anonymous eligibility, retries, local records and exports work.",
   ),
   page(
     "/about",
@@ -145,6 +144,7 @@ export function publicMarkdown(path: string): string {
           en.hero,
           en.features,
           en.examples,
+          en.pricing.free,
           en.faq,
           lifeCopy.en.description,
           lifeCopy.en.boundary,

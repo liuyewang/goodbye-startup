@@ -31,6 +31,39 @@ test("hero metrics stay within their cards on narrow EN and ZH screens", async (
   }
 });
 
+test("home and pricing show only the available free option in both languages", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 320, height: 740 });
+  for (const path of ["/", "/pricing"]) {
+    await page.goto(path);
+    for (const [language, title, cta] of [
+      ["en", "Free simulation", "Start free simulation"],
+      ["zh", "免费模拟", "开始免费模拟"],
+    ]) {
+      await page.evaluate(
+        (value) => localStorage.setItem("gs_language", value),
+        language,
+      );
+      await page.reload();
+      await expect(page.locator("html")).toHaveAttribute("lang", language);
+      const card = page
+        .getByRole("heading", { name: title, exact: true })
+        .locator("..");
+      await expect(card).toContainText("$0");
+      await expect(
+        card.getByRole("link", { name: cta, exact: true }),
+      ).toHaveAttribute("href", "/simulator");
+      await expect(page.getByText(/\bLifetime\b|\bTBD\b/)).toHaveCount(0);
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+      ).toBe(true);
+    }
+  }
+});
+
 test("every public page supports keyboard back-to-top with reduced motion", async ({
   page,
 }) => {

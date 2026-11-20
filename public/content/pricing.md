@@ -1,57 +1,29 @@
 # Pricing
 
 Canonical: https://goodbye.help/pricing
-Updated: 2026-11-09
+Updated: 2026-11-20
 
 Simple, Honest Pricing
 
-One free simulation is available. Paid plans are not available yet.
+Run one free simulation without creating an account.
 
-Free
+Free simulation
 
 $0
 
-anonymous browser allocation
+One per anonymous browser allocation
 
-Explore one complete simulation
+Practice pricing and cash decisions, then review the results.
 
-Up to 180 simulated days, about 15 real minutes
+Up to 180 simulated days in about 15 real minutes
 
 Six stages, with possible early bankruptcy
 
-At most 10 provider attempts
+At most 10 model attempts
 
 Local record and JSON export
 
-Start Free
-
-Pro
-
-TBD
-
-future plan
-
-Not sold; no payment is collected
-
-Features and price are not finalized
-
-No checkout or subscription available
-
-Not available yet
-
-Lifetime
-
-TBD
-
-future plan
-
-Not sold; no payment is collected
-
-Features and price are not finalized
-
-No checkout or subscription available
-
-Not available yet
+Start free simulation
 
 There is currently no payment, subscription or refund workflow.
 
@@ -85,7 +57,7 @@ Text stays in the browser and is sent to DeepSeek for inference. The server reta
 
 Can I buy more simulations?
 
-Not yet. Pro and Lifetime are future directions; their features and prices are unconfirmed.
+One free simulation is currently available per anonymous browser allocation. Additional simulations are unavailable.
 
 Does deletion reset eligibility?
 

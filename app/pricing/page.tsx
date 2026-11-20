@@ -2,7 +2,7 @@
 
 import { useI18n } from "@/src/i18n";
 import Link from "next/link";
-import PricingPlans from "@/src/content/PricingPlans";
+import FreeSimulationCard from "@/src/content/FreeSimulationCard";
 
 export default function PricingPage() {
   const { t } = useI18n();
@@ -20,10 +20,10 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* Pricing Cards */}
+      {/* Free simulation */}
       <section className="py-16 lg:py-20">
         <div className="container-custom">
-          <PricingPlans />
+          <FreeSimulationCard />
 
           <p className="text-center text-sm text-dark-500 mt-12">
             {t.pricing.guarantee}
@@ -59,7 +59,7 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* Pre-purchase FAQs */}
+      {/* Pricing FAQ */}
       <section className="py-16 lg:py-20 bg-dark-50">
         <div className="container-custom max-w-3xl">
           <h2 className="heading-md mb-10 text-center">
