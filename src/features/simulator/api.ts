@@ -36,6 +36,12 @@ export class ApiError extends Error {
     super(code);
   }
 }
+const ErrorEnvelope = z.object({
+  code: z.string().min(1),
+  requestId: z.string().optional(),
+});
+const SuccessEnvelope = z.object({ data: z.unknown() });
+
 /** Validates server envelopes; a network error keeps the operation ID for safe replay. */
 export async function api<T>(
   path: string,
@@ -44,6 +50,7 @@ export async function api<T>(
   body?: unknown,
 ): Promise<T> {
   let response: Response;
+  let payload: unknown;
   try {
     response = await fetch(path, {
       method,
@@ -51,23 +58,19 @@ export async function api<T>(
       headers: { "Content-Type": "application/json" },
       body: body === undefined ? undefined : JSON.stringify(body),
     });
+    payload = await response.json();
   } catch {
     throw new ApiError("NETWORK");
   }
-  const result = z
-    .object({
-      data: z.unknown().optional(),
-      code: z.string().optional(),
-      requestId: z.string().optional(),
-    })
-    .safeParse(await response.json());
-  if (!result.success) throw new ApiError("NETWORK");
-  if (!response.ok)
-    throw new ApiError(
-      result.data.code ?? "SERVICE_UNAVAILABLE",
-      result.data.requestId,
-    );
-  return schema.parse(result.data.data);
+  if (!response.ok) {
+    const error = ErrorEnvelope.safeParse(payload);
+    if (!error.success) throw new ApiError("NETWORK");
+    throw new ApiError(error.data.code, error.data.requestId);
+  }
+  const envelope = SuccessEnvelope.safeParse(payload);
+  const result = envelope.success && schema.safeParse(envelope.data.data);
+  if (!result || !result.success) throw new ApiError("NETWORK");
+  return result.data;
 }
 
 /** Trim oldest context by both characters and UTF-8 bytes; preserve the latest decision. */

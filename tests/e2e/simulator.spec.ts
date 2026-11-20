@@ -154,6 +154,91 @@ test("local text remains exportable after deleting server save and reloading", a
   ).toBeVisible();
 });
 
+test("a delete confirmation only applies to the save that opened it", async ({
+  page,
+  baseURL,
+}) => {
+  await page.route("**/api/simulations/*/turn", (route) =>
+    route.fulfill({ status: 502, json: { code: "AI_UNAVAILABLE" } }),
+  );
+  await page.goto("/simulator");
+  await page
+    .getByLabel("Your startup idea")
+    .fill("A draft that can be replaced.");
+  await page
+    .getByRole("button", { name: "Begin simulation", exact: true })
+    .click();
+  await expect(page.getByRole("alert")).toContainText(
+    "temporarily unavailable",
+  );
+  await page
+    .getByRole("button", { name: "Delete server save", exact: true })
+    .click();
+  const confirm = page.getByRole("button", {
+    name: "Delete save",
+    exact: true,
+  });
+  await expect(confirm).toBeVisible();
+  const {
+    data: { run: original },
+  } = await (await page.request.get("/api/session")).json();
+  const headers = { Origin: baseURL! };
+  expect(
+    (
+      await page.request.delete(`/api/simulations/${original.id}`, { headers })
+    ).ok(),
+  ).toBe(true);
+  const replacement = await page.request.post("/api/simulations", {
+    headers,
+    data: {
+      setup: {
+        cashCents: 20000,
+        monthlyCostCents: 100,
+        teamSize: 1,
+        employment: "part-time",
+      },
+    },
+  });
+  expect(replacement.ok()).toBe(true);
+  expect((await replacement.json()).data.run.id).not.toBe(original.id);
+  await page
+    .getByRole("button", { name: "Refresh saved state", exact: true })
+    .click();
+  await expect(page.getByText("$200.00", { exact: true })).toBeVisible();
+  await expect(confirm).toBeHidden();
+  await expect(page.getByLabel("Your startup idea")).toHaveValue("");
+});
+
+test("refresh retains the setup idea after a lost create response", async ({
+  page,
+}) => {
+  await page.route("**/api/simulations", async (route) => {
+    expect((await route.fetch()).ok()).toBe(true);
+    await route.fulfill({ status: 503, json: { code: "SERVICE_UNAVAILABLE" } });
+  });
+  await page.goto("/simulator");
+  const idea = page.getByLabel("Your startup idea");
+  const typedIdea = "A tool for local businesses with an interrupted setup.";
+  await idea.fill(typedIdea);
+  await page
+    .getByRole("button", { name: "Begin simulation", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Refresh saved state", exact: true })
+    .click();
+  await expect(page.getByTestId("sim-day")).toHaveText("Day 0");
+  await expect(idea).toHaveValue(typedIdea);
+  await page
+    .getByRole("textbox", { name: "Your decision", exact: true })
+    .fill("Introduce the scenario");
+  await page
+    .getByRole("button", { name: "Submit decision", exact: true })
+    .click();
+  await expect(
+    page.getByRole("button", { name: "Improve onboarding", exact: true }),
+  ).toBeVisible();
+});
+
 test("stale tabs cannot erase a committed local turn", async ({
   page,
   context,
@@ -265,7 +350,7 @@ test("in-app refresh preserves memory when storage writes fail", async ({
   ).toBeVisible();
 });
 
-test("a lost successful response replays state without another AI attempt", async ({
+test("an ambiguous 503 after commit replays state without another AI attempt", async ({
   page,
 }) => {
   const originalDecision = "Introduce the startup scenario";
@@ -281,9 +366,14 @@ test("a lost successful response replays state without another AI attempt", asyn
     requests.push({ requestId, decision });
     if (!interrupted) {
       interrupted = true;
-      await route.fetch();
-      await route.abort("failed");
+      expect((await route.fetch()).ok()).toBe(true);
+      await route.fulfill({
+        status: 503,
+        json: { code: "SERVICE_UNAVAILABLE" },
+      });
     } else if (requests.length === 2) {
+      await route.fulfill({ status: 503, json: { code: "ORIGIN_TIMEOUT" } });
+    } else if (requests.length === 3) {
       await route.fulfill({ status: 429, json: { code: "RATE_LIMIT" } });
     } else await route.continue();
   });
@@ -291,7 +381,7 @@ test("a lost successful response replays state without another AI attempt", asyn
     .getByRole("button", { name: "Begin simulation", exact: true })
     .click();
   await expect(page.getByRole("alert")).toContainText(
-    "connection was interrupted",
+    "temporarily unavailable",
   );
   const draft = page.getByRole("textbox", {
     name: "Your unsent decision draft",
@@ -307,6 +397,11 @@ test("a lost successful response replays state without another AI attempt", asyn
   await page.reload();
   await expect(draft).toHaveValue(newDecision);
   expect(requests).toHaveLength(1);
+  await page.getByRole("button", { name: "Retry original decision" }).click();
+  await expect(page.getByRole("alert")).toContainText(
+    "temporarily unavailable",
+  );
+  await expect(draft).toHaveValue(newDecision);
   await page.getByRole("button", { name: "Retry original decision" }).click();
   await expect(page.getByRole("alert")).toContainText("Too many requests");
   await expect(draft).toHaveValue(newDecision);
@@ -328,8 +423,7 @@ test("a lost successful response replays state without another AI attempt", asyn
   expect(data.data.session.attempts).toBe(1);
   expect(data.data.run.state.version).toBe(1);
   expect(requests[0].decision).toBe(originalDecision);
-  expect(requests[1]).toEqual(requests[0]);
-  expect(requests[2]).toEqual(requests[0]);
+  expect(requests.slice(1, 4)).toEqual(Array(3).fill(requests[0]));
   await page
     .getByRole("button", { name: "Submit decision", exact: true })
     .click();
@@ -337,8 +431,8 @@ test("a lost successful response replays state without another AI attempt", asyn
   const next = await (await page.request.get("/api/session")).json();
   expect(next.data.session.attempts).toBe(2);
   expect(next.data.run.state.version).toBe(2);
-  expect(requests[3].decision).toBe(newDecision);
-  expect(requests[3].requestId).not.toBe(requests[0].requestId);
+  expect(requests[4].decision).toBe(newDecision);
+  expect(requests[4].requestId).not.toBe(requests[0].requestId);
 });
 
 test("a second tab cannot overwrite a stored request awaiting confirmation", async ({

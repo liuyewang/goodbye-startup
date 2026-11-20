@@ -3,11 +3,6 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-  }
-
   * {
     @apply border-dark-200;
   }
@@ -59,24 +54,12 @@
     @apply btn bg-white text-dark-700 border border-dark-200 hover:bg-dark-50 focus:ring-dark-300;
   }
 
-  .btn-accent {
-    @apply btn bg-accent-500 text-white hover:bg-accent-600 focus:ring-accent-400 shadow-lg shadow-accent-500/25 hover:shadow-xl hover:shadow-accent-500/30 hover:-translate-y-0.5;
-  }
-
-  .btn-ghost {
-    @apply btn text-dark-600 hover:bg-dark-100 focus:ring-dark-300;
-  }
-
   .btn-lg {
     @apply px-6 py-3 text-base;
   }
 
   .btn-md {
     @apply px-4 py-2 text-sm;
-  }
-
-  .btn-sm {
-    @apply px-3 py-1.5 text-sm;
   }
 
   .card {
@@ -93,10 +76,6 @@
 
   .gradient-bg {
     @apply bg-gradient-to-br from-primary-600 via-primary-500 to-accent-500;
-  }
-
-  .glass {
-    @apply bg-white/80 backdrop-blur-lg border border-white/20;
   }
 
   .bg-grid-pattern {

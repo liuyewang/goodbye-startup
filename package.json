@@ -6,7 +6,7 @@
     "dev": "vinext dev --host 127.0.0.1",
     "build": "npm run content:generate && vinext build",
     "preview": "wrangler dev --config dist/server/wrangler.json --persist-to .wrangler/state --port 4173",
-    "deploy": "wrangler deploy --config dist/server/wrangler.json",
+    "deploy": "node scripts/check-deploy-config.mjs && wrangler deploy --config dist/server/wrangler.json",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "format": "prettier --write .",

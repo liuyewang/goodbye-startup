@@ -63,11 +63,13 @@ CLOUDFLARE_ENV=production npm run build
 node scripts/check-deploy-config.mjs
 npm run secrets:check
 npx wrangler d1 migrations apply DB --remote --env production
-npx wrangler deploy --config dist/server/wrangler.json --dry-run
-npx wrangler deploy --config dist/server/wrangler.json
-TEST_BASE_URL=https://goodbye.help node scripts/audit-pages.ts
+npm run deploy -- --dry-run
+npm run deploy
+TEST_BASE_URL=https://goodbye.help node scripts/audit-pages.ts --check-asset-exclusions
 TEST_BASE_URL=https://goodbye.help node scripts/check-live.mjs
 ```
+
+The production deploy script checks the generated environment before calling Wrangler. The asset exclusion check exercises Wrangler's bundled or deployed asset serving. The Vite development server serves local files from `public/` and uses the basic page audit without this flag.
 
 The live check uses health/session reads and invalid setup requests, never model inference. Production permits 300 attempted model calls per UTC day; failed provider attempts also count. Preview remains at zero. The separate six-call release acceptance allowance was fully consumed and is tracked in a private durable ledger; those six also counted toward that day's production cap. Do not reopen finite evaluation budgets without authorization.
 

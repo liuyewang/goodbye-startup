@@ -96,13 +96,9 @@ export async function handle(
     if (!hash) throw new Error("SESSION_REQUIRED");
     let data: unknown;
     if (action === "session") {
-      const session = await repo.getSession(hash, Date.now());
+      const snapshot = await repo.getSession(hash, Date.now());
       data = {
-        session,
-        run:
-          session.runId && !session.expired
-            ? await repo.getRun(hash, session.runId, Date.now())
-            : null,
+        ...snapshot,
         ready,
         mode: local ? config.mode : "deepseek",
       };
@@ -150,7 +146,7 @@ export async function handle(
       console.error(
         JSON.stringify({ event: "request_failed", requestId, code }),
       );
-    if (STATUS[code] === 429)
+    if (code === "DAILY_LIMIT" || code === "RATE_LIMIT")
       headers.set(
         "Retry-After",
         code === "DAILY_LIMIT"

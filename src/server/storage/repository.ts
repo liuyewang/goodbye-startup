@@ -24,6 +24,14 @@ type Row = {
   version: number;
   expires_at: number;
 };
+type SessionRow = {
+  used_at: number | null;
+  attempts: number;
+  session_expires_at: number;
+  run_id: string | null;
+  state_json: string | null;
+  run_expires_at: number | null;
+};
 type OperationRow = {
   status: string;
   token: string;
@@ -50,6 +58,16 @@ export type Session = {
   expired: boolean;
   eligibleAt: number | null;
 };
+type SessionSnapshot = { session: Session; run: Run | null };
+const TURN_FAILURE_CODES = new Set([
+  "AI_UNAVAILABLE",
+  "AI_INVALID_RESPONSE",
+  "AI_TIMEOUT",
+  "RUN_NOT_FOUND",
+  "RUN_EXPIRED",
+  "STALE_REQUEST",
+  "VERSION_CONFLICT",
+]);
 
 /** All writes are parameterized. Batch guards make zero-row contention safe. */
 export class Repository {
@@ -75,25 +93,41 @@ export class Repository {
       ),
     ]);
   }
-  async getSession(hash: string, now: number): Promise<Session> {
+  async getSession(hash: string, now: number): Promise<SessionSnapshot> {
     await this.cleanup(now);
     return this.readSession(hash, now);
   }
-  private async readSession(hash: string, now: number): Promise<Session> {
-    const s = await this.q(
-      "SELECT used_at, attempts, expires_at FROM sessions WHERE session_hash = ?",
+  private async readSession(
+    hash: string,
+    now: number,
+  ): Promise<SessionSnapshot> {
+    const row = await this.q(
+      `SELECT s.used_at, s.attempts, s.expires_at AS session_expires_at,
+        r.id AS run_id, r.expires_at AS run_expires_at, r.state_json
+        FROM sessions s LEFT JOIN runs r ON r.session_hash = s.session_hash
+        WHERE s.session_hash = ?`,
       hash,
-    ).first<{ used_at: number | null; attempts: number; expires_at: number }>();
-    const r = await this.q(
-      "SELECT id, expires_at FROM runs WHERE session_hash = ?",
-      hash,
-    ).first<{ id: string; expires_at: number }>();
+    ).first<SessionRow>();
+    const expired = row?.run_expires_at != null && row.run_expires_at <= now;
     return {
-      used: s?.used_at != null,
-      attempts: s?.attempts ?? 0,
-      runId: r?.id ?? null,
-      expired: !!r && r.expires_at <= now,
-      eligibleAt: s?.used_at == null ? null : s.expires_at,
+      session: {
+        used: row?.used_at != null,
+        attempts: row?.attempts ?? 0,
+        runId: row?.run_id ?? null,
+        expired,
+        eligibleAt: row?.used_at == null ? null : row.session_expires_at,
+      },
+      run:
+        row?.run_id && row.run_expires_at !== null && !expired
+          ? this.decodeRun(
+              {
+                id: row.run_id,
+                expires_at: row.run_expires_at,
+                state_json: row.state_json,
+              },
+              now,
+            )
+          : null,
     };
   }
   async createRun(
@@ -108,9 +142,8 @@ export class Repository {
       now,
       now + SESSION_TTL,
     ).run();
-    const session = await this.readSession(hash, now);
-    if (session.runId && !session.expired)
-      return this.getRun(hash, session.runId, now);
+    const { session, run } = await this.readSession(hash, now);
+    if (run) return run;
     if (session.used) throw new Error("FREE_LIMIT");
     if (session.attempts >= 10) throw new Error("ATTEMPTS_EXHAUSTED");
     if (session.expired && session.runId)
@@ -140,7 +173,10 @@ export class Repository {
     if (!r) throw new Error("RUN_NOT_FOUND");
     return this.decodeRun(r, now);
   }
-  private decodeRun(r: Row, now: number): Run {
+  private decodeRun(
+    r: Pick<Row, "id" | "expires_at" | "state_json">,
+    now: number,
+  ): Run {
     if (r.expires_at <= now || !r.state_json) throw new Error("RUN_EXPIRED");
     return {
       id: r.id,
@@ -159,40 +195,14 @@ export class Repository {
     if (!Number.isSafeInteger(limit) || limit <= 0)
       throw new Error("SERVICE_UNAVAILABLE");
     const run = await this.getRun(hash, id, now);
-    const prior = await this.q(
-      "SELECT * FROM operations WHERE request_id = ?",
+    const replay = await this.checkPriorOperation(
+      hash,
+      id,
       requestId,
-    ).first<OperationRow>();
-    if (prior) {
-      if (
-        prior.session_hash !== hash ||
-        prior.run_id !== id ||
-        prior.expected_version !== version
-      )
-        throw new Error("REQUEST_CONFLICT");
-      if (prior.status === "succeeded" && prior.state_json)
-        return {
-          runId: id,
-          sessionHash: hash,
-          requestId,
-          token: prior.token,
-          expectedVersion: version,
-          replay: SimulationStateSchema.parse(JSON.parse(prior.state_json)),
-        };
-      if (prior.status === "pending" && prior.lease_until <= now) {
-        await this.q(
-          "UPDATE operations SET status='failed',error_code='REQUEST_EXPIRED' WHERE token=? AND status='pending' AND lease_until<=?",
-          prior.token,
-          now,
-        ).run();
-        throw new Error("REQUEST_EXPIRED");
-      }
-      throw new Error(
-        prior.status === "pending"
-          ? "REQUEST_PENDING"
-          : (prior.error_code ?? "REQUEST_FAILED"),
-      );
-    }
+      version,
+      now,
+    );
+    if (replay) return replay;
     if (run.state.status === "completed") throw new Error("RUN_COMPLETED");
     if (run.state.version !== version) throw new Error("VERSION_CONFLICT");
     const token = crypto.randomUUID();
@@ -238,12 +248,22 @@ export class Repository {
       ),
     ]);
     if (results[2].meta.changes !== 1) {
-      const s = await this.getSession(hash, now);
-      if (s.attempts >= 10) throw new Error("ATTEMPTS_EXHAUSTED");
+      const { session } = await this.readSession(hash, now);
       const budget = await this.q(
         "SELECT calls FROM daily_budget WHERE day=?",
         day,
       ).first<{ calls: number }>();
+      // Recheck after both counters: another request with this ID may have
+      // reserved one of those attempts since the first lookup.
+      const replay = await this.checkPriorOperation(
+        hash,
+        id,
+        requestId,
+        version,
+        now,
+      );
+      if (replay) return replay;
+      if (session.attempts >= 10) throw new Error("ATTEMPTS_EXHAUSTED");
       if ((budget?.calls ?? 0) >= limit) throw new Error("DAILY_LIMIT");
       throw new Error("REQUEST_CONFLICT");
     }
@@ -254,6 +274,49 @@ export class Repository {
       token,
       expectedVersion: version,
     };
+  }
+  private async checkPriorOperation(
+    hash: string,
+    id: string,
+    requestId: string,
+    version: number,
+    now: number,
+  ): Promise<Reservation | null> {
+    const prior = await this.q(
+      "SELECT * FROM operations WHERE request_id = ?",
+      requestId,
+    ).first<OperationRow>();
+    if (!prior) return null;
+    if (
+      prior.session_hash !== hash ||
+      prior.run_id !== id ||
+      prior.expected_version !== version
+    )
+      throw new Error("REQUEST_CONFLICT");
+    if (prior.status === "succeeded" && prior.state_json)
+      return {
+        runId: id,
+        sessionHash: hash,
+        requestId,
+        token: prior.token,
+        expectedVersion: version,
+        replay: SimulationStateSchema.parse(JSON.parse(prior.state_json)),
+      };
+    if (prior.status === "pending" && prior.lease_until <= now) {
+      await this.q(
+        "UPDATE operations SET status='failed',error_code='REQUEST_EXPIRED' WHERE token=? AND status='pending' AND lease_until<=?",
+        prior.token,
+        now,
+      ).run();
+      throw new Error("REQUEST_EXPIRED");
+    }
+    if (prior.status === "pending") throw new Error("REQUEST_PENDING");
+    const code = prior.error_code;
+    throw new Error(
+      code && (code === "REQUEST_EXPIRED" || TURN_FAILURE_CODES.has(code))
+        ? code
+        : "REQUEST_FAILED",
+    );
   }
   async commitTurn(
     op: Reservation,
@@ -305,7 +368,7 @@ export class Repository {
   async failTurn(op: Reservation, code: string): Promise<void> {
     await this.q(
       "UPDATE operations SET status='failed',error_code=? WHERE token=? AND status='pending'",
-      code,
+      TURN_FAILURE_CODES.has(code) ? code : "REQUEST_FAILED",
       op.token,
     ).run();
   }

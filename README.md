@@ -59,7 +59,7 @@ Production runtime preview:
 ```sh
 npm run build
 npm run preview               # http://127.0.0.1:4173
-TEST_BASE_URL=http://127.0.0.1:4173 node scripts/audit-pages.ts
+TEST_BASE_URL=http://127.0.0.1:4173 node scripts/audit-pages.ts --check-asset-exclusions
 TEST_BASE_URL=http://127.0.0.1:4173 node scripts/smoke-worker.mjs
 ```
 

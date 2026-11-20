@@ -28,7 +28,7 @@ for (const file of files) {
 if (
   files.some(
     (f) =>
-      (/^\.env(?:\.|$)/.test(f) && f !== ".env.example") ||
+      /^\.env(?:\.|$)/.test(f) ||
       (/^\.dev\.vars/.test(f) && f !== ".dev.vars.example"),
   )
 ) {

@@ -43,7 +43,9 @@ for (const path of [
   "/llms.txt",
   "/content/index.md",
 ]) {
-  const response = await fetch(base + path);
+  const response = await fetch(base + path, {
+    signal: AbortSignal.timeout(30000),
+  });
   assert.equal(response.status, 200, path);
   if (path === "/sitemap.xml") {
     assert.ok(response.headers.get("content-type")?.includes("xml"));
@@ -62,5 +64,16 @@ for (const path of [
       (await response.text()).includes(`Sitemap: ${SITE_URL}/sitemap.xml`),
     );
   console.log("PASS", path);
+}
+if (process.argv.includes("--check-asset-exclusions")) {
+  const finderMetadata = await fetch(base + "/.DS_Store", {
+    signal: AbortSignal.timeout(30000),
+  });
+  assert.equal(
+    finderMetadata.status,
+    404,
+    "Finder metadata must not be public",
+  );
+  await finderMetadata.body?.cancel();
 }
 console.log("Public page audit passed.");

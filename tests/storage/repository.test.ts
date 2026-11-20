@@ -69,9 +69,15 @@ describe("D1 authority and reservations", () => {
   it("does not consume free eligibility until successful settlement", async () => {
     const r = await run();
     const op = await reserve(r.id, "req1");
-    expect((await repo.getSession("owner", now)).used).toBe(false);
+    expect(await repo.getSession("owner", now)).toMatchObject({
+      session: { used: false, runId: r.id },
+      run: r,
+    });
     await repo.commitTurn(op, settleTurn(r.state, p), now + 100);
-    expect((await repo.getSession("owner", now)).used).toBe(true);
+    expect(await repo.getSession("owner", now + 100)).toMatchObject({
+      session: { used: true, runId: r.id },
+      run: { id: r.id, state: { version: 1 } },
+    });
   });
   it("replays successful requests without another allocation", async () => {
     const r = await run();
@@ -79,7 +85,7 @@ describe("D1 authority and reservations", () => {
     await repo.commitTurn(op, settleTurn(r.state, p), now + 100);
     const replay = await reserve(r.id, "req1");
     expect(replay.replay?.version).toBe(1);
-    expect((await repo.getSession("owner", now)).attempts).toBe(1);
+    expect((await repo.getSession("owner", now)).session.attempts).toBe(1);
   });
   it("only allows one concurrent reservation per version", async () => {
     const r = await run();
@@ -88,7 +94,30 @@ describe("D1 authority and reservations", () => {
       reserve(r.id, "b"),
     ]);
     expect(results.filter((x) => x.status === "fulfilled")).toHaveLength(1);
-    expect((await repo.getSession("owner", now)).attempts).toBe(1);
+    expect((await repo.getSession("owner", now)).session.attempts).toBe(1);
+  });
+  it("reports a concurrent duplicate as pending even at the daily limit", async () => {
+    const r = await run();
+    const results = await Promise.allSettled([
+      reserve(r.id, "same", 0, now, 1),
+      reserve(r.id, "same", 0, now, 1),
+    ]);
+    expect(
+      results.filter((result) => result.status === "fulfilled"),
+    ).toHaveLength(1);
+    const duplicate = results.find((result) => result.status === "rejected");
+    expect(duplicate?.reason).toMatchObject({ message: "REQUEST_PENDING" });
+    expect((await repo.getSession("owner", now)).session.attempts).toBe(1);
+  });
+  it("persists only a bounded failure code for unexpected errors", async () => {
+    const r = await run();
+    const op = await reserve(r.id, "failed");
+    await repo.failTurn(
+      op,
+      "unexpected database diagnostic with private context",
+    );
+    await expect(reserve(r.id, "failed")).rejects.toThrow("REQUEST_FAILED");
+    expect((await repo.getSession("owner", now)).session.attempts).toBe(1);
   });
   it("rejects late results after a lease expires and is replaced", async () => {
     const r = await run();
@@ -129,16 +158,16 @@ describe("D1 authority and reservations", () => {
     await expect(
       repo.getRun("owner", r.id, now + 31 * 86400000),
     ).rejects.toThrow("RUN_EXPIRED");
-    expect((await repo.getSession("owner", now + 31 * 86400000)).used).toBe(
-      true,
-    );
+    expect(
+      (await repo.getSession("owner", now + 31 * 86400000)).session.used,
+    ).toBe(true);
   });
   it("fails closed when the global budget is missing or zero", async () => {
     const r = await run();
     await expect(reserve(r.id, "a", 0, now, 0)).rejects.toThrow(
       "SERVICE_UNAVAILABLE",
     );
-    expect((await repo.getSession("owner", now)).attempts).toBe(0);
+    expect((await repo.getSession("owner", now)).session.attempts).toBe(0);
   });
 });
 it("purges expired state and operation snapshots while retaining quota", async () => {
@@ -158,10 +187,12 @@ it("purges expired state and operation snapshots while retaining quota", async (
       .bind(r.id)
       .first(),
   ).toBeNull();
-  expect((await repo.getSession("owner", now + 31 * 86400000)).used).toBe(true);
-  expect((await repo.getSession("owner", now + 181 * 86400000)).used).toBe(
-    false,
-  );
+  expect(
+    (await repo.getSession("owner", now + 31 * 86400000)).session.used,
+  ).toBe(true);
+  expect(
+    (await repo.getSession("owner", now + 181 * 86400000)).session.used,
+  ).toBe(false);
 });
 it("expires the same request ID without charging another attempt", async () => {
   const r = await run();
@@ -169,7 +200,11 @@ it("expires the same request ID without charging another attempt", async () => {
   await expect(reserve(r.id, "crashed", 0, now + 61000)).rejects.toThrow(
     "REQUEST_EXPIRED",
   );
-  expect((await repo.getSession("owner", now + 61000)).attempts).toBe(1);
+  expect((await repo.getSession("owner", now + 61000)).session.attempts).toBe(
+    1,
+  );
   await reserve(r.id, "replacement", 0, now + 61000);
-  expect((await repo.getSession("owner", now + 61000)).attempts).toBe(2);
+  expect((await repo.getSession("owner", now + 61000)).session.attempts).toBe(
+    2,
+  );
 });

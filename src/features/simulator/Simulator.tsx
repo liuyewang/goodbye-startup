@@ -43,6 +43,23 @@ const buttonClass =
 const secondaryClass =
   "rounded-xl border border-dark-200 bg-white px-4 py-2 text-sm font-medium text-dark-700 hover:bg-dark-50 disabled:opacity-50";
 const draftKey = (runId: string) => `gs_decision_draft_${runId}`;
+const confirmedTurnFailures = new Set([
+  "INVALID_INPUT",
+  "INVALID_JSON",
+  "BODY_TOO_LARGE",
+  "RUN_NOT_FOUND",
+  "RUN_EXPIRED",
+  "ATTEMPTS_EXHAUSTED",
+  "DAILY_LIMIT",
+  "RUN_COMPLETED",
+  "VERSION_CONFLICT",
+  "REQUEST_FAILED",
+  "REQUEST_EXPIRED",
+  "STALE_REQUEST",
+  "AI_TIMEOUT",
+  "AI_INVALID_RESPONSE",
+  "AI_UNAVAILABLE",
+]);
 /** Coordinates server authority and browser-only narrative with explicit recovery states. */
 export default function Simulator(): React.JSX.Element {
   const { language } = useI18n();
@@ -52,6 +69,7 @@ export default function Simulator(): React.JSX.Element {
   const [record, setRecord] = useState<Transcript | null>(null);
   const recordRef = useRef<Transcript | null>(null);
   const [idea, setIdea] = useState("");
+  const ideaRunId = useRef<string | null>(null);
   const [cash, setCash] = useState("10000");
   const [cost, setCost] = useState("1500");
   const [team, setTeam] = useState("1");
@@ -66,7 +84,7 @@ export default function Simulator(): React.JSX.Element {
   const [storageWarning, setStorageWarning] = useState(false);
   const [legacy, setLegacy] = useState<string | null>(null);
   const [showQuota, setShowQuota] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   function storeDraft(runId: string, text: string): void {
     draftRef.current = { runId, text };
     setDecision(text);
@@ -123,6 +141,10 @@ export default function Simulator(): React.JSX.Element {
       const result = await api("/api/session", BootstrapSchema);
       setBootstrap(result);
       setRun(result.run);
+      setDeleteTarget((target) => (target === result.run?.id ? target : null));
+      const runId = result.run?.id ?? null;
+      if (ideaRunId.current && ideaRunId.current !== runId) setIdea("");
+      ideaRunId.current = runId;
       try {
         setLegacy(readLegacy(localStorage));
         const id =
@@ -139,9 +161,8 @@ export default function Simulator(): React.JSX.Element {
             : saved.data;
           applyRecord(recovered);
           setStorageWarning(saved.warning);
-          if (recovered) setIdea(recovered.idea);
+          if (runId && recovered?.idea) setIdea(recovered.idea);
         }
-        const runId = result.run?.id;
         setDecision(
           !runId
             ? ""
@@ -187,6 +208,7 @@ export default function Simulator(): React.JSX.Element {
             turns: [],
             pending: null,
           };
+    ideaRunId.current = target.id;
     if (!retry) {
       try {
         const saved = loadTranscript(target.id, localStorage);
@@ -216,14 +238,10 @@ export default function Simulator(): React.JSX.Element {
       persist(next);
       storeDraft(target.id, "");
     }
-    const history = base.turns
-      .flatMap((turn) => [
-        { role: "user" as const, content: turn.decision },
-        { role: "assistant" as const, content: turn.proposal?.scenario ?? "" },
-      ])
-      .slice(-12);
-    while (history.reduce((n, m) => n + m.content.length, 0) > 12000)
-      history.shift();
+    const history = base.turns.flatMap((turn) => [
+      { role: "user" as const, content: turn.decision },
+      { role: "assistant" as const, content: turn.proposal?.scenario ?? "" },
+    ]);
     try {
       const result = await api(
         `/api/simulations/${target.id}/turn`,
@@ -258,17 +276,15 @@ export default function Simulator(): React.JSX.Element {
     } catch (e) {
       const code = e instanceof ApiError ? e.code : "NETWORK";
       setError(code);
-      // A preflight rejection does not tell us whether an earlier attempt committed.
-      const unresolved =
-        ["NETWORK", "REQUEST_PENDING", "REQUEST_CONFLICT"].includes(code) ||
-        (retry &&
-          [
-            "RATE_LIMIT",
-            "SERVICE_UNAVAILABLE",
-            "SESSION_REQUIRED",
-            "FORBIDDEN_ORIGIN",
-          ].includes(code));
-      if (!unresolved) {
+      // Only a definite outcome clears an ID. A preflight rejection of a retry
+      // does not tell us whether the original attempt committed.
+      const confirmed =
+        confirmedTurnFailures.has(code) ||
+        (!retry &&
+          ["RATE_LIMIT", "SESSION_REQUIRED", "FORBIDDEN_ORIGIN"].includes(
+            code,
+          ));
+      if (confirmed) {
         persist({ ...next, pending: null }, pending.requestId);
         if (!retry || !decision) storeDraft(target.id, pending.decision);
       }
@@ -320,7 +336,7 @@ export default function Simulator(): React.JSX.Element {
     await submit(created, c.startDecision, initial);
   }
   async function remove(): Promise<void> {
-    if (!run) return;
+    if (!run || loading || busy || run.id !== deleteTarget) return;
     setBusy(true);
     try {
       await api(
@@ -329,7 +345,7 @@ export default function Simulator(): React.JSX.Element {
         "DELETE",
       );
       setRun(null);
-      setConfirmDelete(false);
+      setDeleteTarget(null);
       await refresh();
     } catch (e) {
       setError(e instanceof ApiError ? e.code : "NETWORK");
@@ -337,15 +353,15 @@ export default function Simulator(): React.JSX.Element {
       setBusy(false);
     }
   }
-  const latestTurn = record?.turns.at(-1);
+  const activeRecord = run && record?.runId === run.id ? record : null;
+  const latestTurn = activeRecord?.turns.at(-1);
   const latest =
     latestTurn?.version === run?.state.version ? latestTurn?.proposal : null;
-  const missing =
-    !!run && run.state.version > (record?.turns.at(-1)?.version ?? 0);
+  const missing = !!run && run.state.version > (latestTurn?.version ?? 0);
   const blocked =
     !!bootstrap && (bootstrap.session.used || bootstrap.session.attempts >= 10);
   const terminal = run?.state.status === "completed";
-  const pendingDecision = record?.runId === run?.id ? record?.pending : null;
+  const pendingDecision = activeRecord?.pending;
   const verdict = run ? getVerdict(run.state) : null;
   const errorText = error
     ? Object.hasOwn(c.errors, error)
@@ -572,7 +588,7 @@ export default function Simulator(): React.JSX.Element {
                       void submit(
                         run,
                         pendingDecision.decision,
-                        record,
+                        activeRecord,
                         pendingDecision,
                       )
                     }
@@ -620,7 +636,7 @@ export default function Simulator(): React.JSX.Element {
                   }}
                   className="rounded-2xl border border-dark-200 p-5 sm:p-7"
                 >
-                  {!record?.idea && (
+                  {!activeRecord?.idea && (
                     <label className="mb-4 block text-sm font-medium">
                       {c.restoreIdea}
                       <textarea
@@ -688,17 +704,14 @@ export default function Simulator(): React.JSX.Element {
                   </p>
                 </form>
               )}
-              <History
-                state={run.state}
-                record={record?.runId === run.id ? record : null}
-              />
-              {record && record.turns.length > 0 && (
+              <History state={run.state} record={activeRecord} />
+              {activeRecord && activeRecord.turns.length > 0 && (
                 <details className="rounded-xl border border-dark-200 p-4">
                   <summary className="cursor-pointer font-semibold">
                     {c.history}
                   </summary>
                   <ol className="mt-4 space-y-4">
-                    {record.turns.map((turn) => (
+                    {activeRecord.turns.map((turn) => (
                       <li
                         key={turn.version}
                         className="border-l-2 border-primary-200 pl-4"
@@ -734,21 +747,21 @@ export default function Simulator(): React.JSX.Element {
           {run && (
             <button
               className={secondaryClass}
-              disabled={busy}
-              onClick={() => setConfirmDelete(true)}
+              disabled={busy || loading}
+              onClick={() => setDeleteTarget(run.id)}
             >
               {c.delete}
             </button>
           )}
         </div>
       )}
-      {confirmDelete && (
+      {run && !loading && deleteTarget === run.id && (
         <div className="mt-4 rounded-xl border border-red-200 p-4">
           <p>{c.deleteConfirm}</p>
           <div className="mt-3 flex gap-3">
             <button
               className={secondaryClass}
-              onClick={() => setConfirmDelete(false)}
+              onClick={() => setDeleteTarget(null)}
             >
               {c.cancel}
             </button>

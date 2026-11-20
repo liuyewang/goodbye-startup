@@ -14,19 +14,18 @@ const page = (
   path: string,
   title: string,
   description: string,
+  updated = ["/", "/pricing", "/simulator"].includes(path)
+    ? "2026-11-20"
+    : path === "/privacy"
+      ? "2026-11-19"
+      : ["/about", "/how-it-works"].includes(path)
+        ? "2026-11-10"
+        : "2026-11-09",
 ): PublicPage => ({
   path,
   title,
   description,
-  updated: ["/", "/pricing"].includes(path)
-    ? "2026-11-20"
-    : ["/simulator", "/privacy"].includes(path)
-      ? "2026-11-19"
-      : ["/about", "/how-it-works", "/guides/startup-idea-validation"].includes(
-            path,
-          )
-        ? "2026-11-10"
-        : "2026-11-09",
+  updated,
 });
 export const pages: PublicPage[] = [
   page(
@@ -86,6 +85,7 @@ export const pages: PublicPage[] = [
         } as Record<string, string>
       )[a.path],
       a.intro.en.length <= 155 ? a.intro.en : a.intro.en.split(". ")[0] + ".",
+      a.updated,
     ),
   ),
 ];
@@ -170,7 +170,7 @@ export function publicMarkdown(path: string): string {
       : path === "/simulator"
         ? [
             "Set your cash, monthly cost, team and commitment. AI proposes assumptions; code calculates outcomes. Stages: simulated Days 0, 5, 90, 120, 150, 180. All days are simulated; real use takes about 15 minutes.",
-            "Text stays in your browser. Anonymous numerical state expires after 30 days; used eligibility after 180 days. There is no live research or paid checkout.",
+            "Simulation text is saved in your browser and sent to DeepSeek for inference. The server keeps anonymous numerical state for up to 30 days and quota metadata for up to 180 days. There is no live research or paid checkout.",
             lifeCopy.en.description,
             lifeCopy.en.boundary,
             lifeCopy.en.privacy,
