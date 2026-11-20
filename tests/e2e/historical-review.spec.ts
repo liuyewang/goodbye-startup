@@ -129,6 +129,12 @@ for (const variant of [
           last.getByText("Local assumptions are unavailable for this stage."),
         ).toBeVisible();
       else {
+        await expect(
+          last.getByText(proposal.scenario, { exact: true }),
+        ).toBeVisible();
+        await expect(
+          last.getByText("Test a paid offer", { exact: true }),
+        ).toBeVisible();
         await expect(last.getByText("5%", { exact: true })).toBeVisible();
         await expect(last.getByText("0.0049%", { exact: true })).toBeVisible();
         await expect(

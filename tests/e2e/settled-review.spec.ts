@@ -105,7 +105,15 @@ test("settled recap excludes stale AI totals and comparison never calls AI", asy
   await expect(recap.getByText("22", { exact: true })).toBeVisible();
   await expect(recap.getByText("150", { exact: true })).toBeVisible();
   await expect(recap.getByText("128", { exact: true })).toBeVisible();
-  await expect(page.getByText(stale, { exact: true }).first()).toBeHidden();
+  const history = page.getByTestId("historical-review");
+  const finalStage = history.getByTestId("history-stage").last();
+  await expect(page.getByText(stale, { exact: true })).toHaveCount(1);
+  await expect(finalStage.getByText(stale, { exact: true })).toBeHidden();
+  await finalStage.locator("summary").click();
+  await expect(finalStage.getByText(stale, { exact: true })).toBeVisible();
+  await expect(
+    finalStage.getByText("Test reminders", { exact: true }),
+  ).toBeVisible();
   await recap.locator("summary").click();
   await recap.getByLabel("Comparison value (USD)").fill("20");
   await expect(

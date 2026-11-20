@@ -1,6 +1,6 @@
 # AI contract and evaluation
 
-Prompt version: `startup-assumptions-v2`, in `src/server/ai/prompt.ts`. Rule/schema version: 1. Provider model is configured server-side; the current default `deepseek-flash` comes from the existing integration and is not a claim that every DeepSeek account supports it.
+Prompt version: `startup-assumptions-v2`, in `src/server/ai/prompt.ts`. Public state schema: 1. Acquisition rule version is fixed in the server save, with [rules 1 and 2](tech-stack.md#deterministic-domain) sharing the same model input contract. The default `deepseek-flash` comes from the existing integration. Account support is checked during an explicitly authorized provider evaluation.
 
 The provider receives one system instruction and a JSON-encoded context containing idea, decision, bounded history, numerical state, next stage and language. Input text is untrusted context. There are no tools, browsing or external actions. JSON mode returns assumptions, scenario text, metric-linked insights and exactly three choices. Totals, day, verdict and entitlement fields are rejected. UI labels prose as assumptions; prose can still contain erroneous claims, so it is not authoritative.
 

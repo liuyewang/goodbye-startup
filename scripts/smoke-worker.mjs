@@ -47,6 +47,7 @@ const created = await call("/api/simulations", "POST", {
   },
 });
 assert.equal(created.status, 200);
+assert.equal(Object.hasOwn(created.data.run.state, "settlementVersion"), false);
 const id = created.data.run.id;
 const turn = {
   requestId: crypto.randomUUID(),
@@ -59,9 +60,11 @@ const turn = {
 const first = await call(`/api/simulations/${id}/turn`, "POST", turn);
 assert.equal(first.status, 200);
 assert.equal(first.data.run.state.version, 1);
+assert.equal(Object.hasOwn(first.data.run.state, "settlementVersion"), false);
 const replay = await call(`/api/simulations/${id}/turn`, "POST", turn);
 assert.equal(replay.data.replayed, true);
 assert.equal(replay.data.run.state.version, 1);
+assert.equal(Object.hasOwn(replay.data.run.state, "settlementVersion"), false);
 for (let v = 1; v < 6; v++) {
   const next = await call(`/api/simulations/${id}/turn`, "POST", {
     ...turn,
@@ -75,6 +78,10 @@ for (let v = 1; v < 6; v++) {
 const used = await call("/api/session");
 assert.equal(used.data.session.used, true);
 assert.equal(used.data.session.attempts, 6);
+assert.equal(Object.hasOwn(used.data.run.state, "settlementVersion"), false);
+const saved = await call(`/api/simulations/${id}`);
+assert.equal(saved.status, 200);
+assert.deepEqual(saved.data.run, used.data.run);
 await call(`/api/simulations/${id}`, "DELETE");
 assert.equal(
   (

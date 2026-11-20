@@ -1,7 +1,8 @@
 import type { Usage } from "../ai/provider";
 import {
-  SimulationStateSchema,
+  StoredSimulationStateSchema,
   type SimulationState,
+  type StoredSimulationState,
 } from "../../domain/simulation/schema";
 
 const DAY = 86_400_000;
@@ -42,14 +43,21 @@ type OperationRow = {
   error_code: string | null;
   lease_until: number;
 };
-export type Run = { id: string; state: SimulationState; expiresAt: number };
+type PublicRun = { id: string; state: SimulationState; expiresAt: number };
+export type Run = PublicRun & { state: StoredSimulationState };
+
+export function publicRun(run: Run): PublicRun {
+  const state = { ...run.state };
+  delete state.settlementVersion;
+  return { id: run.id, state, expiresAt: run.expiresAt };
+}
 export type Reservation = {
   runId: string;
   sessionHash: string;
   requestId: string;
   token: string;
   expectedVersion: number;
-  replay?: SimulationState;
+  replay?: StoredSimulationState;
 };
 export type Session = {
   used: boolean;
@@ -132,7 +140,7 @@ export class Repository {
   }
   async createRun(
     hash: string,
-    state: SimulationState,
+    state: StoredSimulationState,
     now: number,
   ): Promise<Run> {
     await this.cleanup(now);
@@ -153,7 +161,7 @@ export class Repository {
       "INSERT INTO runs(id,session_hash,state_json,created_at,expires_at) VALUES(?,?,?,?,?) ON CONFLICT(session_hash) DO NOTHING",
       id,
       hash,
-      JSON.stringify(SimulationStateSchema.parse(state)),
+      JSON.stringify(StoredSimulationStateSchema.parse(state)),
       now,
       now + RUN_TTL,
     ).run();
@@ -180,7 +188,7 @@ export class Repository {
     if (r.expires_at <= now || !r.state_json) throw new Error("RUN_EXPIRED");
     return {
       id: r.id,
-      state: SimulationStateSchema.parse(JSON.parse(r.state_json)),
+      state: StoredSimulationStateSchema.parse(JSON.parse(r.state_json)),
       expiresAt: r.expires_at,
     };
   }
@@ -300,7 +308,7 @@ export class Repository {
         requestId,
         token: prior.token,
         expectedVersion: version,
-        replay: SimulationStateSchema.parse(JSON.parse(prior.state_json)),
+        replay: StoredSimulationStateSchema.parse(JSON.parse(prior.state_json)),
       };
     if (prior.status === "pending" && prior.lease_until <= now) {
       await this.q(
@@ -320,11 +328,11 @@ export class Repository {
   }
   async commitTurn(
     op: Reservation,
-    state: SimulationState,
+    state: StoredSimulationState,
     now: number,
     usage?: Usage,
   ): Promise<Run> {
-    const parsed = SimulationStateSchema.parse(state);
+    const parsed = StoredSimulationStateSchema.parse(state);
     if (parsed.version !== op.expectedVersion + 1)
       throw new Error("VERSION_CONFLICT");
     const json = JSON.stringify(parsed);

@@ -61,6 +61,53 @@ describe("authoritative simulation", () => {
     expect(s.cashCents).toBe(976667);
     expect(s.morale).toBe(75);
   });
+  it("floors the exact decimal acquisition product in new-rule runs", () => {
+    const started = settleTurn(createSimulation(setup, 2), proposal);
+    const atBoundary = settleTurn(started, {
+      ...proposal,
+      visits: 100,
+      signupRate: 0.29,
+      paidRate: 1,
+    });
+    expect(atBoundary.customers).toBe(29);
+    expect(atBoundary.revenueCents).toBe(29000);
+    expect(atBoundary.cashCents).toBe(979833);
+    expect(
+      settleTurn(started, {
+        ...proposal,
+        visits: 100,
+        signupRate: 0.2899999999999999,
+        paidRate: 1,
+      }).customers,
+    ).toBe(28);
+    expect(
+      settleTurn(started, {
+        ...proposal,
+        visits: 1_000_000,
+        signupRate: 1e-5,
+        paidRate: 0.1,
+      }).customers,
+    ).toBe(1);
+    expect(
+      settleTurn(started, {
+        ...proposal,
+        visits: 1_000_000,
+        signupRate: Number.MIN_VALUE,
+        paidRate: 1,
+      }).customers,
+    ).toBe(0);
+  });
+  it("resumes legacy state with its original acquisition rounding", () => {
+    const started = settleTurn(createSimulation(setup), proposal);
+    const resumed = settleTurn(JSON.parse(JSON.stringify(started)), {
+      ...proposal,
+      visits: 100,
+      signupRate: 0.29,
+      paidRate: 1,
+    });
+    expect(resumed.customers).toBe(28);
+    expect(resumed).not.toHaveProperty("settlementVersion");
+  });
   it("ends at day 180 and rejects any additional settlement", () => {
     let s = createSimulation({ ...setup, monthlyCostCents: 0 });
     for (let i = 0; i < 6; i++)

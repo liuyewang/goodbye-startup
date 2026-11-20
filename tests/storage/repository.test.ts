@@ -87,6 +87,56 @@ describe("D1 authority and reservations", () => {
     expect(replay.replay?.version).toBe(1);
     expect((await repo.getSession("owner", now)).session.attempts).toBe(1);
   });
+  it("keeps the chosen rule in saved runs and replay snapshots", async () => {
+    const old = await run();
+    const exactSetup = createSimulation(setup, 2);
+    const reused = await repo.createRun("owner", exactSetup, now);
+    expect(reused).toEqual(old);
+    expect(reused.state).not.toHaveProperty("settlementVersion");
+    const exact = await repo.createRun("exact-owner", exactSetup, now);
+    const initialized = settleTurn(exact.state, p);
+    const first = await repo.reserveTurn(
+      "exact-owner",
+      exact.id,
+      "exact-0",
+      0,
+      now,
+      100,
+    );
+    await repo.commitTurn(first, initialized, now);
+    const resumed = (await repo.getSession("exact-owner", now)).run!;
+    const result = settleTurn(resumed.state, {
+      ...p,
+      visits: 100,
+      signupRate: 0.29,
+      paidRate: 1,
+    });
+    expect(result.customers).toBe(29);
+    const second = await repo.reserveTurn(
+      "exact-owner",
+      exact.id,
+      "exact-1",
+      1,
+      now,
+      100,
+    );
+    await repo.commitTurn(second, result, now);
+    const replay = await repo.reserveTurn(
+      "exact-owner",
+      exact.id,
+      "exact-1",
+      1,
+      now,
+      100,
+    );
+    expect(replay.replay).toMatchObject({
+      settlementVersion: 2,
+      customers: 29,
+    });
+    expect((await repo.getSession("exact-owner", now)).session.attempts).toBe(
+      2,
+    );
+  });
   it("only allows one concurrent reservation per version", async () => {
     const r = await run();
     const results = await Promise.allSettled([

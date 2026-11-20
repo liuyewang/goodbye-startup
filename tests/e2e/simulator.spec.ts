@@ -83,8 +83,32 @@ test("language switch preserves setup, corrupted storage is recoverable, IME doe
   await page.getByRole("button", { name: "开始模拟", exact: true }).click();
   const input = page.getByLabel("你的决策");
   await input.fill("正在输入");
-  await input.dispatchEvent("keydown", { key: "Enter", isComposing: true });
+  // Construct the event in the page to exercise the native isComposing flag.
+  const pressSubmitShortcut = (isComposing: boolean) =>
+    input.evaluate((element, composing) => {
+      const event = new KeyboardEvent("keydown", {
+        key: "Enter",
+        ctrlKey: true,
+        isComposing: composing,
+        bubbles: true,
+        cancelable: true,
+      });
+      element.dispatchEvent(event);
+      return {
+        isComposing: event.isComposing,
+        prevented: event.defaultPrevented,
+      };
+    }, isComposing);
+  expect(await pressSubmitShortcut(true)).toEqual({
+    isComposing: true,
+    prevented: false,
+  });
   await expect(page.getByTestId("sim-day")).toHaveText("第 0 天");
+  expect(await pressSubmitShortcut(false)).toEqual({
+    isComposing: false,
+    prevented: true,
+  });
+  await expect(page.getByTestId("sim-day")).toHaveText("第 5 天");
 });
 test("failed inference preserves decision and allows explicit retry", async ({
   page,
@@ -273,9 +297,11 @@ test("stale tabs cannot erase a committed local turn", async ({
     .click();
   await expect(stale.getByRole("alert")).toContainText("another tab");
   await stale.reload();
-  await stale.getByText("Simulation timeline", { exact: true }).click();
+  const latest = stale.getByTestId("history-stage").last();
+  await expect(latest.locator("summary")).toContainText("Day 5");
+  await latest.locator("summary").click();
   await expect(
-    stale.getByText("Simulated Day 5", { exact: true }),
+    latest.getByText("Interview potential customers", { exact: true }),
   ).toBeVisible();
 });
 test("lost cookies retain a read-only local export", async ({
@@ -344,9 +370,11 @@ test("in-app refresh preserves memory when storage writes fail", async ({
   await page
     .getByRole("button", { name: "Refresh saved state", exact: true })
     .click();
-  await page.getByText("Simulation timeline", { exact: true }).click();
+  const latest = page.getByTestId("history-stage").last();
+  await expect(latest.locator("summary")).toContainText("Day 5");
+  await latest.locator("summary").click();
   await expect(
-    page.getByText("Simulated Day 5", { exact: true }),
+    latest.getByText("Interview potential customers", { exact: true }),
   ).toBeVisible();
 });
 

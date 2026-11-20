@@ -33,6 +33,8 @@ Timeline: `[0,5,90,120,150,180]`. Version 0 is the setup. The first successful r
 
 All money uses integer USD cents. Rates are bounded to [0,1]. Cash clamps at $10 million to bound the teaching model; costs, visits and price have explicit schema caps. Customers are retained first, new users added afterward; interval revenue is treated as constant. These are deliberate simplifications, not accounting or forecasting. Team/commitment are context for AI, not independent arithmetic multipliers. Bankruptcy or Day 180 ends the run. A positive-cash break-even scenario is viable; positive cash below break-even needs revision; zero cash means abandon. Narration cannot change these rules.
 
+The run fixes its acquisition rule at creation, including drafts that have yet to settle Day 0. Rule 1 uses the historical JavaScript floating point product. Rule 2 multiplies the exact decimals represented by the validated rates’ `Number.toString()` values and floors the result once. For 100 visits, 29% signup and 100% paid conversion, rule 1 yields 28 and rule 2 yields 29. The stored numerical state and replay snapshots carry an internal version only for rule 2. Both versions use the same public state shape, retention and cash rules.
+
 ## D1 atomicity and retention
 
 Four tables: sessions, runs, operations, daily_budget. Signed anonymous IDs are HMAC-hashed before storage. A batch inserts an operation only if ownership, version, expiry, allocation attempts, daily budget and absence of a live pending request all match. Counter updates require the same fresh token. SQL zero-row outcomes are checked explicitly; D1 batch atomicity alone does not turn them into errors.

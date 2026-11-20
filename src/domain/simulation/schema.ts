@@ -54,8 +54,13 @@ export const SimulationStateSchema = SnapshotSchema.extend({
   setup: SetupSchema,
   history: z.array(SnapshotSchema).max(6),
 });
+// Only persisted numerical state carries the settlement version.
+export const StoredSimulationStateSchema = SimulationStateSchema.extend({
+  settlementVersion: z.literal(2).optional(),
+});
 export type Setup = z.infer<typeof SetupSchema>;
 export type Proposal = z.infer<typeof ProposalSchema>;
 export type Snapshot = z.infer<typeof SnapshotSchema>;
 export type SimulationState = z.infer<typeof SimulationStateSchema>;
+export type StoredSimulationState = z.infer<typeof StoredSimulationStateSchema>;
 export type Verdict = "viable" | "revise" | "abandon";

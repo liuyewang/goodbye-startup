@@ -2,7 +2,7 @@ import { env } from "cloudflare:workers";
 import { z } from "zod";
 import { createSimulation } from "../../domain/simulation/engine";
 import { SetupSchema } from "../../domain/simulation/schema";
-import { Repository } from "../storage/repository";
+import { publicRun, Repository } from "../storage/repository";
 import { submitTurn } from "../simulation/service";
 import { assertOrigin, readJson, TurnInputSchema } from "./validation";
 import {
@@ -98,12 +98,13 @@ export async function handle(
     if (action === "session") {
       const snapshot = await repo.getSession(hash, Date.now());
       data = {
-        ...snapshot,
+        session: snapshot.session,
+        run: snapshot.run ? publicRun(snapshot.run) : null,
         ready,
         mode: local ? config.mode : "deepseek",
       };
     } else if (action === "get") {
-      data = { run: await repo.getRun(hash, id!, Date.now()) };
+      data = { run: publicRun(await repo.getRun(hash, id!, Date.now())) };
     } else if (action === "delete") {
       await repo.deleteRun(hash, id!, Date.now());
       data = { deleted: true };
@@ -123,10 +124,12 @@ export async function handle(
         const parsed = z.strictObject({ setup: SetupSchema }).safeParse(body);
         if (!parsed.success) throw new Error("INVALID_INPUT");
         data = {
-          run: await repo.createRun(
-            hash,
-            createSimulation(parsed.data.setup),
-            Date.now(),
+          run: publicRun(
+            await repo.createRun(
+              hash,
+              createSimulation(parsed.data.setup, local ? 2 : 1),
+              Date.now(),
+            ),
           ),
         };
       } else {

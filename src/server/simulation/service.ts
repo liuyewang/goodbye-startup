@@ -1,7 +1,7 @@
 import { settleTurn } from "../../domain/simulation/engine";
 import { generateProposal, type AiConfig } from "../ai/provider";
 import type { TurnInput } from "../http/validation";
-import { Repository } from "../storage/repository";
+import { publicRun, type Repository } from "../storage/repository";
 /** Reserves budget before inference; commits only under the original live lease. */
 export async function submitTurn(
   repo: Repository,
@@ -22,7 +22,7 @@ export async function submitTurn(
   );
   if (op.replay)
     return {
-      run: await repo.getRun(hash, id, Date.now()),
+      run: publicRun(await repo.getRun(hash, id, Date.now())),
       proposal: null,
       replayed: true,
     };
@@ -34,7 +34,7 @@ export async function submitTurn(
         decision: input.decision,
         history: input.history,
         language: input.language,
-        state: run.state,
+        state: publicRun(run).state,
       },
       config,
     );
@@ -46,7 +46,7 @@ export async function submitTurn(
       result.usage,
     );
     return {
-      run: committed,
+      run: publicRun(committed),
       proposal: result.proposal,
       replayed: false,
     };

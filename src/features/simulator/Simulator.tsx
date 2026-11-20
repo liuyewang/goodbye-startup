@@ -356,8 +356,12 @@ export default function Simulator(): React.JSX.Element {
   const activeRecord = run && record?.runId === run.id ? record : null;
   const latestTurn = activeRecord?.turns.at(-1);
   const latest =
-    latestTurn?.version === run?.state.version ? latestTurn?.proposal : null;
-  const missing = !!run && run.state.version > (latestTurn?.version ?? 0);
+    latestTurn &&
+    latestTurn.version === run?.state.version &&
+    latestTurn.day === run.state.day
+      ? latestTurn.proposal
+      : null;
+  const missing = !!run && run.state.version > 0 && !latest;
   const blocked =
     !!bootstrap && (bootstrap.session.used || bootstrap.session.attempts >= 10);
   const terminal = run?.state.status === "completed";
@@ -526,9 +530,9 @@ export default function Simulator(): React.JSX.Element {
                   {c.missing}
                 </p>
               )}
-              {latest && (
+              {latest && !terminal && (
                 <details
-                  open={!terminal}
+                  open
                   className="rounded-2xl border border-dark-200 bg-white p-5 sm:p-7"
                 >
                   <summary className="cursor-pointer font-semibold">
@@ -705,36 +709,6 @@ export default function Simulator(): React.JSX.Element {
                 </form>
               )}
               <History state={run.state} record={activeRecord} />
-              {activeRecord && activeRecord.turns.length > 0 && (
-                <details className="rounded-xl border border-dark-200 p-4">
-                  <summary className="cursor-pointer font-semibold">
-                    {c.history}
-                  </summary>
-                  <ol className="mt-4 space-y-4">
-                    {activeRecord.turns.map((turn) => (
-                      <li
-                        key={turn.version}
-                        className="border-l-2 border-primary-200 pl-4"
-                      >
-                        <p className="text-sm font-semibold">
-                          {language === "zh"
-                            ? `模拟内第 ${turn.day} 天`
-                            : `Simulated Day ${turn.day}`}
-                        </p>
-                        <p className="mt-1 break-words text-sm text-dark-600">
-                          {turn.decision}
-                        </p>
-                        <p className="mt-1 text-xs text-primary-700">
-                          {reviewCopy[language].context}
-                        </p>
-                        <p className="mt-1 break-words text-sm text-dark-500">
-                          {turn.proposal?.scenario}
-                        </p>
-                      </li>
-                    ))}
-                  </ol>
-                </details>
-              )}
             </div>
           )}
         </>

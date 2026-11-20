@@ -31,10 +31,13 @@ export default function History({
   const zero = state.history.find((s) => s.cashCents === 0);
   return (
     <section
+      aria-labelledby="simulation-history-title"
       data-testid="historical-review"
       className="min-w-0 space-y-4 rounded-2xl border border-dark-200 bg-white p-5 sm:p-7"
     >
-      <h2 className="text-xl font-bold">{c.title}</h2>
+      <h2 id="simulation-history-title" className="text-xl font-bold">
+        {c.title}
+      </h2>
       <p className="text-sm leading-relaxed text-dark-600">{c.scope}</p>
       {state.history.length === 0 ? (
         <p className="text-sm">{c.empty}</p>
@@ -130,6 +133,17 @@ export default function History({
                         </p>
                         {p ? (
                           <>
+                            <h3 className="font-semibold">{c.narrative}</h3>
+                            <p className="whitespace-pre-wrap break-words">
+                              {p.scenario}
+                            </p>
+                            <ul className="list-disc space-y-1 pl-5 text-dark-600">
+                              {p.insights.map((insight, index) => (
+                                <li key={index} className="break-words">
+                                  {insight.text}
+                                </li>
+                              ))}
+                            </ul>
                             <h3 className="font-semibold">
                               {s.day === 0 ? c.initialization : c.assumptions}
                             </h3>
