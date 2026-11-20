@@ -185,7 +185,7 @@ export const en = {
         },
         {
           title: "Paying customers and retention",
-          body: "Retained customers = floor(previous customers × (1 − monthly churn)^interval months). New paying customers = floor(interval visits × signup rate × paid conversion rate). Add these two integers; visits are an interval total, not a monthly rate.",
+          body: "Retained customers = floor(previous customers × (1 − monthly churn)^interval months). New paying customers = floor(interval visits × signup rate × paid conversion rate). Add these two integers; visits are an interval total, not a monthly rate. New simulations multiply the acquisition inputs as exact decimals before rounding down. For example, 100 visits × 29% signup × 100% paid conversion gives 29 customers. Existing saves keep the rule they started with.",
         },
         {
           title: "Revenue and cash, in integer cents",
@@ -206,9 +206,9 @@ export const en = {
       ],
       sourceLabel: "Calculation source and revision",
       sourceUrl:
-        "https://github.com/liuyewang/goodbye-startup/blob/d07cd6e19a38dd54728af6a5b3a69269b89e2a07/src/domain/simulation/engine.ts",
+        "https://github.com/liuyewang/goodbye-startup/blob/465f40d6d2f9838e4b3b38e862f6a34a1291376c/src/domain/simulation/engine.ts",
       reviewed:
-        "Method reviewed: 2026-11-10. Worked examples are hypothetical, not customer results.",
+        "Method reviewed: 2026-11-20. Worked examples are hypothetical, not customer results.",
       closing:
         "Turn the scenario’s critical assumptions into real-world tests before committing resources.",
     },

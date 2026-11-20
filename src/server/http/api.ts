@@ -127,7 +127,7 @@ export async function handle(
           run: publicRun(
             await repo.createRun(
               hash,
-              createSimulation(parsed.data.setup, local ? 2 : 1),
+              createSimulation(parsed.data.setup, 2),
               Date.now(),
             ),
           ),

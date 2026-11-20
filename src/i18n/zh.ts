@@ -173,7 +173,7 @@ export const zh: Translations = {
         },
         {
           title: "付费客户与留存",
-          body: "留存客户 = 向下取整（原客户数 ×（1 − 月流失率）^间隔月数）。新增付费客户 = 向下取整（间隔访问数 × 注册率 × 付费转化率）。两项整数相加；访问数是整个间隔的总量，不是月访问率。",
+          body: "留存客户 = 向下取整（原客户数 ×（1 − 月流失率）^间隔月数）。新增付费客户 = 向下取整（间隔访问数 × 注册率 × 付费转化率）。两项整数相加；访问数是整个间隔的总量，不是月访问率。新模拟先按精确十进制计算获客乘积，再向下取整。例如，100 次访问 × 29% 注册率 × 100% 付费转化率得到 29 位客户。已有存档继续使用开始时的规则。",
         },
         {
           title: "收入与现金：用整数美分计算",
@@ -194,8 +194,8 @@ export const zh: Translations = {
       ],
       sourceLabel: "计算规则源码与版本",
       sourceUrl:
-        "https://github.com/liuyewang/goodbye-startup/blob/d07cd6e19a38dd54728af6a5b3a69269b89e2a07/src/domain/simulation/engine.ts",
-      reviewed: "方法复核日期：2026-11-10。算例是假设，不是用户实绩。",
+        "https://github.com/liuyewang/goodbye-startup/blob/465f40d6d2f9838e4b3b38e862f6a34a1291376c/src/domain/simulation/engine.ts",
+      reviewed: "方法复核日期：2026-11-20。算例是假设，不是用户实绩。",
       closing: "把情景中的关键假设写成现实测试，再决定是否投入。",
     },
   },

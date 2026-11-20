@@ -14,11 +14,11 @@ const page = (
   path: string,
   title: string,
   description: string,
-  updated = ["/", "/pricing", "/simulator"].includes(path)
+  updated = ["/", "/pricing", "/simulator", "/how-it-works"].includes(path)
     ? "2026-11-20"
     : path === "/privacy"
       ? "2026-11-19"
-      : ["/about", "/how-it-works"].includes(path)
+      : path === "/about"
         ? "2026-11-10"
         : "2026-11-09",
 ): PublicPage => ({
