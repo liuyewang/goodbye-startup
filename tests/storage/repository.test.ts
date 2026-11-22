@@ -1,7 +1,7 @@
 import { beforeEach, afterEach, describe, expect, it } from "vitest";
 import { Miniflare, convertV4MiniflareOptions } from "miniflare";
 import { readFile } from "node:fs/promises";
-import { Repository } from "../../src/server/storage/repository";
+import { Repository, type Database } from "../../src/server/storage/repository";
 import {
   createSimulation,
   settleTurn,
@@ -86,6 +86,52 @@ describe("D1 authority and reservations", () => {
     const replay = await reserve(r.id, "req1");
     expect(replay.replay?.version).toBe(1);
     expect((await repo.getSession("owner", now)).session.attempts).toBe(1);
+  });
+  it("replays a commit that wins between the expiry read and update", async () => {
+    const r = await run();
+    const op = await reserve(r.id, "racing-expiry", 0, now, 1);
+    const settled = settleTurn(r.state, p);
+    const db = await mf.getD1Database("DB");
+    const beforeExpiryUpdate = (
+      statement: D1PreparedStatement,
+    ): ReturnType<Database["prepare"]> => ({
+      bind: (...values) => beforeExpiryUpdate(statement.bind(...values)),
+      first: statement.first.bind(statement),
+      async run() {
+        // The commit captured its timestamp before the lease deadline but
+        // reaches D1 after the retry has read the still-pending row.
+        await repo.commitTurn(op, settled, now + 59_999);
+        return statement.run();
+      },
+    });
+    const retryRepo = new Repository({
+      batch: db.batch.bind(db),
+      prepare(sql) {
+        const statement = db.prepare(sql);
+        return sql.includes(
+          "WHERE token=? AND status='pending' AND lease_until<=?",
+        )
+          ? beforeExpiryUpdate(statement)
+          : statement;
+      },
+    });
+
+    await expect(
+      retryRepo.reserveTurn("owner", r.id, op.requestId, 0, now + 60_000, 1),
+    ).resolves.toEqual({ ...op, replay: settled });
+    expect(
+      (await repo.getSession("owner", now + 60_000)).session,
+    ).toMatchObject({
+      used: true,
+      attempts: 1,
+    });
+    const day = new Date(now).toISOString().slice(0, 10);
+    expect(
+      await db
+        .prepare("SELECT calls FROM daily_budget WHERE day = ?")
+        .bind(day)
+        .first("calls"),
+    ).toBe(1);
   });
   it("keeps the chosen rule in saved runs and replay snapshots", async () => {
     const old = await run();

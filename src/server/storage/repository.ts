@@ -290,7 +290,7 @@ export class Repository {
     version: number,
     now: number,
   ): Promise<Reservation | null> {
-    const prior = await this.q(
+    let prior = await this.q(
       "SELECT * FROM operations WHERE request_id = ?",
       requestId,
     ).first<OperationRow>();
@@ -301,6 +301,20 @@ export class Repository {
       prior.expected_version !== version
     )
       throw new Error("REQUEST_CONFLICT");
+    if (prior.status === "pending" && prior.lease_until <= now) {
+      const expired = await this.q(
+        "UPDATE operations SET status='failed',error_code='REQUEST_EXPIRED' WHERE token=? AND status='pending' AND lease_until<=?",
+        prior.token,
+        now,
+      ).run();
+      if (expired.meta.changes === 1) throw new Error("REQUEST_EXPIRED");
+      // The original operation may have settled since the first read.
+      prior = await this.q(
+        "SELECT * FROM operations WHERE token = ?",
+        prior.token,
+      ).first<OperationRow>();
+      if (!prior) throw new Error("REQUEST_EXPIRED");
+    }
     if (prior.status === "succeeded" && prior.state_json)
       return {
         runId: id,
@@ -310,14 +324,6 @@ export class Repository {
         expectedVersion: version,
         replay: StoredSimulationStateSchema.parse(JSON.parse(prior.state_json)),
       };
-    if (prior.status === "pending" && prior.lease_until <= now) {
-      await this.q(
-        "UPDATE operations SET status='failed',error_code='REQUEST_EXPIRED' WHERE token=? AND status='pending' AND lease_until<=?",
-        prior.token,
-        now,
-      ).run();
-      throw new Error("REQUEST_EXPIRED");
-    }
     if (prior.status === "pending") throw new Error("REQUEST_PENDING");
     const code = prior.error_code;
     throw new Error(

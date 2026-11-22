@@ -3,9 +3,9 @@
   "version": "0.2.0",
   "private": true,
   "scripts": {
-    "dev": "vinext dev --host 127.0.0.1",
+    "dev": "X_LOCAL_OBSERVABILITY=${X_LOCAL_OBSERVABILITY:-false} vinext dev --host 127.0.0.1",
     "build": "npm run content:generate && vinext build",
-    "preview": "wrangler dev --config dist/server/wrangler.json --persist-to .wrangler/state --port 4173",
+    "preview": "X_LOCAL_OBSERVABILITY=${X_LOCAL_OBSERVABILITY:-false} wrangler dev --config dist/server/wrangler.json --persist-to .wrangler/state --port 4173",
     "deploy": "node scripts/check-deploy-config.mjs && wrangler deploy --config dist/server/wrangler.json",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",

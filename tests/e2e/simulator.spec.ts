@@ -378,8 +378,9 @@ test("in-app refresh preserves memory when storage writes fail", async ({
   ).toBeVisible();
 });
 
-test("an ambiguous 503 after commit replays state without another AI attempt", async ({
+test("an ambiguous 503 preserves the original decision when the replay returns a newer run", async ({
   page,
+  baseURL,
 }) => {
   const originalDecision = "Introduce the startup scenario";
   const newDecision = "Interview three store owners.";
@@ -415,6 +416,23 @@ test("an ambiguous 503 after commit replays state without another AI attempt", a
     name: "Your unsent decision draft",
   });
   await draft.fill(newDecision);
+  const afterCommit = await (await page.request.get("/api/session")).json();
+  const advance = await page.request.post(
+    `/api/simulations/${afterCommit.data.run.id}/turn`,
+    {
+      headers: { Origin: baseURL! },
+      data: {
+        expectedVersion: 1,
+        requestId: crypto.randomUUID(),
+        idea: "A small tool with an interrupted network response.",
+        decision: "Advance this simulation from another tab",
+        history: [],
+        language: "en",
+      },
+    },
+  );
+  expect(advance.ok()).toBe(true);
+  expect((await advance.json()).data.run.state.day).toBe(5);
   await expect(page.getByText(originalDecision, { exact: true })).toBeVisible();
   await expect(
     page.getByRole("button", { name: "Submit decision" }),
@@ -448,19 +466,74 @@ test("an ambiguous 503 after commit replays state without another AI attempt", a
   ).toHaveValue(newDecision);
   const session = await page.request.get("/api/session");
   const data = await session.json();
-  expect(data.data.session.attempts).toBe(1);
-  expect(data.data.run.state.version).toBe(1);
+  expect(data.data.session.attempts).toBe(2);
+  expect(data.data.run.state.version).toBe(2);
+  const stage = page.getByTestId("history-stage").first();
+  await stage.locator("summary").click();
+  await expect(stage.getByText(originalDecision, { exact: true })).toBeVisible({
+    timeout: 2000,
+  });
+  await expect(
+    stage.getByText("Local assumptions are unavailable for this stage."),
+  ).toBeVisible();
+  await expect(
+    page.getByTestId("history-stage").last().getByText(originalDecision),
+  ).toHaveCount(0);
   expect(requests[0].decision).toBe(originalDecision);
   expect(requests.slice(1, 4)).toEqual(Array(3).fill(requests[0]));
   await page
     .getByRole("button", { name: "Submit decision", exact: true })
     .click();
-  await expect(page.getByTestId("sim-day")).toHaveText("Day 5");
+  await expect(page.getByTestId("sim-day")).toHaveText("Day 90");
   const next = await (await page.request.get("/api/session")).json();
-  expect(next.data.session.attempts).toBe(2);
-  expect(next.data.run.state.version).toBe(2);
+  expect(next.data.session.attempts).toBe(3);
+  expect(next.data.run.state.version).toBe(3);
   expect(requests[4].decision).toBe(newDecision);
   expect(requests[4].requestId).not.toBe(requests[0].requestId);
+});
+
+test("exports damaged current transcript verbatim before and after repairing it", async ({
+  page,
+}) => {
+  await page.goto("/simulator");
+  await page.getByLabel("Your startup idea").fill("A useful local prototype.");
+  await page.getByRole("button", { name: "Begin simulation" }).click();
+  await expect(
+    page.getByRole("button", { name: "Interview potential customers" }),
+  ).toBeVisible();
+  const damaged = "{interrupted local save";
+  await page.evaluate((raw) => {
+    const runId = localStorage.getItem("gs_transcript_last_run");
+    if (!runId) throw new Error("missing test run");
+    localStorage.setItem("gs_transcript_v1_" + runId, raw);
+  }, damaged);
+  async function expectRawExport() {
+    const exportButton = page.getByRole("button", {
+      name: "Export damaged local save",
+    });
+    await expect(exportButton).toBeVisible({ timeout: 2000 });
+    const event = page.waitForEvent("download");
+    await exportButton.click();
+    const download = await event;
+    expect(await readFile(await download.path(), "utf8")).toBe(damaged);
+  }
+  await page.reload();
+  await expectRawExport();
+  await page.getByLabel("Your startup idea").fill("A useful local prototype.");
+  await page
+    .getByRole("textbox", { name: "Your decision", exact: true })
+    .fill("Test the prototype");
+  await page
+    .getByRole("button", { name: "Submit decision", exact: true })
+    .click();
+  await expect(page.getByTestId("sim-day")).toHaveText("Day 5");
+  await page.reload();
+  await expectRawExport();
+  await page.route("**/api/session", (route) =>
+    route.fulfill({ status: 503, json: { code: "SERVICE_UNAVAILABLE" } }),
+  );
+  await page.reload();
+  await expectRawExport();
 });
 
 test("a second tab cannot overwrite a stored request awaiting confirmation", async ({

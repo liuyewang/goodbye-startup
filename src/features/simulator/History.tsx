@@ -4,6 +4,7 @@ import { TIMELINE } from "../../domain/simulation/engine";
 import type { SimulationState } from "../../domain/simulation/schema";
 import type { Transcript } from "./persistence";
 import { historyCopy } from "./historyCopy";
+import { simulationFormat } from "./format";
 
 /** Numeric snapshots come only from the server; local text never supplies balances. */
 export default function History({
@@ -15,16 +16,7 @@ export default function History({
 }): React.JSX.Element {
   const { language } = useI18n();
   const c = historyCopy[language];
-  const money = (cents: number): string =>
-    new Intl.NumberFormat(language === "zh" ? "zh-CN" : "en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(cents / 100);
-  const percent = (n: number): string =>
-    new Intl.NumberFormat(language === "zh" ? "zh-CN" : "en-US", {
-      style: "percent",
-      maximumSignificantDigits: 21,
-    }).format(n);
+  const { money, percent } = simulationFormat[language];
   const day = (n: number): string =>
     language === "zh" ? `第 ${n} 天` : `Day ${n}`;
   const maxCash = Math.max(1, ...state.history.map((s) => s.cashCents));

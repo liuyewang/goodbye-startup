@@ -22,7 +22,7 @@ import {
 } from "./api";
 import {
   downloadRecord,
-  downloadLegacy,
+  downloadText,
   loadTranscript,
   readLegacy,
   readLastRun,
@@ -34,6 +34,7 @@ import { simulatorCopy } from "./copy";
 import Dashboard from "./Dashboard";
 import Review from "./Review";
 import History from "./History";
+import { simulationFormat } from "./format";
 import { reviewCopy } from "./reviewCopy";
 
 const inputClass =
@@ -64,6 +65,7 @@ const confirmedTurnFailures = new Set([
 export default function Simulator(): React.JSX.Element {
   const { language } = useI18n();
   const c = simulatorCopy[language];
+  const { money, percent } = simulationFormat[language];
   const [bootstrap, setBootstrap] = useState<Bootstrap | null>(null);
   const [run, setRun] = useState<Run | null>(null);
   const [record, setRecord] = useState<Transcript | null>(null);
@@ -83,6 +85,7 @@ export default function Simulator(): React.JSX.Element {
   const [error, setError] = useState<string | null>(null);
   const [storageWarning, setStorageWarning] = useState(false);
   const [legacy, setLegacy] = useState<string | null>(null);
+  const [damagedSaves, setDamagedSaves] = useState<string[]>([]);
   const [showQuota, setShowQuota] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   function storeDraft(runId: string, text: string): void {
@@ -102,11 +105,9 @@ export default function Simulator(): React.JSX.Element {
   function persist(data: Transcript, clearedRequestId?: string): void {
     let merged = mergeTranscripts(recordRef.current, data, clearedRequestId);
     try {
-      merged = mergeTranscripts(
-        loadTranscript(data.runId, localStorage).data,
-        merged,
-        clearedRequestId,
-      );
+      const saved = loadTranscript(data.runId, localStorage);
+      setDamagedSaves(saved.recovery);
+      merged = mergeTranscripts(saved.data, merged, clearedRequestId);
       if (!saveTranscript(merged, localStorage, clearedRequestId))
         setStorageWarning(true);
     } catch {
@@ -161,8 +162,9 @@ export default function Simulator(): React.JSX.Element {
             : saved.data;
           applyRecord(recovered);
           setStorageWarning(saved.warning);
+          setDamagedSaves(saved.recovery);
           if (runId && recovered?.idea) setIdea(recovered.idea);
-        }
+        } else setDamagedSaves([]);
         setDecision(
           !runId
             ? ""
@@ -175,6 +177,25 @@ export default function Simulator(): React.JSX.Element {
       }
     } catch (e) {
       setError(e instanceof ApiError ? e.code : "NETWORK");
+      // Server availability should not prevent exporting this browser's text.
+      try {
+        setLegacy(readLegacy(localStorage));
+        const id =
+          ideaRunId.current ??
+          recordRef.current?.runId ??
+          readLastRun(localStorage);
+        if (id) {
+          const saved = loadTranscript(id, localStorage);
+          const memory = recordRef.current;
+          applyRecord(
+            memory ? mergeTranscripts(saved.data, memory) : saved.data,
+          );
+          setDamagedSaves(saved.recovery);
+          setStorageWarning(saved.warning);
+        }
+      } catch {
+        setStorageWarning(true);
+      }
     } finally {
       setLoading(false);
     }
@@ -240,7 +261,9 @@ export default function Simulator(): React.JSX.Element {
     }
     const history = base.turns.flatMap((turn) => [
       { role: "user" as const, content: turn.decision },
-      { role: "assistant" as const, content: turn.proposal?.scenario ?? "" },
+      ...(turn.proposal
+        ? [{ role: "assistant" as const, content: turn.proposal.scenario }]
+        : []),
     ]);
     try {
       const result = await api(
@@ -249,24 +272,33 @@ export default function Simulator(): React.JSX.Element {
         "POST",
         fitTurnHistory({ ...pending, idea, language, history }),
       );
+      const version = pending.expectedVersion + 1;
+      // Replay can return a newer run; the decision belongs to its original stage.
+      const stage = result.run.state.history[pending.expectedVersion];
+      if (
+        result.run.id !== target.id ||
+        !stage ||
+        result.run.state.version < version ||
+        (!result.replayed && result.run.state.version !== version)
+      )
+        throw new ApiError("NETWORK");
       setRun(result.run);
       persist(
         {
           ...next,
           pending: null,
-          turns: result.proposal
-            ? [
-                ...base.turns.filter(
-                  (t) => t.version !== result.run.state.version,
-                ),
-                {
-                  version: result.run.state.version,
-                  day: result.run.state.day,
-                  decision: pending.decision,
-                  proposal: result.proposal,
-                },
-              ].slice(-6)
-            : base.turns,
+          turns: [
+            ...base.turns.filter((turn) => turn.version !== version),
+            {
+              version,
+              day: stage.day,
+              decision: pending.decision,
+              proposal:
+                result.proposal ??
+                base.turns.find((turn) => turn.version === version)?.proposal ??
+                null,
+            },
+          ].slice(-6),
         },
         pending.requestId,
       );
@@ -393,7 +425,7 @@ export default function Simulator(): React.JSX.Element {
           <p>{c.legacy}</p>
           <button
             className={secondaryClass}
-            onClick={() => downloadLegacy(legacy)}
+            onClick={() => downloadText(legacy, "goodbye-legacy-save.txt")}
           >
             {c.legacyExport}
           </button>
@@ -406,6 +438,23 @@ export default function Simulator(): React.JSX.Element {
         >
           {c.storage}
         </p>
+      )}
+      {damagedSaves.length > 0 && (
+        <div className="mb-5 flex flex-wrap gap-2">
+          {damagedSaves.map((raw, index) => (
+            <button
+              key={index}
+              type="button"
+              className={secondaryClass + " min-h-11"}
+              onClick={() =>
+                downloadText(raw, `goodbye-damaged-save-${index + 1}.txt`)
+              }
+            >
+              {c.recoveryExport}
+              {damagedSaves.length > 1 ? ` ${index + 1}` : ""}
+            </button>
+          ))}
+        </div>
       )}
       {errorText && (
         <div
@@ -561,15 +610,18 @@ export default function Simulator(): React.JSX.Element {
                     <dl className="mt-3 grid grid-cols-2 gap-3">
                       {[
                         [c.visits, latest.visits],
-                        [c.signup, `${latest.signupRate * 100}%`],
-                        [c.paidRate, `${latest.paidRate * 100}%`],
-                        [c.churn, `${latest.monthlyChurn * 100}%`],
-                        [c.price, `$${latest.priceCents / 100}`],
-                        [c.oneTime, `$${latest.oneTimeCostCents / 100}`],
+                        [c.signup, percent(latest.signupRate)],
+                        [c.paidRate, percent(latest.paidRate)],
+                        [c.churn, percent(latest.monthlyChurn)],
+                        [c.price, money(latest.priceCents)],
+                        [c.costLabel, money(latest.monthlyCostCents)],
+                        [c.oneTime, money(latest.oneTimeCostCents)],
                       ].map(([k, v]) => (
                         <div key={k}>
                           <dt>{k}</dt>
-                          <dd className="font-medium text-dark-800">{v}</dd>
+                          <dd className="break-words font-medium text-dark-800">
+                            {v}
+                          </dd>
                         </div>
                       ))}
                     </dl>

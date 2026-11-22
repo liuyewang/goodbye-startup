@@ -162,8 +162,9 @@ export function publicMarkdown(path: string): string {
     ? [
         a.intro.en,
         ...a.sections.flatMap((s) => ["## " + s.title.en, s.body.en]),
-        "## Sources",
-        ...a.sources.map((s) => `- [${s.title}](${s.url})`),
+        ...(a.sources.length
+          ? ["## Sources", ...a.sources.map((s) => `- [${s.title}](${s.url})`)]
+          : []),
       ]
     : section
       ? strings(section)

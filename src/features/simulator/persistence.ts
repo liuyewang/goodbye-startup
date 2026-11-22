@@ -21,6 +21,9 @@ export const TranscriptSchema = z.object({
 export type Transcript = z.infer<typeof TranscriptSchema>;
 type StoragePort = Pick<Storage, "getItem" | "setItem">;
 const key = (id: string) => "gs_transcript_v1_" + id;
+const recoveryKey = (id: string) => "gs_transcript_recovery_" + id;
+const recoveryArchiveKey = (id: string) => "gs_transcript_recovery_v2_" + id;
+const turnKey = (id: string, version: number) => `${key(id)}_turn_${version}`;
 /** Merge only text: this function never reconstructs authoritative game state. */
 export function mergeTranscripts(
   existing: Transcript | null,
@@ -49,48 +52,73 @@ export function mergeTranscripts(
         : null,
   };
 }
-/** Successful turns have independent keys so stale whole-record writes cannot erase them. */
+/** Full proposals and replay-only decisions use separate immutable slots. */
 export function loadTranscript(
   id: string,
   storage: StoragePort,
-): { data: Transcript | null; warning: boolean } {
+): {
+  data: Transcript | null;
+  warning: boolean;
+  recovery: string[];
+  damaged: boolean;
+} {
   let warning = false;
+  let damaged = false;
   let data: Transcript | null = null;
+  const recovery = new Set<string>();
   try {
     const raw = storage.getItem(key(id));
-    if (raw) {
+    if (raw !== null) {
       try {
         if (raw.length > 100000) throw Error("too large");
         data = TranscriptSchema.parse(JSON.parse(raw));
         if (data.runId !== id) throw Error("wrong run");
       } catch {
         data = null;
+        recovery.add(raw);
+        damaged = true;
+        warning = true;
+      }
+    }
+    const previous = storage.getItem(recoveryKey(id));
+    if (previous !== null) recovery.add(previous);
+    const archive = storage.getItem(recoveryArchiveKey(id));
+    if (archive !== null) {
+      try {
+        for (const copy of z.array(z.string()).parse(JSON.parse(archive)))
+          recovery.add(copy);
+      } catch {
+        recovery.add(archive);
         warning = true;
       }
     }
     for (let version = 1; version <= 6; version++) {
-      const rawTurn = storage.getItem(`${key(id)}_turn_${version}`);
-      if (!rawTurn) continue;
-      try {
-        if (rawTurn.length > 20000) throw Error("too large");
-        const turn = TurnSchema.parse(JSON.parse(rawTurn));
-        if (turn.version !== version) throw Error("wrong version");
-        const base = data ?? {
-          schemaVersion: 1 as const,
-          runId: id,
-          idea: "",
-          turns: [],
-          pending: null,
-        };
-        data = mergeTranscripts(base, { ...base, turns: [turn] });
-      } catch {
-        warning = true;
+      const slot = turnKey(id, version);
+      for (const candidate of [slot, slot + "_decision"]) {
+        const rawTurn = storage.getItem(candidate);
+        if (rawTurn === null) continue;
+        try {
+          if (rawTurn.length > 20000) throw Error("too large");
+          const turn = TurnSchema.parse(JSON.parse(rawTurn));
+          if (turn.version !== version) throw Error("wrong version");
+          const base = data ?? {
+            schemaVersion: 1 as const,
+            runId: id,
+            idea: "",
+            turns: [],
+            pending: null,
+          };
+          data = mergeTranscripts(base, { ...base, turns: [turn] });
+          break;
+        } catch {
+          warning = true;
+        }
       }
     }
-    return { data, warning };
   } catch {
-    return { data, warning: true };
+    warning = true;
   }
+  return { data, warning, recovery: [...recovery], damaged };
 }
 /** Index identifies the last local record independently of cookies or a deleted server row. */
 export function readLastRun(storage: StoragePort): string | null {
@@ -109,18 +137,19 @@ export function saveTranscript(
 ): boolean {
   try {
     const prior = loadTranscript(data.runId, storage);
-    if (prior.warning) {
-      const raw = storage.getItem(key(data.runId));
-      if (raw && !storage.getItem("gs_transcript_recovery_" + data.runId))
-        storage.setItem("gs_transcript_recovery_" + data.runId, raw);
-    }
+    if (prior.damaged)
+      storage.setItem(
+        recoveryArchiveKey(data.runId),
+        JSON.stringify(prior.recovery),
+      );
     const merged = TranscriptSchema.parse(
       mergeTranscripts(prior.data, data, clearedRequestId),
     );
     for (const turn of merged.turns) {
-      const turnKey = `${key(data.runId)}_turn_${turn.version}`;
-      if (!storage.getItem(turnKey))
-        storage.setItem(turnKey, JSON.stringify(turn));
+      const slot =
+        turnKey(data.runId, turn.version) + (turn.proposal ? "" : "_decision");
+      if (storage.getItem(slot) === null)
+        storage.setItem(slot, JSON.stringify(turn));
     }
     storage.setItem(key(data.runId), JSON.stringify(merged));
     storage.setItem("gs_transcript_last_run", data.runId);
@@ -148,12 +177,9 @@ export function downloadRecord(value: unknown, name: string): void {
   );
 }
 
-/** Legacy text may be malformed JSON. Preserve it byte-for-byte for recovery. */
-export function downloadLegacy(raw: string): void {
-  downloadFile(
-    new Blob([raw], { type: "text/plain;charset=utf-8" }),
-    "goodbye-legacy-save.txt",
-  );
+/** Export local text verbatim, including malformed saves. */
+export function downloadText(text: string, name: string): void {
+  downloadFile(new Blob([text], { type: "text/plain;charset=utf-8" }), name);
 }
 
 function downloadFile(file: Blob, name: string): void {

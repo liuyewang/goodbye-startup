@@ -4,6 +4,7 @@ import type { SimulationState } from "../../domain/simulation/schema";
 import { createSimulation } from "../../domain/simulation/engine";
 import { reviewCopy } from "./reviewCopy";
 import { simulatorCopy } from "./copy";
+import { simulationFormat } from "./format";
 /** Renders only server-calculated metrics, never totals asserted by the model. */
 export default function Dashboard({
   state,
@@ -12,12 +13,7 @@ export default function Dashboard({
 }): React.JSX.Element {
   const { language } = useI18n();
   const c = simulatorCopy[language];
-  const money = (n: number) =>
-    new Intl.NumberFormat(language === "zh" ? "zh-CN" : "en-US", {
-      style: "currency",
-      currency: "USD",
-      maximumFractionDigits: 2,
-    }).format(n / 100);
+  const { money } = simulationFormat[language];
   const previous = state.history.at(-2) ?? createSimulation(state.setup);
   const r = reviewCopy[language];
   const entries = [

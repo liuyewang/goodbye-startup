@@ -20,5 +20,3 @@ Observe customer retention, revenue, cost and cash. Positive cash with revenue c
 ## Save, retry and export
 
 Text stays in the browser. Numerical state remains recoverable for 30 days after a successful turn. A repeated request ID does not spend another attempt. Lost text cannot be recovered from the server. Export before clearing site data.
-
-## Sources

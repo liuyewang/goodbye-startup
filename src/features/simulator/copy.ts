@@ -21,6 +21,7 @@ const en = {
   export: "Export local record",
   legacy: "A previous local save is available for export.",
   legacyExport: "Export previous save",
+  recoveryExport: "Export damaged local save",
   storage:
     "Local storage is unavailable or damaged. Keep an export; your text may not survive a refresh.",
   privacy:
@@ -136,6 +137,7 @@ const zh: Copy = {
   export: "导出本地记录",
   legacy: "发现之前的本地存档，可导出保留。",
   legacyExport: "导出旧存档",
+  recoveryExport: "导出损坏的本地存档",
   storage: "本地存储不可用或已损坏。请及时导出；刷新后文本可能无法保留。",
   privacy:
     "文本保留在此浏览器，并发送给 DeepSeek 用于推理。服务端保留匿名数值状态 30 天、额度元数据 180 天。",

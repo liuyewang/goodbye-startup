@@ -4,6 +4,8 @@ import { useI18n } from "../../i18n";
 import type { SimulationState } from "../../domain/simulation/schema";
 import { assessSnapshot, projectCash } from "../../domain/simulation/review";
 import { reviewCopy } from "./reviewCopy";
+import { simulationFormat } from "./format";
+import { downloadText } from "./persistence";
 
 /** A deterministic recap and explicitly non-authoritative local comparison. */
 export default function Review({
@@ -44,11 +46,7 @@ export default function Review({
         variable === "price" ? cents : basePrice,
       )
     : null;
-  const money = (n: number): string =>
-    new Intl.NumberFormat(language === "zh" ? "zh-CN" : "en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(n / 100);
+  const { money } = simulationFormat[language];
   const runway = (n: number | null): string =>
     n === null ? c.noBurn : n.toFixed(1);
   const baselineNet = state.revenueCents - state.monthlyCostCents;
@@ -88,14 +86,7 @@ export default function Review({
       c.actionBody,
       c.note,
     ].join("\n\n");
-    const url = URL.createObjectURL(
-      new Blob([text], { type: "text/plain;charset=utf-8" }),
-    );
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "goodbye-review.txt";
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    downloadText(text, "goodbye-review.txt");
   }
   return (
     <section

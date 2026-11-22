@@ -39,7 +39,9 @@ npm run dev
 
 Open `http://127.0.0.1:5173`. The local demo uses deterministic fixtures and shows a visible mock-mode notice. `setup:local` preserves an existing `.dev.vars`. Never commit this file.
 
-For an intentional real-provider evaluation, set `AI_MODE=deepseek` and `DEEPSEEK_API_KEY` in the ignored `.dev.vars`; leave `APP_ENV=local`. The previously configured `.env.local` remains ignored, but Cloudflare bindings use `.dev.vars`, not that legacy file. Do not paste secrets into issues, logs or source. Real requests incur provider usage; the default checks never make them.
+Real-provider evaluation requires an explicit budget authorization. With that authorization, set `AI_MODE=deepseek` and `DEEPSEEK_API_KEY` in the ignored `.dev.vars`; leave `APP_ENV=local`. The previously configured `.env.local` remains ignored, but Cloudflare bindings use `.dev.vars`, not that legacy file. Do not paste secrets into issues, logs or source. Real requests incur provider usage; the default checks never make them.
+
+The local dev and preview scripts leave trace recording off by default to limit disk usage. For a focused debugging session, run `X_LOCAL_OBSERVABILITY=true npm run dev` or set the same override for `npm run preview`. This switch is local to those commands.
 
 ## Engineering checks
 

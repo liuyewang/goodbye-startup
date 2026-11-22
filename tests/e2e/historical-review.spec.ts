@@ -8,7 +8,7 @@ import type { Proposal } from "../../src/domain/simulation/schema";
 const proposal: Proposal = {
   visits: 100,
   signupRate: 0.000049,
-  paidRate: 0.1,
+  paidRate: 0.29,
   monthlyChurn: 0.05,
   priceCents: 1000,
   monthlyCostCents: 150000,
@@ -143,6 +143,12 @@ for (const variant of [
         await expect(last.getByText("$0.00", { exact: true })).toBeVisible();
       }
       if (variant === "running") {
+        await page
+          .getByText("Assumptions for this interval", { exact: true })
+          .click();
+        await expect(
+          page.getByText("29%", { exact: true }).filter({ visible: true }),
+        ).toHaveCount(2);
         const action = page.getByRole("button", { name: "Submit decision" });
         await expect(action).toBeVisible();
         expect(
