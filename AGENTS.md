@@ -4,7 +4,9 @@ This file defines project-specific constraints and release authorization. The us
 
 ## Source of truth
 
-For project orientation, read README, `docs/PRD.md`, `docs/tech-stack.md` and `docs/deployment.md`. For an existing task, start with `HANDOFF.md`, reconcile Git and read the relevant checkpoint in `docs/refactor-progress-2026-11-09.md`. Follow the approved plan and use Conventional Commits. Apply Superpowers to the task as needed and resume from completed design gates. Reusable lessons are indexed by module/problem in [release review](docs/release-review-2026-11-09.md#reusable-lessons-by-area); consult the relevant entry before related changes and update its existing evidence rather than creating a second log. Historical reports record their dated scope, not current release permission or status. GSC binding is `goodbye` → `sc-domain:goodbye.help`; its evidence/checkpoint is `docs/search-evidence-2026-11-09.md`.
+- Start with [README.md](README.md). Consult the [PRD](docs/PRD.md), [stack](docs/tech-stack.md), and [deployment guide](docs/deployment.md) for the current task.
+- Resume from [HANDOFF.md](HANDOFF.md), reconcile Git, and read the relevant [checkpoint](docs/refactor-progress-2026-11-09.md). Continue approved plans and completed design gates. Use Conventional Commits and apply relevant Superpowers skills.
+- Look up the relevant [reusable lesson](docs/release-review-2026-11-09.md#reusable-lessons-by-area) and update existing evidence. Dated reports record the observed scope. For GSC use the goodbye profile and sc-domain:goodbye.help, with the [search checkpoint](docs/search-evidence-2026-11-09.md).
 
 Actual stack: strict TypeScript, React 19, Next 16 compatible App Router through vinext, Vite, Tailwind 3.4, Cloudflare Workers/D1 and DeepSeek. The formal site now runs the production Worker; legacy Pages online deployments are retired, with a verified private artifact retained for controlled recovery. See `docs/configuration-cleanup-2026-11-09.md`; do not restore the unrestricted old API. No UI component, animation, form, state-management or i18n library may be added without explicit approval. No ORM, agent framework or new service without a concrete need.
 
@@ -15,10 +17,16 @@ Actual stack: strict TypeScript, React 19, Next 16 compatible App Router through
 - Browser text and model outputs are untrusted. Validate both; never import local cash/versions/entitlement into server authority.
 - Server controls `[0,5,90,120,150,180]`, numeric settlement and outcome. First AI reply initializes Day 0 without charging costs. Money is integer cents; finite bounds live in schemas.
 - A signed HttpOnly cookie identifies an anonymous allocation, not a natural person. One free simulation is available each device-local day, consumed on first success; maximum 10 provider attempts per started simulation. Unstarted drafts renew failed-attempt allowance each local day. The server validates the device time zone, owns the clock and defers zone changes until the current allowance period ends. Atomic D1 reservation and lease/version commit are mandatory. No automatic provider retry.
+
+## Inference, quotas, and privacy
+
 - Production has a global 300-attempt cap per UTC day, including failed provider attempts; preview cap is zero and inference is closed. Both finite real-model evaluation allowances (20 + 6) are exhausted; new real-model tests require explicit budget authorization.
 - Numerical saves expire after 30 days; quota metadata after 180 days from the latest allocation renewal or first success. Daily eligibility resets at the device’s local midnight. Daily scheduled cleanup plus opportunistic cleanup removes expired data. Deleting/abandoning/expiry does not refund that day’s used eligibility.
 - No accounts or real payments. Paid plans are unavailable; do not invent checkout, billing, refunds or person-level limits.
 - Server storage and logs must exclude ideas, user decisions, AI prose, prompts and raw IPs. The transcript is kept in browser storage and sent as needed for inference. Secrets stay in runtime bindings. Never commit `.env.local`, `.dev.vars`, raw GSC reports or credentials.
+
+## API limits and responses
+
 - Request body 32KiB; idea/decision 2000 characters; history 12 messages/12000 characters; upstream body 128KiB; 4096 output tokens; 45-second timeout. Fail closed if production configuration is missing.
 - Success envelope `{data, requestId}`, error `{error, code, requestId}`. Do not expose upstream payloads or stack traces.
 
@@ -47,5 +55,7 @@ npm run test:e2e
 Normal checks use local mock mode and do not spend provider credits. Workers uses ignored `.dev.vars`; legacy `.env.local` is not the binding source. Keep pinned compatibility date `2025-09-01` and `nodejs_compat` until separately verified.
 
 Run behavioral tests for state, persistence, trust or recovery changes, real local D1 integration for SQL, and browser scenarios for UX. Verify the production build and runtime smoke for application changes. For documentation-only changes, check the affected documents. Report deterministic mock and real provider evidence separately. Archive superseded instructions when they would otherwise conflict with current guidance.
+
+## Production deployment authorization
 
 用户于 2026-11-10 明确持续授权本项目的常规网站部署：在现有 Cloudflare 环境和正式域名内，完成检查与代码审阅后直接提交、推送、必要的常规合并并发布，无需逐次询问或等待再次授权；发布后必须实际读回正式站并记录版本。此条取代本项目旧的逐次部署批准要求。新增付费资源、真实模型测试预算、破坏性操作、生产域名变更及其他服务不包含在常规部署授权内，沿用各自现有边界。 Existing `www` redirect → apex and `startup.goodbye.help` → `/simulator` remain; `wise.goodbye.help` is a separate service and must not be touched. GitHub stores code only: repository Actions are disabled and there are no workflow files. Run all checks, browser tests, builds and Wrangler deployments locally. Do not add GitHub runners or re-enable Actions without an explicit user request. Legacy Pages Git builds are also disabled.
