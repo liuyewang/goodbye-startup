@@ -48,7 +48,10 @@ test("complete simulation, recovery, export and used quota", async ({
     .getByRole("button", { name: "Start another simulation", exact: true })
     .click();
   await expect(
-    page.getByText("Your free simulation has been used.", { exact: true }),
+    page.getByText(
+      "Today's free simulation has been used. A new one is available at midnight in your device’s time zone.",
+      { exact: true },
+    ),
   ).toBeVisible();
   expect(
     await page.evaluate(
@@ -170,7 +173,10 @@ test("local text remains exportable after deleting server save and reloading", a
     .click();
   await page.getByRole("button", { name: "Delete save", exact: true }).click();
   await expect(
-    page.getByText("Your free simulation has been used.", { exact: true }),
+    page.getByText(
+      "Today's free simulation has been used. A new one is available at midnight in your device’s time zone.",
+      { exact: true },
+    ),
   ).toBeVisible();
   await page.reload();
   await expect(
@@ -529,7 +535,7 @@ test("exports damaged current transcript verbatim before and after repairing it"
   await expect(page.getByTestId("sim-day")).toHaveText("Day 5");
   await page.reload();
   await expectRawExport();
-  await page.route("**/api/session", (route) =>
+  await page.route("**/api/session{,?*}", (route) =>
     route.fulfill({ status: 503, json: { code: "SERVICE_UNAVAILABLE" } }),
   );
   await page.reload();

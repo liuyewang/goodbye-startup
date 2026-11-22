@@ -1,5 +1,17 @@
 # 全项目重构进度
 
+## 2026-11-22：每日免费模拟（实施中）
+
+用户要求“每人每日可以免费使用一次”。已检查现有 Cookie 身份、D1 首次成功计额、10 次尝试、创建/删除/重放以及前端额度入口；当前没有账号，不能严格识别跨设备的同一个自然人。用户最终确认沿用匿名浏览器，按设备系统时区当地零点刷新；这覆盖此前 UTC 选择。不单独增加夏令时功能或专项测试。规则草案见 [每日免费模拟设计](superpowers/specs/2026-11-22-daily-free-simulation-design.md)。
+
+基线 `main@cb4ec4e`；已有 `HANDOFF.md` 与搜索证据文档的未提交改动保留。已实施服务端每日资格、时区、并发替换和前端再次开始入口。74 项核心测试及完整 `npm run check` 通过。主检出原有 HANDOFF/search 两份文档格式不符合检查，未改写它们；使用受管工作树 `/Users/guan/.codex/worktrees/daily-free-release/创业模拟器(Goodbye)` 隔离最终检查。依赖缺失时按锁文件 npm ci 恢复，未升级依赖。
+
+实际本地验收：干净基线加本次变更，build 后 Wrangler 4173、mock、真实本地 D1，六阶段/重放/归属/额度/删除与 scheduled cleanup 通过；15 页、5 资源及资产排除通过。任务 Chrome 页面 320×844/DPR1/mobile/touch、EN/ZH 无横向溢出；真实客户端请求携带 `Asia/Singapore`，API 200，外部游戏未自动加载。控制台无 error/warn，保留已有表单 id/name autofill 提示。普通构建仍有原有适配器 sourcemap/chunk 分类警告。
+
+审阅修复：替换成功但响应丢失需要稳定创建 ID；跨日留在额度面板需要自动重新查询；时区改变与旧请求竞争时，每条重置/删除/创建 SQL 都要校验同一时区；同一替换请求并发时，批次后的读回也必须支持幂等。另复现旧完成存档被删除后继续创建替代存档的问题，用同一批次删除结果守卫修复。均有红→绿回归，定向独立复审无遗留重要意见。完整四浏览器共 152 场景：151 通过，WebKit 既有 `interactive iframe stays clickable and scrollable while a resource is pending` 首轮点击未出现 `Clicked`，超时 5000ms。转到同一代码的生产构建预览，WebKit 整个 life-loading 文件 4/4 通过，原失败项 533ms 通过；没有修改该模块或放宽断言，首轮原因未验证，保留原日志。新增每日额度 6 场景 × 4 浏览器全部通过。开发态还出现一次原有 `TypeError: Importing a module script failed.` 警告，对应用例通过；构建预览 Chrome 未见对应脚本错误。达到此次有界验证门槛，不重复全套。当前待提交与发布，无真实模型调用。
+
+发布预检：已独立读回当前 production Worker `c8a56472-e207-45dd-a48a-98f708a14537` 100%，远端 main 为 `cb4ec4e`。生产待迁移仅 `0002_daily_free.sql`；所有修改为 additive 列及新列回填，不删除数值/额度记录。已读取迁移前 D1 Time Travel bookmark，保留在仓外 `/tmp/goodbye-release-d1-bookmark.log`；不执行数据库回滚。旧 Worker 可读取 additive schema，但回退将恢复旧免费策略，不能声称每日功能仍在。
+
 日期：2026-11-09（Asia/Singapore）
 
 ## 授权与目标

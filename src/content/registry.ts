@@ -31,7 +31,7 @@ export const pages: PublicPage[] = [
   page(
     "/",
     "AI Startup Simulator",
-    "Explore startup assumptions in 180 simulated days, about 15 real minutes. Track cash, customers and runway. One free simulation; no account required.",
+    "Explore startup assumptions in 180 simulated days, about 15 real minutes. Track cash, customers and runway. One free simulation daily; no account required.",
   ),
   page(
     "/simulator",
@@ -46,7 +46,7 @@ export const pages: PublicPage[] = [
   page(
     "/pricing",
     "Pricing",
-    "Run one free startup simulation without an account. See how anonymous eligibility, retries, local records and exports work.",
+    "One free startup simulation daily, resetting at your device’s local midnight. No account required. Learn about eligibility, retries and exports.",
   ),
   page(
     "/about",

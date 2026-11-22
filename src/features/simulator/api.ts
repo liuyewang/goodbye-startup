@@ -14,6 +14,7 @@ export const SessionSchema = z.object({
   runId: z.string().nullable(),
   expired: z.boolean(),
   eligibleAt: z.number().nullable(),
+  timeZone: z.string().optional(),
 });
 export const BootstrapSchema = z.object({
   session: SessionSchema,
@@ -85,4 +86,16 @@ export function fitTurnHistory(
   )
     result.history.shift();
   return result;
+}
+
+/** The device supplies only its named zone; the server supplies time and entitlement. */
+export function deviceTimeZone(): string {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+  } catch {
+    return "UTC";
+  }
+}
+export function sessionPath(): string {
+  return `/api/session?timeZone=${encodeURIComponent(deviceTimeZone())}`;
 }

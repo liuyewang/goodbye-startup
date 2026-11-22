@@ -96,7 +96,11 @@ export async function handle(
     if (!hash) throw new Error("SESSION_REQUIRED");
     let data: unknown;
     if (action === "session") {
-      const snapshot = await repo.getSession(hash, Date.now());
+      const snapshot = await repo.getSession(
+        hash,
+        Date.now(),
+        url.searchParams.get("timeZone") ?? undefined,
+      );
       data = {
         session: snapshot.session,
         run: snapshot.run ? publicRun(snapshot.run) : null,
@@ -121,7 +125,14 @@ export async function handle(
       }
       const body = await readJson(request);
       if (action === "create") {
-        const parsed = z.strictObject({ setup: SetupSchema }).safeParse(body);
+        const parsed = z
+          .strictObject({
+            setup: SetupSchema,
+            replaceRunId: z.uuid().optional(),
+            timeZone: z.string().max(100).optional(),
+            creationRequestId: z.uuid().optional(),
+          })
+          .safeParse(body);
         if (!parsed.success) throw new Error("INVALID_INPUT");
         data = {
           run: publicRun(
@@ -129,6 +140,9 @@ export async function handle(
               hash,
               createSimulation(parsed.data.setup, 2),
               Date.now(),
+              parsed.data.replaceRunId,
+              parsed.data.timeZone,
+              parsed.data.creationRequestId,
             ),
           ),
         };

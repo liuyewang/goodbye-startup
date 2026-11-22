@@ -27,7 +27,7 @@ export const en = {
     moreReading: "More reading",
     ctaTitle: "Explore your idea in about 15 minutes",
     ctaBody:
-      "One free simulation. All days are simulated; real use takes about 15 minutes. No payment is collected.",
+      "One free simulation every device-local day. All days are simulated; real use takes about 15 minutes. No payment is collected.",
     myth: "Myth:",
     notFound: "Page not found",
     returnHome: "Return home",
@@ -53,7 +53,7 @@ export const en = {
       daysDesc: "compressed into 15 min",
       accuracy: "Testable assumptions",
       accuracyDesc: "Not live market predictions",
-      free: "1 Free Run",
+      free: "1 Free Run / Day",
       freeDesc: "No account required",
     },
   },
@@ -215,11 +215,12 @@ export const en = {
   },
   pricing: {
     title: "Simple, Honest Pricing",
-    subtitle: "Run one free simulation without creating an account.",
+    subtitle:
+      "Run one free simulation every device-local day without creating an account.",
     free: {
       name: "Free simulation",
       price: "$0",
-      period: "One per anonymous browser allocation",
+      period: "One per anonymous browser each device-local day",
       description:
         "Practice pricing and cash decisions, then review the results.",
       features: [
@@ -253,7 +254,7 @@ export const en = {
       items: [
         {
           q: "What counts as one simulation?",
-          a: "The first successful AI response uses the free eligibility. A normal run has six stages and at most 10 attempts. Failed attempts count, but eligibility is not used until the first success.",
+          a: "The first successful AI response uses that local day’s free eligibility. A normal run has six stages and at most 10 attempts, including failures. An unfinished simulation can continue across days without using the next day’s new-run eligibility. Unstarted drafts renew their attempt allowance at midnight in your device’s time zone.",
         },
         {
           q: "Do I need an account?",
@@ -265,11 +266,11 @@ export const en = {
         },
         {
           q: "Can I buy more simulations?",
-          a: "One free simulation is currently available per anonymous browser allocation. Additional simulations are unavailable.",
+          a: "Each anonymous browser can start one free simulation each device-local day. Eligibility refreshes at midnight in your device’s time zone and does not accumulate. Time-zone changes take effect after the current allowance period ends. There are no extra simulations to buy; service-wide limits still apply.",
         },
         {
           q: "Does deletion reset eligibility?",
-          a: "No. Deletion, abandonment or expiry does not refund used eligibility.",
+          a: "No. Deletion, abandonment or expiry does not refund today’s used eligibility. A new daily eligibility becomes available at midnight in your device’s time zone.",
         },
         {
           q: "Are results reliable predictions?",
@@ -315,7 +316,7 @@ export const en = {
     items: [
       {
         q: "What counts as one simulation?",
-        a: "The first successful AI response uses the free eligibility. A normal run has six stages and at most 10 attempts. Failed attempts count, but eligibility is not used until the first success.",
+        a: "The first successful AI response uses that local day’s free eligibility. A normal run has six stages and at most 10 attempts, including failures. An unfinished simulation can continue across days without using the next day’s new-run eligibility. Unstarted drafts renew their attempt allowance at midnight in your device’s time zone.",
       },
       {
         q: "Do I need an account?",
@@ -327,11 +328,11 @@ export const en = {
       },
       {
         q: "Can I buy more simulations?",
-        a: "One free simulation is currently available per anonymous browser allocation. Additional simulations are unavailable.",
+        a: "Each anonymous browser can start one free simulation each device-local day. Eligibility refreshes at midnight in your device’s time zone and does not accumulate. Time-zone changes take effect after the current allowance period ends. There are no extra simulations to buy; service-wide limits still apply.",
       },
       {
         q: "Does deletion reset eligibility?",
-        a: "No. Deletion, abandonment or expiry does not refund used eligibility.",
+        a: "No. Deletion, abandonment or expiry does not refund today’s used eligibility. A new daily eligibility becomes available at midnight in your device’s time zone.",
       },
       {
         q: "Are results reliable predictions?",
@@ -427,7 +428,7 @@ export const en = {
     },
     editorial: {
       heading: "Who this is for and how to check it",
-      body: "Goodbye Startup is an educational decision rehearsal for aspiring founders, not a demand-validation service or an investment forecast. One anonymous free simulation is available without an account; paid plans are unavailable. The public repository records implementation changes. Report unclear calculations or misleading copy through its issue tracker; no independent certification or customer outcome is implied.",
+      body: "Goodbye Startup is an educational decision rehearsal for aspiring founders, not a demand-validation service or an investment forecast. One anonymous free simulation is available each device-local day without an account; paid plans are unavailable. The public repository records implementation changes. Report unclear calculations or misleading copy through its issue tracker; no independent certification or customer outcome is implied.",
       label: "Project history and corrections",
       url: "https://github.com/liuyewang/goodbye-startup/issues",
     },
@@ -456,7 +457,7 @@ export const en = {
   },
   privacy: {
     title: "Privacy Policy",
-    lastUpdated: "Updated: November 19, 2026",
+    lastUpdated: "Updated: November 22, 2026",
     sections: [
       {
         title: "Text in your browser",
@@ -471,7 +472,7 @@ export const en = {
       {
         title: "Anonymous state and quota",
         content:
-          "Cloudflare D1 stores anonymous session hashes, numerical state, operation versions, model versions and token counts. Saves expire and are cleaned 30 days after successful progression, or creation for drafts. Used quota lasts 180 days from first success; unused allocations last at most 180 days from creation.",
+          "Cloudflare D1 stores anonymous session hashes, numerical state, device time zone, daily eligibility, operation versions, model versions and token counts. Saves expire and are cleaned 30 days after successful progression, or creation for drafts. Daily eligibility resets at midnight in your device’s time zone. Quota metadata is retained for up to 180 days from the latest allocation renewal or first success.",
       },
       {
         title: "Cookies and logs",
@@ -481,7 +482,7 @@ export const en = {
       {
         title: "Deletion and recovery",
         content:
-          "The delete control removes the server numerical save and operation records; quota remains until expiry. Clear browser storage separately to remove local text. Expiry, deletion or abandonment does not refund used eligibility. Local text cannot restore authoritative server state.",
+          "The delete control removes the server numerical save and operation records; quota remains until expiry. Clear browser storage separately to remove local text. Expiry, deletion or abandonment does not refund that local day’s used eligibility; a new daily eligibility is available at midnight in your device’s time zone. Local text cannot restore authoritative server state.",
       },
       {
         title: "Optional external game",

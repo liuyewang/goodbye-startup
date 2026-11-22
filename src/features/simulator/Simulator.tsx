@@ -12,6 +12,8 @@ import { getVerdict } from "../../domain/simulation/engine";
 import { SetupSchema } from "../../domain/simulation/schema";
 import {
   api,
+  deviceTimeZone,
+  sessionPath,
   fitTurnHistory,
   ApiError,
   BootstrapSchema,
@@ -45,6 +47,7 @@ const secondaryClass =
   "rounded-xl border border-dark-200 bg-white px-4 py-2 text-sm font-medium text-dark-700 hover:bg-dark-50 disabled:opacity-50";
 const draftKey = (runId: string) => `gs_decision_draft_${runId}`;
 const confirmedTurnFailures = new Set([
+  "FREE_LIMIT",
   "INVALID_INPUT",
   "INVALID_JSON",
   "BODY_TOO_LARGE",
@@ -87,6 +90,9 @@ export default function Simulator(): React.JSX.Element {
   const [legacy, setLegacy] = useState<string | null>(null);
   const [damagedSaves, setDamagedSaves] = useState<string[]>([]);
   const [showQuota, setShowQuota] = useState(false);
+  const [replaceRunId, setReplaceRunId] = useState<string | null>(null);
+  const creationRequestId = useRef<string | null>(null);
+  const setupIdeaRef = useRef<HTMLTextAreaElement>(null);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   function storeDraft(runId: string, text: string): void {
     draftRef.current = { runId, text };
@@ -139,9 +145,11 @@ export default function Simulator(): React.JSX.Element {
     setLoading(true);
     setError(null);
     try {
-      const result = await api("/api/session", BootstrapSchema);
+      const result = await api(sessionPath(), BootstrapSchema);
       setBootstrap(result);
       setRun(result.run);
+      setReplaceRunId(null);
+      setShowQuota(false);
       setDeleteTarget((target) => (target === result.run?.id ? target : null));
       const runId = result.run?.id ?? null;
       if (ideaRunId.current && ideaRunId.current !== runId) setIdea("");
@@ -203,6 +211,35 @@ export default function Simulator(): React.JSX.Element {
   useEffect(() => {
     void refresh();
   }, [refresh]);
+  const eligibleAt = bootstrap?.session.eligibleAt ?? null;
+  useEffect(() => {
+    if (busy || loading) return;
+    let cancelled = false;
+    const checkEligibility = async () => {
+      try {
+        const result = await api(sessionPath(), BootstrapSchema);
+        if (!cancelled) setBootstrap(result);
+      } catch {
+        // Keep the current record; the explicit refresh control can retry.
+      }
+    };
+    const timer =
+      eligibleAt === null
+        ? undefined
+        : window.setTimeout(
+            () => void checkEligibility(),
+            Math.max(1000, Math.min(2147483647, eligibleAt - Date.now() + 250)),
+          );
+    const onVisible = () => {
+      if (document.visibilityState === "visible") void checkEligibility();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [eligibleAt, busy, loading]);
   async function submit(
     target: Run,
     text: string,
@@ -324,6 +361,37 @@ export default function Simulator(): React.JSX.Element {
       setBusy(false);
     }
   }
+  useEffect(() => {
+    if (replaceRunId) setupIdeaRef.current?.focus();
+  }, [replaceRunId]);
+  async function startAnother(): Promise<void> {
+    if (busy || loading || !run) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const result = await api(sessionPath(), BootstrapSchema);
+      setBootstrap(result);
+      setShowQuota(true);
+      if (result.session.used || result.session.eligibleAt !== null) return;
+      if (
+        result.run?.id !== run.id ||
+        result.run.state.status !== "completed"
+      ) {
+        await refresh();
+        return;
+      }
+      setReplaceRunId(run.id);
+      creationRequestId.current = crypto.randomUUID();
+      setRun(null);
+      setIdea("");
+      setDecision("");
+      setShowQuota(false);
+    } catch (e) {
+      setError(e instanceof ApiError ? e.code : "NETWORK");
+    } finally {
+      setBusy(false);
+    }
+  }
   async function begin(event: FormEvent): Promise<void> {
     event.preventDefault();
     if (busy) return;
@@ -344,9 +412,15 @@ export default function Simulator(): React.JSX.Element {
       created = (
         await api("/api/simulations", z.object({ run: RunSchema }), "POST", {
           setup: parsed.data,
+          timeZone: deviceTimeZone(),
+          ...(replaceRunId
+            ? { replaceRunId, creationRequestId: creationRequestId.current }
+            : {}),
         })
       ).run;
       setRun(created);
+      setReplaceRunId(null);
+      ideaRunId.current = created.id;
     } catch (e) {
       setError(e instanceof ApiError ? e.code : "NETWORK");
       setBusy(false);
@@ -395,7 +469,16 @@ export default function Simulator(): React.JSX.Element {
       : null;
   const missing = !!run && run.state.version > 0 && !latest;
   const blocked =
-    !!bootstrap && (bootstrap.session.used || bootstrap.session.attempts >= 10);
+    !!bootstrap &&
+    (bootstrap.session.used || bootstrap.session.eligibleAt !== null);
+  const nextAvailable =
+    eligibleAt === null
+      ? null
+      : new Intl.DateTimeFormat(language === "zh" ? "zh-CN" : "en-US", {
+          dateStyle: "medium",
+          timeStyle: "short",
+          timeZone: bootstrap?.session.timeZone ?? deviceTimeZone(),
+        }).format(eligibleAt);
   const terminal = run?.state.status === "completed";
   const pendingDecision = activeRecord?.pending;
   const verdict = run ? getVerdict(run.state) : null;
@@ -490,6 +573,19 @@ export default function Simulator(): React.JSX.Element {
                   : c.used}
               </h2>
               <p className="mt-2 text-dark-500">{c.paid}</p>
+              {nextAvailable && (
+                <p className="mt-2 text-sm">
+                  {c.nextAvailable} {nextAvailable} (
+                  {bootstrap?.session.timeZone ?? deviceTimeZone()})
+                </p>
+              )}
+              <button
+                type="button"
+                className={`${secondaryClass} mt-4 min-h-12`}
+                onClick={() => void refresh()}
+              >
+                {c.refresh}
+              </button>
             </div>
           ) : (
             !run && (
@@ -500,6 +596,7 @@ export default function Simulator(): React.JSX.Element {
                 <label className="block font-medium">
                   {c.idea}
                   <textarea
+                    ref={setupIdeaRef}
                     className={inputClass}
                     value={idea}
                     onChange={(e) => setIdea(e.target.value)}
@@ -557,12 +654,25 @@ export default function Simulator(): React.JSX.Element {
                 <p className="text-sm leading-relaxed text-dark-500">
                   {c.free}
                 </p>
+                {replaceRunId && (
+                  <p className="text-sm text-dark-600">{c.replaceNote}</p>
+                )}
                 <button
                   className={buttonClass}
                   disabled={busy || bootstrap?.ready === false}
                 >
                   {busy ? c.busy : c.begin}
                 </button>
+                {replaceRunId && (
+                  <button
+                    type="button"
+                    className={`${secondaryClass} ml-3 min-h-12`}
+                    disabled={busy}
+                    onClick={() => void refresh()}
+                  >
+                    {c.returnToSave}
+                  </button>
+                )}
                 {bootstrap?.ready === false && (
                   <p role="status" className="text-sm text-amber-800">
                     {c.errors.SERVICE_UNAVAILABLE}
@@ -662,7 +772,8 @@ export default function Simulator(): React.JSX.Element {
                       {c.verdictNote}
                     </p>
                     <button
-                      onClick={() => setShowQuota(true)}
+                      onClick={() => void startAnother()}
+                      disabled={busy || loading}
                       className="mt-5 rounded-lg bg-white px-4 py-2 font-semibold text-dark-900"
                     >
                       {c.another}
@@ -670,6 +781,12 @@ export default function Simulator(): React.JSX.Element {
                     {showQuota && (
                       <div className="mt-4">
                         <p>{c.used}</p>
+                        {nextAvailable && (
+                          <p className="mt-2 text-sm">
+                            {c.nextAvailable} {nextAvailable} (
+                            {bootstrap?.session.timeZone ?? deviceTimeZone()})
+                          </p>
+                        )}
                         <p className="mt-2 text-sm text-dark-300">{c.paid}</p>
                       </div>
                     )}

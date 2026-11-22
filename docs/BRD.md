@@ -2,7 +2,7 @@
 
 Goodbye Startup is an educational decision practice tool for aspiring founders, initially English-speaking users with Chinese support. Its value is making assumptions and consequences visible before users choose real experiments.
 
-The current product has one anonymous free allocation, no accounts and no payment collection. It must not claim proven accuracy, guaranteed savings, real-time research or validated investment outcomes. Proposed future paid tiers are not an active commercial offer. Pricing and billing require a separate product decision and implementation.
+The current product has one anonymous free simulation per device-local day, no accounts and no payment collection. It must not claim proven accuracy, guaranteed savings, real-time research or validated investment outcomes. Proposed future paid tiers are not an active commercial offer. Pricing and billing require a separate product decision and implementation.
 
 Success measures to define before launch expansion: completed simulations, useful real-world follow-up experiments, reliability and cost per completed run. This version does not introduce analytics or personal-data collection to measure them. Search impressions are not conversions or evidence of simulation quality.
 

@@ -26,7 +26,7 @@ const en = {
     "Local storage is unavailable or damaged. Keep an export; your text may not survive a refresh.",
   privacy:
     "Text stays in this browser and is sent to DeepSeek for inference. The server keeps anonymous numerical state for 30 days and quota metadata for 180 days.",
-  free: "One free simulation per anonymous browser allocation. It is used after the first successful AI response. Up to 10 attempts, including failures.",
+  free: "One free simulation per anonymous browser each device-local day, resetting at midnight in your device’s time zone. The first successful AI response uses that day’s eligibility. Up to 10 attempts per simulation, including failures. Unstarted drafts get a new attempt allowance each device-local day.",
   assumptions: "AI scenario · assumptions to test",
   metrics: "Calculated simulation results",
   day: "Day",
@@ -44,11 +44,15 @@ const en = {
   verdictNote:
     "This is an educational scenario outcome, not a prediction or investment advice.",
   another: "Start another simulation",
-  used: "Your free simulation has been used.",
+  nextAvailable: "Next free simulation:",
+  returnToSave: "Return to saved simulation",
+  replaceNote:
+    "Starting replaces the completed server save. Export it first if needed; its local text stays in this browser.",
+  used: "Today's free simulation has been used. A new one is available at midnight in your device’s time zone.",
   paid: "Paid plans are not available yet. You can still read and export this record.",
   delete: "Delete server save",
   deleteConfirm:
-    "Delete the numerical save? Your free eligibility and attempt counter will not reset. Local text remains available for export.",
+    "Delete the numerical save? Today’s used eligibility and attempt counter will not reset. Local text remains available for export.",
   cancel: "Keep save",
   confirm: "Delete save",
   expired:
@@ -89,7 +93,8 @@ const en = {
     RATE_LIMIT: "Too many requests. Wait a minute and try again.",
     ATTEMPTS_EXHAUSTED:
       "This allocation has used all 10 attempts. You can still export your record.",
-    FREE_LIMIT: "Your free simulation has been used.",
+    FREE_LIMIT:
+      "Today's free simulation has been used. A new one is available at midnight in your device’s time zone.",
     RUN_EXPIRED: "This save has expired.",
     RUN_NOT_FOUND: "This save is no longer available.",
     SESSION_REQUIRED:
@@ -141,7 +146,7 @@ const zh: Copy = {
   storage: "本地存储不可用或已损坏。请及时导出；刷新后文本可能无法保留。",
   privacy:
     "文本保留在此浏览器，并发送给 DeepSeek 用于推理。服务端保留匿名数值状态 30 天、额度元数据 180 天。",
-  free: "每个匿名浏览器配额可免费模拟一次，首次成功获得 AI 回复后使用资格。最多尝试 10 次，失败也计入尝试次数。",
+  free: "每个匿名浏览器每天可免费模拟一次，设备系统时区的当地零点刷新。首次成功获得 AI 回复后使用当天资格。每次模拟最多尝试 10 次，失败也计入；尚未成功的草稿在当地新一天恢复尝试额度。",
   assumptions: "AI 情景 · 待验证的假设",
   metrics: "程序计算的模拟结果",
   day: "天",
@@ -158,10 +163,15 @@ const zh: Copy = {
   abandon: "停止或根本调整这个方案",
   verdictNote: "这是教学情景的结果，不是现实预测或投资建议。",
   another: "开始另一次模拟",
-  used: "你的免费模拟资格已使用。",
+  nextAvailable: "下次免费模拟可用时间：",
+  returnToSave: "返回已保存的模拟",
+  replaceNote:
+    "开始后将替换已完成的服务端存档。如需保留数值，请先导出；原有本地文本仍保留在此浏览器。",
+  used: "今天的免费模拟资格已使用。设备系统时区的当地零点刷新。",
   paid: "付费方案暂未开放。你仍可查看并导出记录。",
   delete: "删除服务端存档",
-  deleteConfirm: "删除数值存档？免费资格和尝试次数不会重置。本地文本仍可导出。",
+  deleteConfirm:
+    "删除数值存档？当天已用资格和尝试次数不会重置。本地文本仍可导出。",
   cancel: "保留存档",
   confirm: "确认删除",
   expired: "服务端存档已过期。本地文本仍可导出，但不能恢复权威数值状态。",
@@ -193,7 +203,7 @@ const zh: Copy = {
     DAILY_LIMIT: "今日 AI 调用额度已用完，请稍后再来。",
     RATE_LIMIT: "请求过于频繁，请一分钟后重试。",
     ATTEMPTS_EXHAUSTED: "此配额已用完 10 次尝试，仍可导出记录。",
-    FREE_LIMIT: "你的免费模拟资格已使用。",
+    FREE_LIMIT: "今天的免费模拟资格已使用。设备系统时区的当地零点刷新。",
     RUN_EXPIRED: "此存档已过期。",
     RUN_NOT_FOUND: "此存档已不可用。",
     SESSION_REQUIRED: "匿名会话不可用，请刷新重新连接。",

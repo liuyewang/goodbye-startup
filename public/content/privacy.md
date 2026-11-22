@@ -5,7 +5,7 @@ Updated: 2026-11-19
 
 Privacy Policy
 
-Updated: November 19, 2026
+Updated: November 22, 2026
 
 Text in your browser
 
@@ -17,7 +17,7 @@ Each inference sends the idea, decision, limited history and numerical state to 
 
 Anonymous state and quota
 
-Cloudflare D1 stores anonymous session hashes, numerical state, operation versions, model versions and token counts. Saves expire and are cleaned 30 days after successful progression, or creation for drafts. Used quota lasts 180 days from first success; unused allocations last at most 180 days from creation.
+Cloudflare D1 stores anonymous session hashes, numerical state, device time zone, daily eligibility, operation versions, model versions and token counts. Saves expire and are cleaned 30 days after successful progression, or creation for drafts. Daily eligibility resets at midnight in your device’s time zone. Quota metadata is retained for up to 180 days from the latest allocation renewal or first success.
 
 Cookies and logs
 
@@ -25,7 +25,7 @@ An HttpOnly, SameSite=Lax cookie identifies an anonymous allocation, with Secure
 
 Deletion and recovery
 
-The delete control removes the server numerical save and operation records; quota remains until expiry. Clear browser storage separately to remove local text. Expiry, deletion or abandonment does not refund used eligibility. Local text cannot restore authoritative server state.
+The delete control removes the server numerical save and operation records; quota remains until expiry. Clear browser storage separately to remove local text. Expiry, deletion or abandonment does not refund that local day’s used eligibility; a new daily eligibility is available at midnight in your device’s time zone. Local text cannot restore authoritative server state.
 
 Optional external game
 

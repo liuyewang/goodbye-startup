@@ -14,7 +14,7 @@ The simulator now has two selectable modules. [Silicon Valley Life](https://good
 
 ## Try it and inspect the method
 
-Goodbye Startup is for aspiring founders practicing cash, pricing and retention decisions. One anonymous free simulation takes about 15 minutes, covering 180 simulated days without an account. Paid plans are unavailable. AI proposes assumptions; deterministic code calculates outcomes. It does not validate real demand, retrieve live market research or predict business success.
+Goodbye Startup is for aspiring founders practicing cash, pricing and retention decisions. One anonymous free simulation is available daily, resetting at the device’s local midnight. It takes about 15 minutes, covering 180 simulated days without an account. Paid plans are unavailable. AI proposes assumptions; deterministic code calculates outcomes. It does not validate real demand, retrieve live market research or predict business success.
 
 - [Try the simulator](https://goodbye.help/simulator)
 - [Calculation method, initialization and limits](https://goodbye.help/how-it-works)
@@ -22,7 +22,7 @@ Goodbye Startup is for aspiring founders practicing cash, pricing and retention 
 - [Implementation of the calculation rules](src/domain/simulation/engine.ts)
 - [Report a calculation, copy or usability issue](https://github.com/liuyewang/goodbye-startup/issues)
 
-面向准备创业的人：用一次约15分钟的模拟练习现金、定价与留存决策。天数是模拟内的；假设案例不是用户实绩，也不能验证真实需求。无需账户，可使用一次匿名免费模拟。欢迎通过问题区反馈计算说明、假设或使用体验的问题；请勿提交真实创业想法、个人数据或密钥。
+面向准备创业的人：用一次约15分钟的模拟练习现金、定价与留存决策。天数是模拟内的；假设案例不是用户实绩，也不能验证真实需求。无需账户，每天可免费模拟一次，按设备系统时区当地零点刷新。欢迎通过问题区反馈计算说明、假设或使用体验的问题；请勿提交真实创业想法、个人数据或密钥。
 
 The public method and validation guide document hypothetical examples and versioned calculation rules. No external review or endorsement is claimed. Release evidence is recorded in docs/superpowers/plans/2026-11-10-chatgpt-visibility.md.
 
@@ -87,8 +87,8 @@ Stop and restart the preview after a new build: a running Wrangler asset snapsho
 
 ## Product and privacy boundaries
 
-No accounts, real checkout, subscriptions, paid entitlement or server-side transcripts. One anonymous allocation is used on its first successful AI response; failures still consume attempts, up to 10. Six successful calls normally finish a run. Clearing cookies or changing devices can create a new anonymous identity; this is not person-level enforcement.
+No accounts, real checkout, subscriptions, paid entitlement or server-side transcripts. Each anonymous browser gets one free simulation per device-local day. The first successful AI response uses that day’s eligibility; failed attempts still count, up to 10. Continuing a previously started run does not consume a new day’s eligibility or renew that run’s attempt cap. Unstarted drafts renew their attempt allowance at local midnight. Time-zone changes take effect after the current allowance period ends. Six successful calls normally finish a run. Clearing cookies or changing devices can create a new anonymous identity; this is not person-level enforcement.
 
-Numerical saves expire 30 days after a successful turn (drafts from creation). Used quota expires 180 days after first success. Expired records cannot be imported back into authority from the browser. Text stays locally and is sent to DeepSeek for inference. The server stores numerical snapshots and bounded operational metadata, not ideas, decisions, AI prose, raw IPs or prompts. DeepSeek and Cloudflare apply their own service policies.
+Numerical saves expire 30 days after a successful turn (drafts from creation). Daily eligibility resets at device-local midnight; quota metadata expires 180 days after the latest allocation renewal or first success. Expired records cannot be imported back into authority from the browser. Text stays locally and is sent to DeepSeek for inference. The server stores numerical snapshots and bounded operational metadata, not ideas, decisions, AI prose, raw IPs or prompts. DeepSeek and Cloudflare apply their own service policies.
 
 See [architecture](docs/tech-stack.md), [product contract](docs/PRD.md), [AI evaluation](docs/ai-evaluation.md), [security](SECURITY.md), [contributing](CONTRIBUTING.md), [handoff](HANDOFF.md), [current progress](docs/refactor-progress-2026-11-09.md), and [acceptance and review](docs/release-review-2026-11-09.md). Historical documents live under `docs/archive/` and are not execution instructions.

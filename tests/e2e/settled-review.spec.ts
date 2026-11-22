@@ -154,7 +154,7 @@ test("review handles unknown pricing, free pricing and zero costs", async ({
       morale: 50,
       runwayMonths: cost === 0 ? null : 161700 / cost,
     };
-    await page.route("**/api/session", (route) =>
+    await page.route("**/api/session{,?*}", (route) =>
       route.fulfill({
         json: {
           data: {
@@ -207,6 +207,6 @@ test("review handles unknown pricing, free pricing and zero costs", async ({
     const text = await readFile((await file.path())!, "utf8");
     expect(text).toContain(expected);
     expect(text).not.toMatch(/NaN|Infinity/);
-    await page.unroute("**/api/session");
+    await page.unroute("**/api/session{,?*}");
   }
 });

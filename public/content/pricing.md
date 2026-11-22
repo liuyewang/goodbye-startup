@@ -5,13 +5,13 @@ Updated: 2026-11-20
 
 Simple, Honest Pricing
 
-Run one free simulation without creating an account.
+Run one free simulation every device-local day without creating an account.
 
 Free simulation
 
 $0
 
-One per anonymous browser allocation
+One per anonymous browser each device-local day
 
 Practice pricing and cash decisions, then review the results.
 
@@ -45,7 +45,7 @@ Before you begin
 
 What counts as one simulation?
 
-The first successful AI response uses the free eligibility. A normal run has six stages and at most 10 attempts. Failed attempts count, but eligibility is not used until the first success.
+The first successful AI response uses that local day’s free eligibility. A normal run has six stages and at most 10 attempts, including failures. An unfinished simulation can continue across days without using the next day’s new-run eligibility. Unstarted drafts renew their attempt allowance at midnight in your device’s time zone.
 
 Do I need an account?
 
@@ -57,11 +57,11 @@ Text stays in the browser and is sent to DeepSeek for inference. The server reta
 
 Can I buy more simulations?
 
-One free simulation is currently available per anonymous browser allocation. Additional simulations are unavailable.
+Each anonymous browser can start one free simulation each device-local day. Eligibility refreshes at midnight in your device’s time zone and does not accumulate. Time-zone changes take effect after the current allowance period ends. There are no extra simulations to buy; service-wide limits still apply.
 
 Does deletion reset eligibility?
 
-No. Deletion, abandonment or expiry does not refund used eligibility.
+No. Deletion, abandonment or expiry does not refund today’s used eligibility. A new daily eligibility becomes available at midnight in your device’s time zone.
 
 Are results reliable predictions?
 
