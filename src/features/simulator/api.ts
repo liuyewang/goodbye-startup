@@ -49,7 +49,10 @@ export async function api<T>(
   schema: z.ZodType<T>,
   method = "GET",
   body?: unknown,
+  timeoutMs = 15_000,
 ): Promise<T> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
   let response: Response;
   let payload: unknown;
   try {
@@ -58,10 +61,15 @@ export async function api<T>(
       credentials: "same-origin",
       headers: { "Content-Type": "application/json" },
       body: body === undefined ? undefined : JSON.stringify(body),
+      signal: controller.signal,
     });
     payload = await response.json();
   } catch {
-    throw new ApiError("NETWORK");
+    throw new ApiError(
+      controller.signal.aborted ? "CLIENT_TIMEOUT" : "NETWORK",
+    );
+  } finally {
+    clearTimeout(timer);
   }
   if (!response.ok) {
     const error = ErrorEnvelope.safeParse(payload);

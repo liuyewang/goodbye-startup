@@ -137,6 +137,34 @@ describe("bounded provider", () => {
       ),
     ).rejects.toThrow("AI_INVALID_RESPONSE");
   });
+  it("keeps reported tokens when the proposal is rejected", async () => {
+    await expect(
+      generateProposal(input, cfg, async () =>
+        json({
+          choices: [{ finish_reason: "length", message: { content: "{" } }],
+          usage: { prompt_tokens: 37, completion_tokens: 12 },
+        }),
+      ),
+    ).rejects.toMatchObject({
+      message: "AI_INVALID_RESPONSE",
+      outcome: "invalid_response",
+      usage: { inputTokens: 37, outputTokens: 12 },
+    });
+  });
+  it("keeps a valid reported count when the other count is missing", async () => {
+    await expect(
+      generateProposal(input, cfg, async () =>
+        json({
+          choices: [{ finish_reason: "length", message: { content: "{" } }],
+          usage: { prompt_tokens: 42 },
+        }),
+      ),
+    ).rejects.toMatchObject({
+      message: "AI_INVALID_RESPONSE",
+      outcome: "invalid_response",
+      usage: { inputTokens: 42, outputTokens: null },
+    });
+  });
   it("aborts a slow provider without retrying", async () => {
     let calls = 0;
     const fetcher: typeof fetch = async (_url, init) => {
@@ -147,9 +175,12 @@ describe("bounded provider", () => {
         ),
       );
     };
-    await expect(generateProposal(input, cfg, fetcher, 5)).rejects.toThrow(
-      "AI_TIMEOUT",
-    );
+    await expect(
+      generateProposal(input, cfg, fetcher, 5),
+    ).rejects.toMatchObject({
+      message: "AI_TIMEOUT",
+      outcome: "provider_timeout",
+    });
     expect(calls).toBe(1);
   });
 });

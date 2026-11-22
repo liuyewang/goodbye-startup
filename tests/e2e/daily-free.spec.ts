@@ -30,6 +30,7 @@ async function fixture(
   page: Page,
   available: boolean,
   fail: boolean | "lost" = false,
+  holdFirstCreate?: Promise<void>,
 ) {
   let state = createSimulation(setup);
   for (let i = 0; i < 6; i++) state = settleTurn(state, proposal);
@@ -90,7 +91,8 @@ async function fixture(
     } else if (new URL(request.url()).pathname === "/api/simulations") {
       run = { ...run, id: newId, state: createSimulation(setup) };
       if (fail === "lost" && writes.length === 1) {
-        await route.abort();
+        await holdFirstCreate;
+        await route.abort().catch(() => {});
         return;
       }
       await route.fulfill({ json: { data: { run }, requestId: "fixture" } });
@@ -256,4 +258,40 @@ test("a lost replacement response retries the same creation before starting AI",
   expect(writes).toHaveLength(3);
   expect(writes[0].body).toEqual(writes[1].body);
   expect(writes[0].body).toHaveProperty("creationRequestId");
+});
+
+test("a timed-out replacement retries original settings from the error panel", async ({
+  page,
+}) => {
+  let releaseCreate!: () => void;
+  const heldCreate = new Promise<void>((resolve) => (releaseCreate = resolve));
+  const { writes } = await fixture(page, true, "lost", heldCreate);
+  await page
+    .getByRole("button", { name: "Start another simulation", exact: true })
+    .click();
+  const idea = page.getByLabel("Your startup idea");
+  await idea.fill("Preserve this new idea after the deadline");
+  await page.clock.install();
+  try {
+    await page
+      .getByRole("button", { name: "Begin simulation", exact: true })
+      .click();
+    await expect.poll(() => writes.length).toBe(1);
+    await page.clock.fastForward(16_000);
+    const notice = page.getByRole("alert");
+    await expect(notice).toContainText("connection timed out");
+    await expect(idea).toHaveValue("Preserve this new idea after the deadline");
+    await expect(idea).toBeDisabled();
+    await notice.getByRole("button", { name: "Retry original setup" }).click();
+    await expect(page.getByTestId("sim-day")).toHaveText("Day 0");
+    expect(writes).toHaveLength(3);
+    expect(writes[0].body).toEqual(writes[1].body);
+    expect(writes[0].body).toHaveProperty("creationRequestId");
+    expect(writes[2].body).toHaveProperty(
+      "idea",
+      "Preserve this new idea after the deadline",
+    );
+  } finally {
+    releaseCreate();
+  }
 });

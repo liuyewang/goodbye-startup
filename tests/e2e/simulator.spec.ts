@@ -384,6 +384,66 @@ test("in-app refresh preserves memory when storage writes fail", async ({
   ).toBeVisible();
 });
 
+test("a timed-out turn recovers a committed result with the same request ID", async ({
+  page,
+}) => {
+  await page.goto("/simulator");
+  await page
+    .getByLabel("Your startup idea")
+    .fill("A small tool with a delayed network response.");
+  await page.clock.install();
+
+  const requests: { requestId: string; decision: string }[] = [];
+  let holdResponse!: () => void;
+  let confirmCommit!: () => void;
+  const heldResponse = new Promise<void>((resolve) => (holdResponse = resolve));
+  const committed = new Promise<void>((resolve) => (confirmCommit = resolve));
+  await page.route("**/api/simulations/*/turn", async (route) => {
+    const { requestId, decision } = route.request().postDataJSON();
+    requests.push({ requestId, decision });
+    if (requests.length > 1) {
+      await route.continue();
+      return;
+    }
+    const response = await route.fetch();
+    expect(response.ok()).toBe(true);
+    confirmCommit();
+    await heldResponse;
+    await route.abort().catch(() => {});
+  });
+
+  try {
+    await page
+      .getByRole("button", { name: "Begin simulation", exact: true })
+      .click();
+    await committed;
+    await page.clock.fastForward(50_000);
+    await expect(page.getByRole("alert")).toHaveCount(0);
+    await page.clock.fastForward(16_000);
+    await expect(page.getByRole("alert")).toContainText("connection timed out");
+    expect(requests).toHaveLength(1);
+
+    const draft = page.getByRole("textbox", {
+      name: "Your unsent decision draft",
+    });
+    await draft.fill("Keep this for the next stage.");
+    await page.getByRole("button", { name: "Retry original decision" }).click();
+    await expect(page.getByTestId("sim-day")).toHaveText("Day 0");
+    await expect(
+      page.getByRole("button", { name: "Retry original decision" }),
+    ).toHaveCount(0);
+    expect(requests).toEqual([requests[0], requests[0]]);
+    const saved = await (await page.request.get("/api/session")).json();
+    expect(saved.data.session).toMatchObject({ used: true, attempts: 1 });
+    expect(saved.data.run.state.version).toBe(1);
+    await expect(
+      page.getByRole("textbox", { name: "Your decision", exact: true }),
+    ).toHaveValue("Keep this for the next stage.");
+  } finally {
+    holdResponse();
+  }
+});
+
 test("an ambiguous 503 preserves the original decision when the replay returns a newer run", async ({
   page,
   baseURL,

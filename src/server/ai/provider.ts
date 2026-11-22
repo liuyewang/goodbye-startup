@@ -23,11 +23,43 @@ export type AiConfig = {
 export type Usage = {
   promptVersion: string;
   model: string;
-  inputTokens: number;
-  outputTokens: number;
+  inputTokens: number | null;
+  outputTokens: number | null;
 };
 export type GeneratedProposal = { proposal: Proposal; usage: Usage };
-const EnvelopeSchema = z.object({
+export class ProviderError extends Error {
+  constructor(
+    code:
+      | "AI_UNAVAILABLE"
+      | "AI_TIMEOUT"
+      | "AI_INVALID_RESPONSE"
+      | "SERVICE_UNAVAILABLE",
+    readonly outcome:
+      | "provider_config"
+      | "provider_auth"
+      | "provider_rate_limited"
+      | "provider_http_error"
+      | "provider_network_error"
+      | "provider_timeout"
+      | "invalid_response",
+    readonly usage?: Usage,
+  ) {
+    super(code);
+  }
+}
+const TokenCountSchema = z.number().int().nonnegative();
+const UsageEnvelopeSchema = z.object({ usage: z.unknown().optional() });
+const ReportedUsageSchema = z.object({
+  prompt_tokens: TokenCountSchema.optional().catch(undefined),
+  completion_tokens: TokenCountSchema.optional().catch(undefined),
+});
+const ValidUsageSchema = z
+  .object({
+    prompt_tokens: TokenCountSchema,
+    completion_tokens: TokenCountSchema,
+  })
+  .optional();
+const ChoiceEnvelopeSchema = z.object({
   choices: z
     .array(
       z.object({
@@ -36,12 +68,6 @@ const EnvelopeSchema = z.object({
       }),
     )
     .min(1),
-  usage: z
-    .object({
-      prompt_tokens: z.number().int().nonnegative(),
-      completion_tokens: z.number().int().nonnegative(),
-    })
-    .optional(),
 });
 /** Local deterministic fixture. Production cannot enable this path. */
 function mock(input: AiInput): GeneratedProposal {
@@ -91,11 +117,12 @@ export async function generateProposal(
   timeoutMs = 45_000,
 ): Promise<GeneratedProposal> {
   if (config.mode === "mock") {
-    if (!config.allowMock) throw new Error("SERVICE_UNAVAILABLE");
+    if (!config.allowMock)
+      throw new ProviderError("SERVICE_UNAVAILABLE", "provider_config");
     return mock(input);
   }
   if (config.mode !== "deepseek" || !config.apiKey || !config.model)
-    throw new Error("SERVICE_UNAVAILABLE");
+    throw new ProviderError("SERVICE_UNAVAILABLE", "provider_config");
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
@@ -128,40 +155,42 @@ export async function generateProposal(
       },
     );
     if (!response.ok) {
-      await response.body?.cancel();
-      throw new Error("AI_UNAVAILABLE");
+      await response.body?.cancel().catch(() => {});
+      const outcome =
+        response.status === 401 || response.status === 403
+          ? "provider_auth"
+          : response.status === 429
+            ? "provider_rate_limited"
+            : "provider_http_error";
+      throw new ProviderError("AI_UNAVAILABLE", outcome);
     }
-    let parsed: z.infer<typeof EnvelopeSchema>;
+    let usage: Usage | undefined;
     try {
-      parsed = EnvelopeSchema.parse(
-        JSON.parse(await readBounded(response.body, 131072)),
-      );
-    } catch {
-      throw new Error("AI_INVALID_RESPONSE");
-    }
-    try {
+      const raw: unknown = JSON.parse(await readBounded(response.body, 131072));
+      const rawUsage = UsageEnvelopeSchema.parse(raw).usage;
+      const measured = ReportedUsageSchema.safeParse(rawUsage).data;
+      usage = {
+        promptVersion: PROMPT_VERSION,
+        model: config.model,
+        inputTokens: measured?.prompt_tokens ?? null,
+        outputTokens: measured?.completion_tokens ?? null,
+      };
+      ValidUsageSchema.parse(rawUsage);
+      const parsed = ChoiceEnvelopeSchema.parse(raw);
       return {
         proposal: ProposalSchema.parse(
           JSON.parse(parsed.choices[0].message.content),
         ),
-        usage: {
-          promptVersion: PROMPT_VERSION,
-          model: config.model,
-          inputTokens: parsed.usage?.prompt_tokens ?? 0,
-          outputTokens: parsed.usage?.completion_tokens ?? 0,
-        },
+        usage,
       };
     } catch {
-      throw new Error("AI_INVALID_RESPONSE");
+      throw new ProviderError("AI_INVALID_RESPONSE", "invalid_response", usage);
     }
   } catch (error) {
-    if (controller.signal.aborted) throw new Error("AI_TIMEOUT");
-    if (
-      error instanceof Error &&
-      ["AI_UNAVAILABLE", "AI_INVALID_RESPONSE"].includes(error.message)
-    )
-      throw error;
-    throw new Error("AI_UNAVAILABLE");
+    if (controller.signal.aborted)
+      throw new ProviderError("AI_TIMEOUT", "provider_timeout");
+    if (error instanceof ProviderError) throw error;
+    throw new ProviderError("AI_UNAVAILABLE", "provider_network_error");
   } finally {
     clearTimeout(timer);
   }

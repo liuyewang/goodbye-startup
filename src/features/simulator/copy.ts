@@ -46,6 +46,7 @@ const en = {
   another: "Start another simulation",
   nextAvailable: "Next free simulation:",
   returnToSave: "Return to saved simulation",
+  retrySetup: "Retry original setup",
   replaceNote:
     "Starting replaces the completed server save. Export it first if needed; its local text stays in this browser.",
   used: "Today's free simulation has been used. A new one is available at midnight in your device’s time zone.",
@@ -82,6 +83,8 @@ const en = {
   errors: {
     NETWORK:
       "The connection was interrupted. Retry to check whether the request completed.",
+    CLIENT_TIMEOUT:
+      "The connection timed out. Retry to check whether the request completed.",
     AI_UNAVAILABLE:
       "The AI provider is temporarily unavailable. Your decision is preserved.",
     AI_INVALID_RESPONSE:
@@ -165,6 +168,7 @@ const zh: Copy = {
   another: "开始另一次模拟",
   nextAvailable: "下次免费模拟可用时间：",
   returnToSave: "返回已保存的模拟",
+  retrySetup: "重试原设置",
   replaceNote:
     "开始后将替换已完成的服务端存档。如需保留数值，请先导出；原有本地文本仍保留在此浏览器。",
   used: "今天的免费模拟资格已使用。设备系统时区的当地零点刷新。",
@@ -196,6 +200,7 @@ const zh: Copy = {
   oneTime: "一次性成本",
   errors: {
     NETWORK: "连接中断，请重试以确认请求是否完成。",
+    CLIENT_TIMEOUT: "连接超时，请重试以确认请求是否完成。",
     AI_UNAVAILABLE: "AI 服务暂时不可用，你的决策已保留。",
     AI_INVALID_RESPONSE: "AI 回复未通过校验，模拟进度未推进。",
     AI_TIMEOUT: "AI 请求超时，没有自动重试。",

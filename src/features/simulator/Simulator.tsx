@@ -46,6 +46,12 @@ const buttonClass =
 const secondaryClass =
   "rounded-xl border border-dark-200 bg-white px-4 py-2 text-sm font-medium text-dark-700 hover:bg-dark-50 disabled:opacity-50";
 const draftKey = (runId: string) => `gs_decision_draft_${runId}`;
+type ReplacementRequest = {
+  setup: z.infer<typeof SetupSchema>;
+  timeZone: string;
+  replaceRunId: string;
+  creationRequestId: string;
+};
 const confirmedTurnFailures = new Set([
   "FREE_LIMIT",
   "INVALID_INPUT",
@@ -90,8 +96,12 @@ export default function Simulator(): React.JSX.Element {
   const [legacy, setLegacy] = useState<string | null>(null);
   const [damagedSaves, setDamagedSaves] = useState<string[]>([]);
   const [showQuota, setShowQuota] = useState(false);
-  const [replaceRunId, setReplaceRunId] = useState<string | null>(null);
-  const creationRequestId = useRef<string | null>(null);
+  const [replacement, setReplacement] = useState<{
+    runId: string;
+    requestId: string;
+  } | null>(null);
+  const [pendingReplacement, setPendingReplacement] =
+    useState<ReplacementRequest | null>(null);
   const setupIdeaRef = useRef<HTMLTextAreaElement>(null);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   function storeDraft(runId: string, text: string): void {
@@ -148,7 +158,8 @@ export default function Simulator(): React.JSX.Element {
       const result = await api(sessionPath(), BootstrapSchema);
       setBootstrap(result);
       setRun(result.run);
-      setReplaceRunId(null);
+      setReplacement(null);
+      setPendingReplacement(null);
       setShowQuota(false);
       setDeleteTarget((target) => (target === result.run?.id ? target : null));
       const runId = result.run?.id ?? null;
@@ -308,6 +319,7 @@ export default function Simulator(): React.JSX.Element {
         TurnResultSchema,
         "POST",
         fitTurnHistory({ ...pending, idea, language, history }),
+        65_000, // Allow the 60-second server lease and network overhead.
       );
       const version = pending.expectedVersion + 1;
       // Replay can return a newer run; the decision belongs to its original stage.
@@ -362,8 +374,8 @@ export default function Simulator(): React.JSX.Element {
     }
   }
   useEffect(() => {
-    if (replaceRunId) setupIdeaRef.current?.focus();
-  }, [replaceRunId]);
+    if (replacement) setupIdeaRef.current?.focus();
+  }, [replacement]);
   async function startAnother(): Promise<void> {
     if (busy || loading || !run) return;
     setBusy(true);
@@ -380,8 +392,7 @@ export default function Simulator(): React.JSX.Element {
         await refresh();
         return;
       }
-      setReplaceRunId(run.id);
-      creationRequestId.current = crypto.randomUUID();
+      setReplacement({ runId: run.id, requestId: crypto.randomUUID() });
       setRun(null);
       setIdea("");
       setDecision("");
@@ -392,8 +403,8 @@ export default function Simulator(): React.JSX.Element {
       setBusy(false);
     }
   }
-  async function begin(event: FormEvent): Promise<void> {
-    event.preventDefault();
+  async function begin(event?: FormEvent): Promise<void> {
+    event?.preventDefault();
     if (busy) return;
     setError(null);
     const parsed = SetupSchema.safeParse({
@@ -406,23 +417,39 @@ export default function Simulator(): React.JSX.Element {
       setError("INVALID_INPUT");
       return;
     }
+    const setup = { setup: parsed.data, timeZone: deviceTimeZone() };
+    const retryable =
+      pendingReplacement ??
+      (replacement && {
+        ...setup,
+        replaceRunId: replacement.runId,
+        creationRequestId: replacement.requestId,
+      });
     setBusy(true);
     let created: Run;
     try {
       created = (
-        await api("/api/simulations", z.object({ run: RunSchema }), "POST", {
-          setup: parsed.data,
-          timeZone: deviceTimeZone(),
-          ...(replaceRunId
-            ? { replaceRunId, creationRequestId: creationRequestId.current }
-            : {}),
-        })
+        await api(
+          "/api/simulations",
+          z.object({ run: RunSchema }),
+          "POST",
+          retryable ?? setup,
+        )
       ).run;
       setRun(created);
-      setReplaceRunId(null);
+      setReplacement(null);
+      setPendingReplacement(null);
       ideaRunId.current = created.id;
     } catch (e) {
-      setError(e instanceof ApiError ? e.code : "NETWORK");
+      const code = e instanceof ApiError ? e.code : "NETWORK";
+      if (
+        retryable &&
+        (pendingReplacement ||
+          ["NETWORK", "CLIENT_TIMEOUT", "SERVICE_UNAVAILABLE"].includes(code))
+      ) {
+        setPendingReplacement(code === "VERSION_CONFLICT" ? null : retryable);
+      }
+      setError(code);
       setBusy(false);
       return;
     }
@@ -549,9 +576,9 @@ export default function Simulator(): React.JSX.Element {
             <button
               className={secondaryClass}
               disabled={busy}
-              onClick={() => void refresh()}
+              onClick={() => void (pendingReplacement ? begin() : refresh())}
             >
-              {c.refresh}
+              {pendingReplacement ? c.retrySetup : c.refresh}
             </button>
           </div>
         </div>
@@ -603,7 +630,7 @@ export default function Simulator(): React.JSX.Element {
                     maxLength={2000}
                     rows={4}
                     required
-                    disabled={busy}
+                    disabled={busy || !!pendingReplacement}
                   />
                 </label>
                 <div className="grid gap-5 sm:grid-cols-2">
@@ -628,7 +655,7 @@ export default function Simulator(): React.JSX.Element {
                           (set as (v: string) => void)(e.target.value)
                         }
                         required
-                        disabled={busy}
+                        disabled={busy || !!pendingReplacement}
                       />
                     </label>
                   ))}
@@ -644,7 +671,7 @@ export default function Simulator(): React.JSX.Element {
                             : "part-time",
                         )
                       }
-                      disabled={busy}
+                      disabled={busy || !!pendingReplacement}
                     >
                       <option value="part-time">{c.part}</option>
                       <option value="full-time">{c.full}</option>
@@ -654,7 +681,7 @@ export default function Simulator(): React.JSX.Element {
                 <p className="text-sm leading-relaxed text-dark-500">
                   {c.free}
                 </p>
-                {replaceRunId && (
+                {replacement && (
                   <p className="text-sm text-dark-600">{c.replaceNote}</p>
                 )}
                 <button
@@ -663,7 +690,7 @@ export default function Simulator(): React.JSX.Element {
                 >
                   {busy ? c.busy : c.begin}
                 </button>
-                {replaceRunId && (
+                {replacement && (
                   <button
                     type="button"
                     className={`${secondaryClass} ml-3 min-h-12`}

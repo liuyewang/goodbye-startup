@@ -6,6 +6,7 @@ const config = JSON.parse(await readFile("dist/server/wrangler.json", "utf8"));
 assert.equal(config.name, "goodbye-startup-production");
 assert.equal(config.vars.APP_ENV, "production");
 assert.equal(config.vars.AI_MODE, "deepseek");
+assert.equal(config.vars.DEEPSEEK_MODEL, "deepseek-flash");
 assert.equal(config.vars.SITE_ORIGIN, "https://goodbye.help");
 assert.equal(config.vars.AI_DAILY_CALL_LIMIT, "300");
 assert.equal(config.d1_databases.length, 1);

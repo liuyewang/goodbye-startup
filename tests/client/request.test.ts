@@ -32,6 +32,39 @@ it.each([
     fetch.mockRestore();
   }
 });
+it.each(["headers", "body"] as const)(
+  "ends the wait for stalled %s without retrying",
+  async (stall) => {
+    vi.useFakeTimers();
+    const fetch = vi
+      .spyOn(globalThis, "fetch")
+      .mockImplementation((_, init) => {
+        const aborted = new Promise<never>((_, reject) => {
+          init?.signal?.addEventListener("abort", () =>
+            reject(init.signal?.reason),
+          );
+        });
+        return stall === "headers"
+          ? aborted
+          : Promise.resolve(
+              Object.assign(new Response(), { json: () => aborted }),
+            );
+      });
+    try {
+      const outcome = api("/api/session", z.unknown()).catch(
+        (error: unknown) => error,
+      );
+      await vi.advanceTimersByTimeAsync(15_000);
+      expect(fetch.mock.calls[0]?.[1]?.signal?.aborted).toBe(true);
+      expect(await outcome).toMatchObject({ code: "CLIENT_TIMEOUT" });
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(vi.getTimerCount()).toBe(0);
+    } finally {
+      fetch.mockRestore();
+      vi.useRealTimers();
+    }
+  },
+);
 it("fits multibyte history inside the HTTP body limit while retaining latest context", () => {
   const input = {
     requestId: crypto.randomUUID(),
