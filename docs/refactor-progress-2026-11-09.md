@@ -1,6 +1,6 @@
 # 全项目重构进度
 
-## 2026-11-22：每日免费模拟（实施中）
+## 2026-11-22：每日免费模拟（已上线）
 
 用户要求“每人每日可以免费使用一次”。已检查现有 Cookie 身份、D1 首次成功计额、10 次尝试、创建/删除/重放以及前端额度入口；当前没有账号，不能严格识别跨设备的同一个自然人。用户最终确认沿用匿名浏览器，按设备系统时区当地零点刷新；这覆盖此前 UTC 选择。不单独增加夏令时功能或专项测试。规则草案见 [每日免费模拟设计](superpowers/specs/2026-11-22-daily-free-simulation-design.md)。
 
@@ -8,9 +8,17 @@
 
 实际本地验收：干净基线加本次变更，build 后 Wrangler 4173、mock、真实本地 D1，六阶段/重放/归属/额度/删除与 scheduled cleanup 通过；15 页、5 资源及资产排除通过。任务 Chrome 页面 320×844/DPR1/mobile/touch、EN/ZH 无横向溢出；真实客户端请求携带 `Asia/Singapore`，API 200，外部游戏未自动加载。控制台无 error/warn，保留已有表单 id/name autofill 提示。普通构建仍有原有适配器 sourcemap/chunk 分类警告。
 
-审阅修复：替换成功但响应丢失需要稳定创建 ID；跨日留在额度面板需要自动重新查询；时区改变与旧请求竞争时，每条重置/删除/创建 SQL 都要校验同一时区；同一替换请求并发时，批次后的读回也必须支持幂等。另复现旧完成存档被删除后继续创建替代存档的问题，用同一批次删除结果守卫修复。均有红→绿回归，定向独立复审无遗留重要意见。完整四浏览器共 152 场景：151 通过，WebKit 既有 `interactive iframe stays clickable and scrollable while a resource is pending` 首轮点击未出现 `Clicked`，超时 5000ms。转到同一代码的生产构建预览，WebKit 整个 life-loading 文件 4/4 通过，原失败项 533ms 通过；没有修改该模块或放宽断言，首轮原因未验证，保留原日志。新增每日额度 6 场景 × 4 浏览器全部通过。开发态还出现一次原有 `TypeError: Importing a module script failed.` 警告，对应用例通过；构建预览 Chrome 未见对应脚本错误。达到此次有界验证门槛，不重复全套。当前待提交与发布，无真实模型调用。
+审阅修复：替换成功但响应丢失需要稳定创建 ID；跨日留在额度面板需要自动重新查询；时区改变与旧请求竞争时，每条重置/删除/创建 SQL 都要校验同一时区；同一替换请求并发时，批次后的读回也必须支持幂等。另复现旧完成存档被删除后继续创建替代存档的问题，用同一批次删除结果守卫修复。均有红→绿回归，定向独立复审无遗留重要意见。完整四浏览器共 152 场景：151 通过，WebKit 既有 `interactive iframe stays clickable and scrollable while a resource is pending` 首轮点击未出现 `Clicked`，超时 5000ms。转到同一代码的生产构建预览，WebKit 整个 life-loading 文件 4/4 通过，原失败项 533ms 通过；没有修改该模块或放宽断言，首轮原因未验证，保留原日志。新增每日额度 6 场景 × 4 浏览器全部通过。开发态还出现一次原有 `TypeError: Importing a module script failed.` 警告，对应用例通过；构建预览 Chrome 未见对应脚本错误。达到此次有界验证门槛，不重复全套。实现与验证已完成，实际发布及读回见下段，无真实模型调用。
 
 发布预检：已独立读回当前 production Worker `c8a56472-e207-45dd-a48a-98f708a14537` 100%，远端 main 为 `cb4ec4e`。生产待迁移仅 `0002_daily_free.sql`；所有修改为 additive 列及新列回填，不删除数值/额度记录。已读取迁移前 D1 Time Travel bookmark，保留在仓外 `/tmp/goodbye-release-d1-bookmark.log`；不执行数据库回滚。旧 Worker 可读取 additive schema，但回退将恢复旧免费策略，不能声称每日功能仍在。
+
+发布完成：功能提交 `56e479cfb30bddbcfd9c0fdf6ee03513ac050ac6` 已快进集成 main 并推送；受管工作树干净源码 production build、配置守卫、密钥扫描与 deploy dry-run 通过。生产 D1 `0002_daily_free.sql` 已成功执行，复查无待迁移项。2026-11-22 05:01:38 UTC（13:01:38 Singapore）发布 Worker `c479fd9b-be10-4dea-ba16-d258096b9d66`，随后 deployments list 独立读回 100%。恢复参考为上一版 `c8a56472-e207-45dd-a48a-98f708a14537`；代码回退不回滚数据库，旧版不会继续提供新每日规则。
+
+正式站读回：`TEST_BASE_URL=https://goodbye.help node scripts/audit-pages.ts --check-asset-exclusions` 与 `scripts/check-live.mjs` 均通过，覆盖 15 页面、5 公共资源、资产排除、health、匿名 Cookie/D1、Origin 与无效输入拒绝。新匿名会话 `Asia/Shanghai`、`America/Los_Angeles` 均按请求返回正确计额时区、未用资格，伪造时区返回 400/INVALID_INPUT。线上 `/content/pricing.md` 及模拟器 chunk `C7bw56yV.js` 与干净构建逐字节一致（SHA256 分别 `8c8f3682514b50bbadf9e9829c1eedb7975395404a2dbc50106063f0b04f9651`、`254eccff797d73f3bcb114f4757b38146282c917c012d620ca1d35f34b18f328`）。线上未创建真实模拟或发送有效 turn；午夜、首次成功和并发行为证据来自真实本地 D1，未声称做过线上跨午夜/真实模型验收。用户实际使用效果未测量。
+
+执行收尾：主检出原有两份未提交文档在代码集成后 SHA256 保持不变；发布交接只暂存本次记录，原 GSC 内容仍保持未提交。主检出本次早期实验的本地数据库已补齐最终 `runs.creation_key` 列，未重置本地记录。两个临时校验命令已纠正：本地 DB 名首次报 `Couldn't find a D1 DB with the name or binding 'goodbye-startup-local' in your wrangler.jsonc file.`，随后按配置绑定 `DB` 执行成功；线上专用脚本初次误读 `data.timeZone` 得到 `undefined`，修正为既有 envelope 的 `data.session.timeZone` 后通过，产品代码无相关改动。原始日志在仓外 `/tmp/goodbye-release-*.log` 和 `/tmp/goodbye-daily-main-local-schema*.json`。原 WebKit 失败控制台日志保留，专项重跑已覆盖 Playwright 临时 trace，不能宣称 trace 仍可打开。
+
+最终对抗复审：**存活**。自然人识别不在匿名方案能力内；跨日存档、配额并发和丢包恢复已有行为回归与独立复审。没有新增依赖、付费资源、域名变更或真实模型调用，全站 UTC 日 300 次预算与预览关闭不变。本次常规发布完成，后续若出现可复现缺陷再进入修复。
 
 日期：2026-11-09（Asia/Singapore）
 

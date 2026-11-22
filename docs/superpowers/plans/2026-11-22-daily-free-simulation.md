@@ -23,7 +23,7 @@
 
 - [x] npm run check、完整四浏览器回归、built mock REST + scheduled cleanup、15 页/5 资源/资产排除、本地移动 EN/ZH。
 - [x] 独立审阅；发现问题先复现再修复，完成必要复验。
-- [ ] 精确提交本次文件，保留他人改动；推送/常规集成；干净版本 production build、配置守卫、迁移、dry-run、部署、正式站读回并记录版本。
+- [x] 精确提交本次文件，保留他人改动；推送/常规集成；干净版本 production build、配置守卫、迁移、dry-run、部署、正式站读回并记录版本。
 
 ## Review Focus
 
@@ -33,4 +33,4 @@
 
 2026-11-22 决定：按用户最新要求采用设备本地时区；不另加夏令时功能/专项测试。时区切换延后到当前周期结束，新客户端提供 timeZone，旧客户端 UTC 兼容。69 项核心测试和首批 4 个 Chromium 新入口场景通过，补迁移及删除竞争回归。
 
-验收更新：74 项核心与完整 check 通过，built mock/定时清理/15 页/5 资源通过，独立复审无剩余重要问题。补齐 creationRequestId / runs.creation_key 的稳定创建幂等，前端本地午夜定时和可见性刷新。完整浏览器151/152通过，既有WebKit iframe点击项在构建预览随其4场景全通过；新增24项全部通过。原始异常与复验边界见进度，发布未执行。
+验收更新：74 项核心与完整 check 通过，built mock/定时清理/15 页/5 资源通过，独立复审无剩余重要问题。补齐 creationRequestId / runs.creation_key 的稳定创建幂等，前端本地午夜定时和可见性刷新。完整浏览器151/152通过，既有WebKit iframe点击项在构建预览随其4场景全通过；新增24项全部通过。原始异常与复验边界见进度。功能提交 `56e479c` 已集成并推送 main；production build/config guard/dry-run/迁移通过，发布 Worker `c479fd9b-be10-4dea-ba16-d258096b9d66`，独立读回 100%。正式站 15 页/5 资源/资产排除/API/两个时区及非法时区验证通过；pricing Markdown 和模拟器 chunk 与构建逐字节一致。没有真实模型调用。
