@@ -49,6 +49,7 @@ export async function handle(
     "Cache-Control": "no-store",
     "Content-Type": "application/json",
     "X-Content-Type-Options": "nosniff",
+    "X-Robots-Tag": "noindex",
   });
   try {
     const url = new URL(request.url);

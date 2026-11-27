@@ -9,6 +9,7 @@ const health = await fetch(`${base}/api/health`, {
 });
 assert.equal(health.status, 200);
 assert.equal(health.headers.get("cache-control"), "no-store");
+assert.equal(health.headers.get("x-robots-tag"), "noindex");
 assert.deepEqual((await health.json()).data, {
   ready: true,
   mode: "production",
